@@ -61,23 +61,32 @@ def falcon9_runs(split: str, seeds: tuple[int, ...] = (0,), noise: bool = True) 
 
 
 def quad_scenarios() -> list[str]:
-    """Quad scenario ids from the sources registry (empty if the quad sim isn't built yet)."""
+    """Simulated quad mission ids from the sources registry (empty if the quad sim isn't built yet).
+
+    Live sources with the quad schema (sitl:udp:<port>) are excluded: they block waiting for packets.
+    """
     try:
         from vbw.sources.registry import list_scenarios
     except ImportError:
         return []
-    return [s["id"] for s in list_scenarios() if s.get("schema") == "quad"]
+    return [s["id"] for s in list_scenarios() if s.get("schema") == "quad" and s["id"].startswith("quad:")]
+
+
+QUAD_TEST_SEED_OFFSET = 1000
 
 
 def quad_runs(split: str, seeds: tuple[int, ...] = (0,)) -> list[Run]:
+    """With only three simulated missions there is a single held-out one, so val and test both fly it; test uses
+    seeds offset by QUAD_TEST_SEED_OFFSET (different wind / sensor-noise realizations from anything val saw)."""
     from vbw.sources.registry import make_source
 
     ids = quad_scenarios()
     held = [s for i, s in enumerate(ids) if i % splits.HOLDOUT_EVERY == splits.HOLDOUT_OFFSET % max(len(ids), 1)]
+    offset = QUAD_TEST_SEED_OFFSET if split == "test" else 0
     runs = []
-    for scenario in _split_items(ids, held, split):
+    for scenario in _split_items(ids, held, "val" if split == "test" else split):
         for seed in seeds:
-            frames = list(make_source(scenario, seed=seed).frames())
+            frames = list(make_source(scenario, seed=seed + offset).frames())
             t = np.array([f.t for f in frames])
             X = np.array([[f.channels[c] for c in QUAD.channels] for f in frames])
             runs.append(Run(scenario, t, wire_round(X), X.copy()))

@@ -13,7 +13,11 @@ DETECTORS = [
 
 
 def list_detectors() -> list[dict]:
-    return [dict(d) for d in DETECTORS]
+    """Each detector plus its calibrated alert threshold τ per schema (models/l1_alert.json), for the console gauge."""
+    from vbw.detector.alerting import AlertConfig
+
+    thresholds = {s: AlertConfig.load(s).tau for s in ("falcon9", "quad", "spacecraft")}
+    return [{**d, "threshold": thresholds["falcon9"], "thresholds": dict(thresholds)} for d in DETECTORS]
 
 
 def make_detector(name: str, schema: ChannelSchema) -> Detector:

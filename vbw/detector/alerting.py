@@ -11,7 +11,9 @@ from collections import deque
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+import numpy as np
+
+ROOT =Path(__file__).resolve().parents[2]
 ALERT_PATH = ROOT / "models" / "l1_alert.json"
 
 
@@ -88,3 +90,15 @@ def alert_series(scores, config: AlertConfig) -> list[bool]:
     """Offline replay of AlertState over a score sequence (used by calibration and tests)."""
     state = AlertState(config)
     return [state.update(float(s)) for s in scores]
+
+
+def never_alert_threshold(scores, config: AlertConfig) -> float:
+    """Smallest τ at which this score series never raises an alert under config's k-of-n rule: the max, over n-frame
+    windows after warm-up, of the window's k-th largest score (a frame counts only when score > τ)."""
+    s =np.asarray(scores, dtype=float)[config.warmup:]
+    if len(s) < config.k:
+        return 0.0
+    if len(s) < config.n:
+        return float(np.sort(s)[-config.k])
+    windows = np.lib.stride_tricks.sliding_window_view(s, config.n)
+    return float(np.sort(windows, axis=1)[:, -config.k].max())

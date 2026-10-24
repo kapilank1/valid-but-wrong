@@ -2,9 +2,10 @@
 
 Ids: falcon9:<slug> | quad:<mission> | smap:<chan_id> | msl:<chan_id> | sitl:udp:<port>
 
-The hero launch is thaicom-8: on the data-quality checks it has the most self-consistent kinematics of all 31
-launches (1-s |d(alt)/dt - vz| p95 16.4 m/s vs >= 20.7 m/s for every other launch, |speed - hypot(vz, vx)| median
-0.14 m/s, the lowest), runs 546 s, and carries every ascent event (maxq, meco, ses1, seco1, throttle-down).
+The hero launch is ses-9: a held-out launch (the detector never trained or calibrated on it), 545 s with every ascent
+event (maxq, throttle-down, meco, ses1, seco1), and no base-detector alert on clean replays (peak score 0.47 vs
+τ = 0.66 over six noise seeds). thaicom-8 has the most self-consistent kinematics of all 31 launches, but it is in
+the detector's training split, so it would flatter the demo.
 
 list_scenarios() is cheap: it reads metadata only (no simulation, no .npy loads, no sockets).
 """
@@ -18,7 +19,7 @@ from vbw.sources.mavlink_bridge import SitlSource
 from vbw.sources.quad_sim import MISSIONS, QuadSim, mission_plan
 from vbw.sources.spacecraft import SpacecraftSource, channel_labels
 
-HERO_SLUG = "thaicom-8"
+HERO_SLUG = "ses-9"
 QUAD_RATE_HZ = 20.0
 SPACECRAFT_RATE_HZ = 10.0
 SITL_PORT = 14550

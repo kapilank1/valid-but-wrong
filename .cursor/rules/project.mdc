@@ -14,6 +14,13 @@ physically wrong motion. Real data: Falcon 9 webcast telemetry and NASA SMAP/MSL
 - Data flow: `vbw/sources` → `vbw/link/codec.py` (encode) → MITM `vbw/attacker` (decode, rewrite, re-encode with a
   valid CRC) → `LinkMonitor` (L0) → `vbw/detector` (L1 physics, L2 GRU, L3 discriminator) → `vbw/pipeline`
   (FastAPI + WebSocket) → `apps/console` (Next.js) and `vbw/store` (Tiger Data / TimescaleDB).
-- Python: `uv run pytest`. Console: `cd apps/console && pnpm dev`.
-- Every logic change gets a test. Never invent metrics: numbers come from `results/*.json`.
-- `HANDOFF.md` is the running build log. Append to it when you finish a chunk of work.
+- **Start of every session: read `CONTINUE_HERE.md`** (current state, measured numbers, what's left in order), then
+  `HANDOFF.md` (the chronological log with the reasoning behind each change).
+- Python: `uv run pytest` (211 tests). Console: `pnpm --dir apps/console dev` / `pnpm --dir apps/console test` (57).
+- This machine is Windows / PowerShell 5.1 (no `&&`; use `;`). uv needs `--system-certs` for network access
+  (`uv sync --system-certs`). git may not be installed yet; check before committing.
+- Every logic change gets a test. Never invent metrics: numbers come from `results/*.json` and `models/*_meta.json`.
+- Calibration chain: if an L1 rule or τ (`models/l1_alert.json`) changes, retrain PPO, then
+  `make_forged_dataset.py` → `train_l3.py` → `eval_detector.py` (see CONTINUE_HERE.md §7).
+- `HANDOFF.md` is the running build log. Append to it when you finish a chunk of work, and keep CONTINUE_HERE.md current.
+- Deadline: Sun Oct 25 2026, 9:00 AM PST. The SpaceXSI prize requires building in Cursor.

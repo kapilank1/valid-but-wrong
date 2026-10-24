@@ -5,6 +5,7 @@ data/raw/
 data/cache/
 models/*.pt
 models/*.zip
+!models/ppo_falcon9.zip
 node_modules/
 .next/
 .env

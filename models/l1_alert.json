@@ -1,0 +1,118 @@
+{
+ "falcon9": {
+  "tau": 0.66,
+  "k": 3,
+  "n": 5,
+  "clear_frames": 20,
+  "clear_ratio": 0.8,
+  "warmup": 10,
+  "meta": {
+   "created": "2026-10-24T08:56:40+00:00",
+   "rule": "tau = ceil(max clean k-of-n peak over train+val runs + margin, 2 dp), floor 0.5",
+   "margin": 0.005,
+   "calibration_seeds": [
+    0,
+    1
+   ],
+   "calibration_runs": 56,
+   "top_clean_peaks": [
+    {
+     "peak": 0.6546,
+     "scenario": "falcon9:abs-2a",
+     "seed": 0
+    },
+    {
+     "peak": 0.6544,
+     "scenario": "falcon9:abs-2a",
+     "seed": 1
+    },
+    {
+     "peak": 0.6009,
+     "scenario": "falcon9:jason-3",
+     "seed": 1
+    },
+    {
+     "peak": 0.5988,
+     "scenario": "falcon9:jason-3",
+     "seed": 0
+    },
+    {
+     "peak": 0.5615,
+     "scenario": "falcon9:nrol-76",
+     "seed": 1
+    }
+   ],
+   "test_seeds": [
+    0,
+    1,
+    2
+   ],
+   "test_runs": 9,
+   "test_frames": 45750,
+   "test_runs_alerting": 0,
+   "test_alerting_scenarios": []
+  }
+ },
+ "quad": {
+  "tau": 0.53,
+  "k": 3,
+  "n": 5,
+  "clear_frames": 20,
+  "clear_ratio": 0.8,
+  "warmup": 10,
+  "meta": {
+   "created": "2026-10-24T08:41:36+00:00",
+   "rule": "tau = ceil(max clean k-of-n peak over train+val runs + margin, 2 dp), floor 0.5",
+   "margin": 0.005,
+   "calibration_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "calibration_runs": 30,
+   "top_clean_peaks": [
+    {
+     "peak": 0.5228,
+     "scenario": "quad:survey",
+     "seed": 5
+    },
+    {
+     "peak": 0.4932,
+     "scenario": "quad:hover",
+     "seed": 0
+    },
+    {
+     "peak": 0.4869,
+     "scenario": "quad:survey",
+     "seed": 9
+    },
+    {
+     "peak": 0.4812,
+     "scenario": "quad:delivery",
+     "seed": 5
+    },
+    {
+     "peak": 0.4761,
+     "scenario": "quad:survey",
+     "seed": 8
+    }
+   ],
+   "test_seeds": [
+    0,
+    1,
+    2
+   ],
+   "test_runs": 3,
+   "test_frames": 9009,
+   "test_runs_alerting": 0,
+   "test_alerting_scenarios": []
+  }
+ }
+}

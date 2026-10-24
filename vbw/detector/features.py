@@ -4,7 +4,7 @@ Shared by the attacker (which writes data/cache/forged_*.npz) and the hardened d
 computes the same features while streaming). Format: see vbw/detector/README.md.
 
 Per-frame feature vector (F = R + 2C for R rules and C channels):
-    L1 signed residual / threshold per rule        clipped to ±10
+    L1 signed residual / threshold per rule        clipped to ±10 (rules whose lookback fits the window: l3_rules)
     L2 signed robust z per channel / 5             clipped to ±10
     first difference per channel / L2 delta std    clipped to ±10
 The discriminator looks at the last L3_CONTEXT frames; the earlier frames of each window are history for the
@@ -19,18 +19,28 @@ from pathlib import Path
 import numpy as np
 
 from vbw.detector.l2 import L2Model
-from vbw.detector.physics import RULES_BY_SCHEMA, L1Config, max_lookback
+from vbw.detector.physics import RULES_BY_SCHEMA, L1Config, Rule
 from vbw.schema import SCHEMAS_BY_NAME, ChannelSchema
 
 L3_CONTEXT = 40
 L3_WINDOWS = {"falcon9": 160, "quad": 160}
+L3_MAX_RULE_LOOKBACK = 150   # long-horizon rules (e.g. the 60 s altitude check) stay L1-only; L3 windows stay short
+# Rules L3 must not see. corridor says where the flight sits in the envelope of the 25 training launches; L3 learned
+# "near the envelope edge = forged" and saturated on clean held-out first-stage coasts (zeroing it: logit 23 -> 1).
+L3_EXCLUDED_RULES = frozenset({"corridor"})
 FEATURE_CLIP = 10.0
 Z_SCALE = 5.0
 
 
+def l3_rules(schema: ChannelSchema) -> tuple[Rule, ...]:
+    """The L1 rules whose residual ratios are L3 features: rules whose lookback fits an L3 window, minus the excluded."""
+    return tuple(r for r in RULES_BY_SCHEMA.get(schema.name, ())
+                 if r.lookback <= L3_MAX_RULE_LOOKBACK and r.name not in L3_EXCLUDED_RULES)
+
+
 def l3_window(schema: ChannelSchema) -> int:
     w = L3_WINDOWS.get(schema.name, 160)
-    needed = L3_CONTEXT + max_lookback(schema) + 1
+    needed = L3_CONTEXT + max((r.lookback for r in l3_rules(schema)), default=0) + 1
     assert w >= needed, f"L3 window {w} too short for {schema.name} (needs {needed})"
     return w
 
@@ -80,6 +90,30 @@ def save_forged_npz(path: Path, X, t, y, attack, scenario, schema: str, window: 
                         schema=np.array(schema), window=np.array(int(window)))
 
 
+def flight_phase(fs: ForgedSet) -> np.ndarray:
+    """Where each window ends, as a fraction of its scenario's flight (0 = launch, 1 = last window)."""
+    end = {s: fs.t[fs.scenario == s, -1].max() for s in np.unique(fs.scenario)}
+    return np.array([t_end / max(end[s], 1e-9) for t_end, s in zip(fs.t[:, -1], fs.scenario)])
+
+
+def phase_balance(fs: ForgedSet, rng: np.random.Generator, bins: int = 10, min_clean: int = 500) -> ForgedSet:
+    """Equal clean and forged windows in every flight-phase bin, so flight phase alone predicts nothing.
+
+    Without this, forged windows (attacks start mid-flight) cluster late while clean ones are uniform, and the
+    discriminator learned "late flight = forged": it saturated on clean first-stage entry and landing burns.
+    Bins with few forged windows (the first moments of flight) still keep up to `min_clean` clean ones.
+    """
+    which = np.minimum((flight_phase(fs) * bins).astype(int), bins - 1)
+    keep = []
+    for b in range(bins):
+        pos = np.where((which == b) & (fs.y == 1))[0]
+        neg = np.where((which == b) & (fs.y == 0))[0]
+        n_pos = min(len(pos), len(neg))
+        n_neg = min(len(neg), max(n_pos, min_clean))
+        keep += [rng.choice(pos, n_pos, replace=False), rng.choice(neg, n_neg, replace=False)]
+    return fs.subset(np.sort(np.concatenate(keep)))
+
+
 def load_forged_npz(path: Path) -> ForgedSet:
     with np.load(path, allow_pickle=False) as d:
         s = ForgedSet(d["X"].astype(np.float32), d["t"].astype(np.float64), d["y"].astype(np.int8),
@@ -92,7 +126,7 @@ def load_forged_npz(path: Path) -> ForgedSet:
 
 
 def feature_names(schema: ChannelSchema) -> list[str]:
-    rules = [f"l1:{r.name}" for r in RULES_BY_SCHEMA.get(schema.name, ())]
+    rules = [f"l1:{r.name}" for r in l3_rules(schema)]
     return rules + [f"l2z:{c}" for c in schema.channels] + [f"diff:{c}" for c in schema.channels]
 
 
@@ -110,7 +144,7 @@ def l3_features(X: np.ndarray, t: np.ndarray, schema: ChannelSchema, l1_config: 
                 l2: L2Model | None = None, context: int = L3_CONTEXT, chunk: int = 2048) -> np.ndarray:
     """[N, W, C] reported windows (+ [N, W] times) -> float32 [N, context, F] features of their last frames."""
     l1_config = l1_config or L1Config.load(schema)
-    rules = RULES_BY_SCHEMA.get(schema.name, ())
+    rules = l3_rules(schema)
     dscale = diff_scale(schema, l2)
     out = []
     for i in range(0, len(X), chunk):

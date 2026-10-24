@@ -89,8 +89,10 @@ ssh root@<GPU_IP>
 nvidia-smi || (apt-get update && apt-get install -y ubuntu-drivers-common && ubuntu-drivers install && reboot)
 curl -LsSf https://astral.sh/uv/install.sh | sh && source ~/.local/bin/env
 git clone <repo-url> valid-but-wrong && cd valid-but-wrong
-uv sync                                      # the lock's linux torch wheel bundles CUDA
-uv run python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+uv sync                                      # the lock pins CPU-only torch on linux (small server image)
+# Only for GPU training: swap in a CUDA build in this venv (uv run --no-sync keeps it from being reverted).
+uv pip install --reinstall torch==2.14.1 --index-url https://download.pytorch.org/whl/cu130
+uv run --no-sync python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
 python3 scripts/fetch_smap.py
 ```
 
@@ -102,8 +104,12 @@ uv run python scripts/calibrate_l1.py --schema falcon9
 uv run python scripts/calibrate_l1.py --schema quad
 uv run python scripts/train_l2.py --schema falcon9
 uv run python scripts/train_l2.py --schema quad
+uv run python scripts/calibrate_alert.py --schema falcon9
+uv run python scripts/calibrate_alert.py --schema quad --seeds 10
 uv run python scripts/train_ppo.py --schema falcon9 --detector base --timesteps 1000000 --n-envs 16
 uv run python scripts/make_forged_dataset.py --schema falcon9
+uv run python scripts/train_l3.py --schema falcon9
+uv run python scripts/eval_detector.py --schema falcon9 --workers 16
 uv run python scripts/run_bench.py --workers 16
 ```
 

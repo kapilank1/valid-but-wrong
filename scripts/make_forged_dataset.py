@@ -6,8 +6,12 @@ Outputs:
 - ``data/cache/forged_<schema>_<attack>.npz`` per attack, in the format defined by
   ``vbw/detector/README.md`` (W = features.L3_WINDOW, consecutive frames, y = last-frame-altered).
   Uses ``vbw.detector.features.save_forged_npz`` when available; otherwise writes the keys directly.
-- ``results/attacks_eval.json``: each scripted attack vs the detector (detected?, latency, max lie
-  before detection). Run against the real base detector when it imports, else the built-in stub.
+- ``results/attacks_eval.json``: each attack vs the real base detector on the holdout launches
+  (detected?, latency, max lie before detection).
+
+Every attack runs over the frames the ground station actually decodes (sensor noise + float32 wire
+rounding, via ``vbw.detector.data.clean_runs``), never the noise-free CSVs: the detector's
+frozen-channel rule fires on those, and L3 would learn "noise-free = clean" instead of the attacks.
 """
 
 from __future__ import annotations
@@ -32,7 +36,15 @@ SCRIPTED_FOR = {
 }
 INTENSITIES = (0.4, 0.7, 1.0)
 STRIDE = 10
-START_FRAC = 0.35
+START_FRAC = 0.35                  # attack onset for the evaluation report (fixed protocol)
+# Training onsets are spread over the flight. With a single onset every forged window came from late flight, and L3
+# learned "late flight = forged" (it saturated on clean first-stage entry and landing burns).
+TRAIN_START_FRACS = (0.1, 0.4, 0.7)
+
+
+def _train_start_frac(traj_idx: int, variant: int) -> float:
+    """Rotate onsets so every launch gets each onset across its intensity variants."""
+    return TRAIN_START_FRACS[(traj_idx + variant) % len(TRAIN_START_FRACS)]
 
 
 def _window(schema: ChannelSchema) -> int:
@@ -49,10 +61,11 @@ def _window(schema: ChannelSchema) -> int:
             return 160  # current contract default (16 s at 10 Hz)
 
 
-def _trajectories(schema_name: str):
-    from vbw.detector.splits import load_falcon9, train_slugs
+def _trajectories(schema: ChannelSchema, split: str = "train"):
+    """(scenario, t [T], X [T, C]) noisy, wire-rounded runs, exactly what the detector sees."""
+    from vbw.detector.data import clean_runs
 
-    return [(slug, *load_falcon9(slug)) for slug in train_slugs()]  # (slug, t[T], X[T,C])
+    return [(run.scenario, run.t, run.X) for run in clean_runs(schema, split)]
 
 
 def _apply_over(schema: ChannelSchema, t: np.ndarray, x: np.ndarray, attack) -> np.ndarray:
@@ -88,20 +101,20 @@ def _save_npz(path: Path, X, tt, y, attack, scenario, schema_name, w) -> None:
 
 
 def build_datasets(schema: ChannelSchema, w: int) -> dict:
-    trajs = _trajectories(schema.name)
+    trajs = _trajectories(schema)
     summary = {}
     for name in SCRIPTED_FOR[schema.name]:
         X, TT, Y, ATK, SCN = [], [], [], [], []
-        for slug, t, x in trajs:
-            start_t = 0.0 if name == "none" else float(t[int(len(t) * START_FRAC)])
+        for k, (scenario, t, x) in enumerate(trajs):
             intens = (0.0,) if name == "none" else INTENSITIES
-            for inten in intens:
+            for v, inten in enumerate(intens):
+                start_t = 0.0 if name == "none" else float(t[int(len(t) * _train_start_frac(k, v))])
                 atk = make_attack(name, schema, start_t=start_t, intensity=inten)
                 reported = _apply_over(schema, t, x, atk)
                 active = (t >= start_t) & (name != "none")
                 for xw, tw, yw in _windows(reported, t, active, w, STRIDE):
                     X.append(xw); TT.append(tw); Y.append(yw)
-                    ATK.append(name); SCN.append(f"{schema.name}:{slug}")
+                    ATK.append(name); SCN.append(scenario)
         X = np.asarray(X, dtype=np.float32)
         path = CACHE / f"forged_{schema.name}_{name}.npz"
         _save_npz(path, X, np.asarray(TT), np.asarray(Y, dtype=np.int8), ATK, SCN, schema.name, w)
@@ -111,32 +124,23 @@ def build_datasets(schema: ChannelSchema, w: int) -> dict:
     return summary
 
 
-def eval_attacks(schema: ChannelSchema) -> dict:
-    """Each scripted attack vs the detector. Real base detector if available, else stub."""
-    try:
-        from vbw.detector.registry import make_detector
-        from vbw.detector.splits import holdout_slugs, load_falcon9
+def eval_attacks(schema: ChannelSchema, detector_name: str = "base") -> dict:
+    """Each attack (plus PPO when a trained policy exists) vs the real detector on the holdout runs."""
+    from vbw.detector.registry import make_detector
 
-        det_factory = lambda: make_detector("base", schema)
-        slugs = holdout_slugs()
-        detector_name = "base"
-    except Exception:
-        from vbw.attacker.env import StubDetector
-        from vbw.detector.splits import holdout_slugs, load_falcon9
-
-        det_factory = lambda: StubDetector(schema)
-        slugs = holdout_slugs()
-        detector_name = "stub"
-
-    out = {"detector": detector_name, "schema": schema.name, "attacks": {}}
-    for name in SCRIPTED_FOR[schema.name]:
+    names = list(SCRIPTED_FOR[schema.name])
+    if (ROOT / "models" / f"ppo_{schema.name}.zip").exists():
+        names.append("ppo")
+    trajs = _trajectories(schema, "holdout")
+    out = {"detector": detector_name, "schema": schema.name, "split": "holdout", "attacks": {}}
+    for name in names:
         runs = []
-        for slug in slugs:
-            t, x = load_falcon9(slug)
+        for _, t, x in trajs:
             start_t = 0.0 if name == "none" else float(t[int(len(t) * START_FRAC)])
             atk = make_attack(name, schema, start_t=start_t, intensity=1.0)
-            runs.append(evaluate_attack(t, x, schema, atk, det_factory(), start_t))
+            runs.append(evaluate_attack(t, x, schema, atk, make_detector(detector_name, schema), start_t))
         out["attacks"][name] = aggregate(runs)
+        print(f"[eval] {name}: detection_rate={out['attacks'][name]['detection_rate']:.2f}")
     return out
 
 
@@ -144,6 +148,9 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--schema", default="falcon9")
     args = ap.parse_args()
+    import torch
+
+    torch.set_num_threads(1)  # the PPO policy predicts one frame at a time; extra threads only add overhead
     schema = SCHEMAS_BY_NAME[args.schema]
     CACHE.mkdir(parents=True, exist_ok=True)
     RESULTS.mkdir(exist_ok=True)
@@ -162,20 +169,36 @@ def main() -> None:
     print(f"[forge] wrote results/attacks_eval.json (detector={report['detector']})")
 
 
-def _build_ppo_dataset(schema: ChannelSchema, w: int, summary: dict) -> None:
+def _ppo_run(job: tuple[str, int, float]) -> tuple[str, np.ndarray, np.ndarray, np.ndarray] | None:
+    """One launch under the PPO attack from one onset: (scenario, t, reported, active), or None without a policy."""
+    import torch
+
     from vbw.attacker.env import PpoAttack
 
-    trajs = _trajectories(schema.name)
+    torch.set_num_threads(1)
+    schema_name, idx, start_frac = job
+    schema = SCHEMAS_BY_NAME[schema_name]
+    scenario, t, x = _trajectories(schema)[idx]
+    start_t = float(t[int(len(t) * start_frac)])
+    atk = PpoAttack(schema=schema, start_t=start_t, intensity=1.0)
+    if not atk.loaded:
+        return None
+    return scenario, t, _apply_over(schema, t, x, atk), t >= start_t
+
+
+def _build_ppo_dataset(schema: ChannelSchema, w: int, summary: dict, workers: int = 12) -> None:
+    from concurrent.futures import ProcessPoolExecutor
+
+    n = len(_trajectories(schema))
+    jobs = [(schema.name, i, f) for i in range(n) for f in TRAIN_START_FRACS]
+    with ProcessPoolExecutor(workers) as ex:
+        runs = list(ex.map(_ppo_run, jobs))
+    if any(r is None for r in runs):
+        return
     X, TT, Y, ATK, SCN = [], [], [], [], []
-    for slug, t, x in trajs:
-        start_t = float(t[int(len(t) * START_FRAC)])
-        atk = PpoAttack(schema=schema, start_t=start_t, intensity=1.0)
-        if not atk.loaded:
-            return
-        reported = _apply_over(schema, t, x, atk)
-        active = t >= start_t
+    for scenario, t, reported, active in runs:
         for xw, tw, yw in _windows(reported, t, active, w, STRIDE):
-            X.append(xw); TT.append(tw); Y.append(yw); ATK.append("ppo"); SCN.append(f"{schema.name}:{slug}")
+            X.append(xw); TT.append(tw); Y.append(yw); ATK.append("ppo"); SCN.append(scenario)
     path = CACHE / f"forged_{schema.name}_ppo.npz"
     _save_npz(path, np.asarray(X, dtype=np.float32), np.asarray(TT),
               np.asarray(Y, dtype=np.int8), ATK, SCN, schema.name, w)

@@ -3,7 +3,8 @@
 The attacker's job: steer the *operator's picture* of the vehicle as far from the truth as possible
 while keeping the ground detector's score below its alert threshold. At each step the policy nudges a
 small set of per-channel offsets; the reported frame is ``truth + offsets``. Reward is the growth in
-picture error minus the detector score minus a large penalty (and termination) if an alert fires.
+picture error minus any detector score above a safety margin, minus a large penalty (and termination)
+if an alert fires.
 
 Design notes:
 - The env never touches the codec. Forged frames pass L0 by construction, so we build an all-OK
@@ -71,11 +72,14 @@ _QUAD_NORM = {"pn": 100.0, "pe": 100.0, "alt": 50.0, "vn": 20.0, "ve": 20.0, "vu
 SPECS: dict[str, SpoofSpec] = {
     "falcon9": SpoofSpec(
         schema_name="falcon9",
-        target_channels=("altitude", "vz", "speed", "downrange", "vx"),
-        # per-step (0.1 s) increments: a full-scale action injects ~100 m/s of fake altitude/downrange
-        # rate and 10 m/s^2 of fake velocity drift; large enough to lie, small enough to be learnable.
-        step_bound=(10.0, 1.0, 1.0, 10.0, 1.0),
-        picture_channels=("altitude", "downrange"),
+        # The lie is altitude (with the vz / speed it implies). downrange and vx are left alone: the
+        # downrange-rate-vs-vx rule is the tightest L1 check (~1 m/s), a policy that also nudged them was caught
+        # in 2-16 s on held-out launches, and a downrange lie barely moves the picture (norm 1,400 km).
+        target_channels=("altitude", "vz", "speed"),
+        # per-step (0.1 s) increments: a full-scale action injects ~100 m/s of fake altitude rate and
+        # 10 m/s^2 of fake vz / speed drift; large enough to lie, small enough to be learnable.
+        step_bound=(10.0, 1.0, 1.0),
+        picture_channels=("altitude",),
         norm=_F9_NORM,
     ),
     "quad": SpoofSpec(
@@ -150,11 +154,16 @@ class StubDetector:
 @dataclass
 class SpoofEnvConfig:
     episode_len: int = 400
-    picture_gain: float = 200.0    # scales the (normalized) picture-error reward to compete with penalties
-    lam: float = 0.5               # detector-score penalty weight
-    alert_penalty: float = 10.0    # one-off penalty when an alert fires
+    # Reward balance (measured on the base detector): clean flight scores ~0.07 and an alert needs > τ (0.66) on 3
+    # of 5 frames. Penalising the raw score every step made "do nothing" (-14) and "get caught at once" (-12) beat
+    # any real lie (-20..-57), so only the score above score_margin costs anything. A 3.5 km altitude lie
+    # (0.02 normalised) is worth ~+40; an alert costs 100, so a slow lie that survives beats a fast one that doesn't.
+    picture_gain: float = 2000.0   # scales the (normalized) picture-error reward
+    lam: float = 2.0               # penalty per unit of detector score above score_margin
+    score_margin: float = 0.3      # scores below this are free: the detector is nowhere near alerting
+    alert_penalty: float = 100.0   # one-off penalty when an alert fires
     terminate_on_alert: bool = True
-    warmup: int = 150              # clean frames fed to the detector before the episode (max L1 lookback is 110)
+    warmup: int = 620              # clean frames fed to the detector before the episode (max L1 lookback is 610)
 
 
 class SpoofEnv(gym.Env):
@@ -241,7 +250,8 @@ class SpoofEnv(gym.Env):
         self._last_alert = bool(getattr(verdict, "alert", False))
 
         err = self.spoof_spec.picture_error(off_map)
-        reward = self.cfg.picture_gain * (err - self._prev_err) - self.cfg.lam * self._last_score
+        reward = (self.cfg.picture_gain * (err - self._prev_err)
+                  - self.cfg.lam * max(self._last_score - self.cfg.score_margin, 0.0))
         self._prev_err = err
 
         terminated = False

@@ -2,6 +2,7 @@
  "falcon9": {
   "thresholds": {
    "vz_vs_altitude_rate": 122.85879959105988,
+   "vz_vs_altitude_rate_60s": 20.385482473354205,
    "vx_vs_downrange_rate": 0.7833090591338987,
    "accel_vs_speed_rate": 6.304970282560682,
    "speed_vs_components": 56.722364663131714,
@@ -1665,7 +1666,7 @@
   },
   "rate_hz": 10.0,
   "calibration": {
-   "created": "2026-10-24T02:59:17+00:00",
+   "created": "2026-10-24T08:55:50+00:00",
    "margin": 1.5,
    "margin_overrides": {
     "angle_vs_velocity": 2.0
@@ -1707,6 +1708,12 @@
      "p99_9": 48.10782589034718,
      "p99_99": 77.82001327978179,
      "max": 81.90586639403992
+    },
+    "vz_vs_altitude_rate_60s": {
+     "p99": 7.968872342175758,
+     "p99_9": 11.619251638312457,
+     "p99_99": 13.027181602427538,
+     "max": 13.590321648902803
     },
     "vx_vs_downrange_rate": {
      "p99": 0.27024546508661296,
@@ -1778,6 +1785,11 @@
        "runs_with_any": 0,
        "max_ratio": 0.33011107805260964
       },
+      "vz_vs_altitude_rate_60s": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.5039848526481533
+      },
       "vx_vs_downrange_rate": {
        "frames_over": 0,
        "runs_with_any": 0,
@@ -1838,6 +1850,11 @@
        "runs_with_any": 0,
        "max_ratio": 0.23590099047585605
       },
+      "vz_vs_altitude_rate_60s": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.45904953466365483
+      },
       "vx_vs_downrange_rate": {
        "frames_over": 0,
        "runs_with_any": 0,
@@ -1882,6 +1899,166 @@
        "frames_over": 0,
        "runs_with_any": 0,
        "max_ratio": 0.05
+      }
+     }
+    }
+   }
+  }
+ },
+ "quad": {
+  "thresholds": {
+   "pos_vs_velocity": 0.08935549317189384,
+   "velocity_vs_accel": 0.09719114143010704,
+   "attitude_vs_body_rates": 0.5256150656127436,
+   "baro_vs_gps_alt": 2.5117435455322266,
+   "groundspeed_vs_velocity": 1e-06,
+   "accel_envelope": 18.549236457240013,
+   "frozen_channel": 100.0
+  },
+  "params": {},
+  "rate_hz": 50.0,
+  "calibration": {
+   "created": "2026-10-24T08:38:30+00:00",
+   "margin": 1.5,
+   "margin_overrides": {
+    "angle_vs_velocity": 2.0
+   },
+   "train_scenarios": [
+    "quad:delivery",
+    "quad:survey"
+   ],
+   "train_seeds": [
+    0,
+    1
+   ],
+   "residual_stats": {
+    "pos_vs_velocity": {
+     "p99": 0.042339101338642986,
+     "p99_9": 0.05443843692540753,
+     "p99_99": 0.05955950252210487,
+     "max": 0.05957032878126256
+    },
+    "velocity_vs_accel": {
+     "p99": 0.04846934071028521,
+     "p99_9": 0.061304834550446885,
+     "p99_99": 0.064641816570061,
+     "max": 0.06479409428673803
+    },
+    "attitude_vs_body_rates": {
+     "p99": 0.2529366438682044,
+     "p99_9": 0.3004879403923292,
+     "p99_99": 0.32451879765120656,
+     "max": 0.35041004374182905
+    },
+    "baro_vs_gps_alt": {
+     "p99": 1.4388465881347656,
+     "p99_9": 1.6320877075195312,
+     "p99_99": 1.6744956970214844,
+     "max": 1.6744956970214844
+    },
+    "groundspeed_vs_velocity": {
+     "p99": 2.6764890215247306e-07,
+     "p99_9": 3.8920936911425666e-07,
+     "p99_99": 4.4512370678262414e-07,
+     "max": 4.6486143112645095e-07
+    },
+    "accel_envelope": {
+     "p99": 10.317030280387014,
+     "p99_9": 10.517838581268924,
+     "p99_99": 11.767079607466984,
+     "max": 12.366157638160008
+    },
+    "frozen_channel": {
+     "p99": 0.0,
+     "p99_9": 0.0,
+     "p99_99": 1.0,
+     "max": 1.0
+    }
+   },
+   "heldout_clean": {
+    "val": {
+     "runs": [
+      "quad:hover"
+     ],
+     "frames": 3003,
+     "rules": {
+      "pos_vs_velocity": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.6961460655514149
+      },
+      "velocity_vs_accel": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.9915426164898697
+      },
+      "attitude_vs_body_rates": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.6070076031976953
+      },
+      "baro_vs_gps_alt": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.7572932020226643
+      },
+      "groundspeed_vs_velocity": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.020169214909326882
+      },
+      "accel_envelope": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.9266323357079984
+      },
+      "frozen_channel": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.0
+      }
+     }
+    },
+    "test": {
+     "runs": [
+      "quad:hover"
+     ],
+     "frames": 3003,
+     "rules": {
+      "pos_vs_velocity": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.5906210750104273
+      },
+      "velocity_vs_accel": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.8160081383419175
+      },
+      "attitude_vs_body_rates": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.7029571295298096
+      },
+      "baro_vs_gps_alt": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.5682584630151487
+      },
+      "groundspeed_vs_velocity": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.02121759956619229
+      },
+      "accel_envelope": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.5883698377649832
+      },
+      "frozen_channel": {
+       "frames_over": 0,
+       "runs_with_any": 0,
+       "max_ratio": 0.0
       }
      }
     }

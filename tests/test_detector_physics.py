@@ -25,7 +25,7 @@ def fires(rule, X, t, config):
 
 
 def test_falcon9_rules_silent_on_consistent_track():
-    t, X = falcon9_track(noise=1.0)
+    t, X = falcon9_track(T=800, noise=1.0)   # long enough for every rule, including the 60 s one
     config = L1Config("falcon9", F9_DEFAULTS.thresholds, corridor_params(t, X))
     for rule in FALCON9_RULES:
         series = np.abs(rule.residual(X, t, config.params))
@@ -60,6 +60,15 @@ def test_falcon9_rule_fires_on_crafted_violation(rule_name, channel, fn):
     violation = fires(F9_RULE[rule_name], bad[:end], t[:end], config)
     assert violation is not None, rule_name
     assert violation.rule == rule_name and violation.message and abs(violation.value) > violation.threshold
+
+
+def test_60s_altitude_rule_catches_a_slow_walk_off_the_10s_rule_misses():
+    t, X = falcon9_track(T=1200, noise=1.0)
+    config = L1Config("falcon9", F9_DEFAULTS.thresholds, corridor_params(t, X))
+    bad = _edit(X, "altitude", lambda a: a + 30.0 * (np.arange(len(a)) * 0.1), start=300)  # 30 m/s fake climb
+    assert fires(F9_RULE["vz_vs_altitude_rate"], bad, t, config) is None          # limit 90 m/s over 10 s
+    v = fires(F9_RULE["vz_vs_altitude_rate_60s"], bad, t, config)                  # limit 25 m/s over 60 s
+    assert v is not None and v.message.startswith("Over the last minute, altitude has drifted")
 
 
 def test_violation_message_is_plain_language():

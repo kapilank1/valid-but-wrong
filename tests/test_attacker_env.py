@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 from gymnasium.utils.env_checker import check_env
 
 from vbw.attacker.env import SpoofEnv, SpoofEnvConfig, StubDetector, make_spoof_env
-from vbw.schema import FALCON9
+from vbw.schema import FALCON9, Verdict
 
 
 def _synthetic_trajectory(T: int = 400):
@@ -47,6 +48,36 @@ def test_episode_runs_and_offsets_grow_picture_error():
         if term or trunc:
             break
     assert last_err > 0.0
+
+
+class _FixedScore:
+    """Detector stand-in that always returns the same score (and alert)."""
+
+    def __init__(self, score: float, alert: bool = False):
+        self.score, self.alert = score, alert
+
+    def reset(self) -> None:
+        pass
+
+    def update(self, frame, l0):
+        return Verdict(frame.vehicle_id, frame.seq, frame.t, l0, score=self.score, alert=self.alert)
+
+
+def _first_step_reward(detector, cfg):
+    env = SpoofEnv(_synthetic_trajectory(), lambda: detector, FALCON9, config=cfg)
+    env.reset(seed=0)
+    _, reward, terminated, _, _ = env.step(np.zeros(env.action_space.shape, dtype=np.float32))
+    return reward, terminated
+
+
+def test_reward_only_charges_score_above_the_margin_and_penalises_alerts():
+    cfg = SpoofEnvConfig(episode_len=10, warmup=0)
+    assert _first_step_reward(_FixedScore(cfg.score_margin - 0.1), cfg) == (0.0, False)
+    reward, _ = _first_step_reward(_FixedScore(0.5), cfg)
+    assert reward == pytest.approx(-cfg.lam * (0.5 - cfg.score_margin))
+    reward, terminated = _first_step_reward(_FixedScore(0.9, alert=True), cfg)
+    assert terminated
+    assert reward == pytest.approx(-cfg.lam * (0.9 - cfg.score_margin) - cfg.alert_penalty)
 
 
 def test_make_spoof_env_uses_real_launches():

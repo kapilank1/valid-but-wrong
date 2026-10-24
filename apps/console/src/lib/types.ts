@@ -133,6 +133,7 @@ export interface DetectorInfo {
   description: string;
   available?: boolean;
   threshold?: number; // optional: alert threshold on the combined score (console defaults to 0.5)
+  thresholds?: Partial<Record<string, number>>; // optional: calibrated threshold per schema name
 }
 
 export interface Catalog {

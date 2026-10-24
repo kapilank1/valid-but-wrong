@@ -29,5 +29,12 @@ describe("catalog availability", () => {
     expect(detectorThreshold(catalog, "base")).toBe(0.5);
     const withThreshold: Catalog = { ...catalog, detectors: [{ name: "base", label: "", description: "", threshold: 0.7 }] };
     expect(detectorThreshold(withThreshold, "base")).toBe(0.7);
+    const perSchema: Catalog = {
+      ...catalog,
+      detectors: [{ name: "base", label: "", description: "", threshold: 0.7, thresholds: { falcon9: 0.66, quad: 0.5 } }],
+    };
+    expect(detectorThreshold(perSchema, "base", "quad")).toBe(0.5);
+    expect(detectorThreshold(perSchema, "base", "falcon9")).toBe(0.66);
+    expect(detectorThreshold(perSchema, "base", "spacecraft")).toBe(0.7);
   });
 });

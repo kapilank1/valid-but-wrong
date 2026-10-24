@@ -1,4 +1,4 @@
-from vbw.detector.alerting import AlertConfig, alert_series, combine, soft_ratio
+from vbw.detector.alerting import AlertConfig, alert_series, combine, never_alert_threshold, soft_ratio
 
 
 def cfg(**kw):
@@ -40,3 +40,16 @@ def test_warmup_suppresses_alerts():
     out = alert_series([1.0] * 15, cfg(warmup=10))
     assert not any(out[:12])            # 10 warm-up frames, then k=3 suspicious frames are needed
     assert all(out[12:])
+
+
+def test_never_alert_threshold_is_the_tightest_tau_with_no_alert():
+    scores = [0.1] * 5 + [0.7, 0.2, 0.62, 0.65, 0.1] + [0.1] * 5
+    tau = never_alert_threshold(scores, cfg())
+    assert tau == 0.62                  # third-largest of the worst 5-frame window
+    assert not any(alert_series(scores, cfg(tau=tau)))
+    assert any(alert_series(scores, cfg(tau=tau - 0.01)))
+
+
+def test_never_alert_threshold_ignores_warmup_frames():
+    scores = [1.0] * 4 + [0.2] * 10
+    assert never_alert_threshold(scores, cfg(warmup=4)) == 0.2

@@ -1,11 +1,10 @@
 """Train the PPO attacker against a detector and save the policy + a metrics JSON.
 
-    uv run python scripts/train_ppo.py --schema falcon9 --detector base --timesteps 200000
+    uv run python scripts/train_ppo.py --schema falcon9 --detector base --timesteps 300000
 
-The real policy (``models/ppo_<schema>.zip``) is only written when the real detector imports. If the
-detector module isn't ready, this still runs against the built-in stub to validate the whole pipeline,
-but saves to ``models/ppo_<schema>_stub.zip`` and marks the metrics ``detector_available: false`` so a
-stub policy is never mistaken for a trained one.
+Always trains against the real detector (``make_detector_factory`` raises if it can't be built) and
+writes ``models/ppo_<schema>.zip``. The report evaluates the policy on the training launches and on
+the holdout launches it never saw, next to the scripted attacks over the same holdout runs.
 """
 
 from __future__ import annotations
@@ -30,16 +29,6 @@ from vbw.attacker.registry import make_attack
 ROOT = Path(__file__).resolve().parents[1]
 MODELS = ROOT / "models"
 RESULTS = ROOT / "results"
-
-
-def detector_available(name: str, schema) -> bool:
-    try:
-        from vbw.detector.registry import make_detector
-
-        make_detector(name, schema)
-        return True
-    except Exception:
-        return False
 
 
 def make_env_thunk(trajectories, det_factory, schema, config):
@@ -80,21 +69,17 @@ def main() -> None:
     from stable_baselines3.common.vec_env import SubprocVecEnv
 
     schema = SCHEMAS_BY_NAME[args.schema]
-    available = detector_available(args.detector, schema)
     det_factory = make_detector_factory(args.detector, schema)
+    det_factory()  # fail before spawning workers if the detector can't be built
     trajectories = load_training_trajectories(args.schema)
+    holdout = load_training_trajectories(args.schema, holdout=True, seeds=(0,))
     config = SpoofEnvConfig(episode_len=args.episode_len)
 
     MODELS.mkdir(exist_ok=True)
     RESULTS.mkdir(exist_ok=True)
-    if args.out:
-        out_path = Path(args.out)
-    elif available:
-        out_path = MODELS / f"ppo_{args.schema}.zip"
-    else:
-        out_path = MODELS / f"ppo_{args.schema}_stub.zip"
+    out_path = Path(args.out) if args.out else MODELS / f"ppo_{args.schema}.zip"
 
-    print(f"[train] schema={args.schema} detector={args.detector} available={available} "
+    print(f"[train] schema={args.schema} detector={args.detector} "
           f"timesteps={args.timesteps} -> {out_path.name}")
 
     thunks = [make_env_thunk(trajectories, det_factory, schema, config) for _ in range(args.n_envs)]
@@ -110,13 +95,17 @@ def main() -> None:
     venv.close()
 
     model.save(str(out_path))
-    ppo_eval = evaluate_policy(model, schema, det_factory, trajectories, seed=args.seed)
+    import torch
 
-    # scripted baselines over the same launches, same start, for an apples-to-apples report
+    torch.set_num_threads(1)  # evaluation predicts one frame at a time; extra threads only add overhead
+    ppo_train = evaluate_policy(model, schema, det_factory, trajectories[::5], seed=args.seed)
+    ppo_holdout = evaluate_policy(model, schema, det_factory, holdout, seed=args.seed)
+
+    # scripted baselines over the same holdout launches, same start, for an apples-to-apples report
     scripted = {}
     for name in ("none", "bias", "drift", "replay", "freeze", "coordinated"):
         runs = []
-        for t, x in trajectories:
+        for t, x in holdout:
             start_t = float(t[int(len(t) * 0.35)])
             atk = make_attack(name, schema, start_t=start_t, intensity=1.0)
             runs.append(evaluate_attack(t, x, schema, atk, det_factory(), start_t))
@@ -125,20 +114,21 @@ def main() -> None:
     metrics = {
         "schema": args.schema,
         "detector": args.detector,
-        "detector_available": available,
-        "is_stub": not available,
         "timesteps": args.timesteps,
         "n_envs": args.n_envs,
         "train_seconds": round(train_s, 1),
-        "model_path": str(out_path),
-        "ppo": ppo_eval,
-        "scripted": scripted,
+        "model_path": out_path.name,
+        "ppo_train": ppo_train,
+        "ppo_holdout": ppo_holdout,
+        "scripted_holdout": scripted,
     }
     metrics_path = RESULTS / f"ppo_{args.schema}_metrics.json"
     metrics_path.write_text(json.dumps(metrics, indent=2))
     print(f"[train] saved {out_path.name} in {train_s:.0f}s; metrics -> {metrics_path.name}")
-    print(f"[train] PPO mean_lie_before_alert={ppo_eval['mean_lie_before_alert']:.1f} "
-          f"detection_rate={ppo_eval['detection_rate']:.2f}")
+    for split, ev in (("train", ppo_train), ("holdout", ppo_holdout)):
+        print(f"[train] PPO {split}: mean_lie_before_alert={ev['mean_lie_before_alert']:.1f} "
+              f"max_lie_before_alert={ev['mean_max_lie_before_alert']:.1f} "
+              f"detection_rate={ev['detection_rate']:.2f}")
 
 
 if __name__ == "__main__":

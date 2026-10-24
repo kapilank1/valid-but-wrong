@@ -27,8 +27,10 @@ export function detectorAvailability(catalog: Catalog | null, name: string): Ava
 
 export const DEFAULT_THRESHOLD = 0.5;
 
-/** Alert threshold for the gauge. Not in the contract yet, so read it if the catalog provides one. */
-export function detectorThreshold(catalog: Catalog | null, name: string): number {
-  const threshold = catalog?.detectors.find((x) => x.name === name)?.threshold;
-  return typeof threshold === "number" ? threshold : DEFAULT_THRESHOLD;
+/** Alert threshold for the gauge: the schema's calibrated τ if the catalog has one, else its single threshold. */
+export function detectorThreshold(catalog: Catalog | null, name: string, schema?: SchemaName | null): number {
+  const detector = catalog?.detectors.find((x) => x.name === name);
+  const perSchema = schema ? detector?.thresholds?.[schema] : undefined;
+  if (typeof perSchema === "number") return perSchema;
+  return typeof detector?.threshold === "number" ? detector.threshold : DEFAULT_THRESHOLD;
 }

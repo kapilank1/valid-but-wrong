@@ -46,7 +46,7 @@ export function ConsoleApp() {
   const running = status?.running ?? false;
   const banner = selectAlertBanner(stream);
   const detector = latest?.verdict.detector ?? status?.detector ?? controls?.detector ?? "base";
-  const threshold = detectorThreshold(catalog, detector);
+  const threshold = detectorThreshold(catalog, detector, schema);
 
   const patchControls = (patch: Partial<RunControls>) => setControls((c) => (c ? { ...c, ...patch } : c));
 

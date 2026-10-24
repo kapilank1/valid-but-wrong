@@ -23,6 +23,16 @@ dependencies = [
 [dependency-groups]
 dev = ["pytest>=8.2", "pytest-asyncio>=0.23"]
 
+# On Linux (the server Docker image, Vultr) take CPU-only torch wheels: PyPI's linux torch bundles CUDA and made the
+# image ~6 GB. Inference is ONNX Runtime on CPU and SB3 policies run on CPU, so nothing needs CUDA at runtime.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

@@ -7,7 +7,17 @@ scores Telemanom. Every number below comes from `results/bench_summary*.json`, w
 
 ## Results (event-level, 105 labeled anomalies)
 
-HEADLINE_TABLE
+| | Precision | Recall | F1 | TP / FP / FN |
+|---|---|---|---|---|
+| **SMAP** (55 rows, 69 anomalies) | 75.7% | 76.8% | **76.3%** | 53 / 17 / 16 |
+| **MSL** (27 rows, 36 anomalies) | 90.0% | 50.0% | **64.3%** | 18 / 2 / 18 |
+| **Combined** | 78.9% | 67.6% | **72.8%** | 71 / 19 / 34 |
+| Telemanom, SMAP | 85.5% | 85.5% | 85.5%\* | |
+| Telemanom, MSL | 92.6% | 69.4% | 79.3%\* | |
+| Telemanom, combined | 87.5% | 80.0% | 83.6%\* | |
+
+We are **below Telemanom**: 10.8 F1 points combined, mostly on recall (MSL recall 50.0% vs 69.4%). Precision on MSL
+is close (90.0% vs 92.6%). One run, `results/bench_summary.json` (generated 2026-10-24 03:11 UTC, 805 s wall).
 
 **Telemanom baseline:** Hundman et al., KDD 2018, [arXiv:1802.04431](https://arxiv.org/abs/1802.04431),
 Table 2, row "Non-Parametric w/ Pruning (p = 0.13)". The khundman/telemanom README repeats the same
@@ -16,7 +26,20 @@ precision and recall. The paper reports precision, recall and F0.5 but **not F1*
 values don't follow from its own printed precision and recall. For example, SMAP has P = R = 85.5%,
 which gives F0.5 = 0.855, but the paper prints 0.71.
 
-ABLATION_SECTION
+## Ablation: predict the change, not the level
+
+`--residual` adds the last observed value to the network's output, so the LSTM learns the step rather than the
+level (`vbw/bench/model.py`). It forecasts far better, and detects worse:
+
+| | Mean normalized error | Precision | Recall | F1 |
+|---|---|---|---|---|
+| Headline (predict the level) | 10.8% | 78.9% | 67.6% | **72.8%** |
+| Residual ablation | 2.6% | 88.7% | 52.4% | 65.9% |
+
+The likely reason (not separately measured): a predictor anchored on the last value is quick to follow an anomaly,
+so its errors spike for a step or two and then shrink while the anomaly is still going on, and the thresholding
+stage sees short, small error runs. Recall drops most on contextual anomalies (SMAP 50% vs 69%).
+From `results/bench_summary_residual.json`.
 
 ## Method
 
@@ -48,13 +71,13 @@ We tuned nothing on the test labels. Every hyperparameter is the paper's default
 
 ## Caveats
 
-- **Our predictor is worse than the paper's.** Mean normalized one-step error was MEAN_ERR (median
-  MEDIAN_ERR). The paper reports 5.5% for SMAP and 6.8% for MSL. Some of the gap comes from channels
+- **Our predictor is worse than the paper's.** Mean normalized one-step error was 10.8% over the 81 unique
+  channels (median 5.8%): 11.4% on SMAP and 9.6% on MSL. The paper reports 5.5% for SMAP and 6.8% for MSL. Some of the gap comes from channels
   whose training split never visits the test regime: D-5, D-2, B-1, D-13, A-5 and P-14 are constant in
   train and move in test, so the model keeps predicting the training constant.
 - **Run-to-run variation.** Channels go to MPS or CPU workers in whatever order the queue hands them
-  out, so floating-point results differ slightly between runs. REPEAT_SENTENCE A proper multi-seed
-  study has not been done.
+  out, so floating-point results differ slightly between runs. Every number here comes from one run of
+  each configuration. A proper multi-seed study has not been done.
 - **The paper flags its own precision as optimistic.** Its experiment only evaluates streams known to
   contain an anomaly, about 5 days around each one. That caveat applies here too.
 - **Point-adjusted F1 is not a fair comparison.** It's often quoted for this dataset, but it credits a

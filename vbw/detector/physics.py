@@ -156,6 +156,7 @@ def evaluate_rule(rule: Rule, X: np.ndarray, t: np.ndarray, threshold: float, pa
 F = {c: i for i, c in enumerate(FALCON9.channels)}
 F9_RATE_HZ = 10.0
 F9_WINDOW = 100          # 10 s integration window
+F9_LONG_WINDOW = 600     # 60 s: webcast altitude lag-then-catch-up glitches cancel, a sustained altitude lie doesn't
 F9_SMOOTH = 10           # 1 s median before differencing
 F9_MIN_SPEED = 50.0      # below this the flight-path angle is ill-defined
 F9_MIN_FLIGHT_SPEED = 10.0
@@ -188,6 +189,12 @@ def air_density(alt: np.ndarray, params: dict) -> np.ndarray:
 def f9_vz_vs_altitude(X, t, params):
     w, m = params.get("window", F9_WINDOW), params.get("smooth", F9_SMOOTH)
     return integrated_mismatch(_f9(X, "altitude"), _f9(X, "vz"), t, w, m)
+
+
+def f9_vz_vs_altitude_long(X, t, params):
+    """The same check over 60 s. Clean webcast data stays under ~14 m/s at this window (vs ~82 m/s at 10 s, where
+    OCR lag-then-jump stretches dominate), so a slow altitude walk-off that hides in the 10 s noise shows up here."""
+    return integrated_mismatch(_f9(X, "altitude"), _f9(X, "vz"), t, F9_LONG_WINDOW, params.get("smooth", F9_SMOOTH))
 
 
 def f9_vx_vs_downrange(X, t, params):
@@ -305,6 +312,8 @@ def _msg_frozen(value, threshold, X, params):
 FALCON9_RULES: tuple[Rule, ...] = (
     Rule("vz_vs_altitude_rate", ("vz", "altitude"), F9_WINDOW + F9_SMOOTH, f9_vz_vs_altitude, "m/s",
          _msg_rate("Reported vertical velocity disagrees with altitude rate", "m/s"), 90.0),
+    Rule("vz_vs_altitude_rate_60s", ("vz", "altitude"), F9_LONG_WINDOW + F9_SMOOTH, f9_vz_vs_altitude_long, "m/s",
+         _msg_rate("Over the last minute, altitude has drifted from integrated vertical velocity", "m/s"), 25.0),
     Rule("vx_vs_downrange_rate", ("vx", "downrange"), F9_WINDOW + F9_SMOOTH, f9_vx_vs_downrange, "m/s",
          _msg_rate("Reported horizontal velocity disagrees with downrange rate", "m/s"), 2.0),
     Rule("accel_vs_speed_rate", ("accel", "speed"), F9_WINDOW + F9_SMOOTH, f9_accel_vs_speed, "m/s²",

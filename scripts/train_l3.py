@@ -10,27 +10,32 @@ Attacker windows must carry the same sensor noise as the live link (i.e. be buil
 otherwise the classifier learns "noise-free = forged". If a dataset was built from noise-free CSVs, pass
 --add-noise to apply the source's own noise model to every attacker window before featurizing.
 
-Writes models/l3_<schema>.onnx and models/l3_<schema>_meta.json (logit threshold calibrated on clean held-out
-validation launches, per-attack validation detection rates).
+Training windows are phase-balanced (equal clean and forged in every flight-phase bin). Writes
+models/l3_<schema>.onnx and models/l3_<schema>_meta.json: the logit threshold (set so no clean train or val flight
+holds the L3 score over τ for k of n frames) and per-attack validation detection rates.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import zlib
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
 import torch
+from numpy.lib.stride_tricks import sliding_window_view
 
+from vbw.detector.alerting import AlertConfig, never_alert_threshold
 from vbw.detector.data import clean_runs, wire_round
 from vbw.detector.features import (
-    L3_CONTEXT, ForgedSet, feature_names, l3_features, l3_window, load_forged_npz,
+    L3_CONTEXT, ForgedSet, feature_names, l3_features, l3_window, load_forged_npz, phase_balance,
 )
 from vbw.detector.l2 import MODELS_DIR, L2Model
-from vbw.detector.l3 import l3_paths
+from vbw.detector.l3 import L3_PERSIST_K, L3_PERSIST_N, l3_paths
 from vbw.detector.nets import export_onnx
 from vbw.detector.physics import L1Config
 from vbw.detector.train import L3FitConfig, fit_l3_model, logits_of
@@ -40,6 +45,10 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "data" / "cache"
 CLEAN_STRIDE = 10
 VAL_SCENARIO_EVERY = 5     # every 5th training scenario's windows are L3 validation (by launch, no leakage)
+PHASE_BINS = 10
+MIN_CLEAN_PER_BIN = 500
+CAL_SEEDS = (0, 1)
+LOGIT_MARGIN = 0.5
 
 
 def clean_windows(schema: ChannelSchema, split: str, seeds: tuple[int, ...], stride: int) -> ForgedSet:
@@ -89,6 +98,21 @@ def balance(fs: ForgedSet, per_attack: int, rng: np.random.Generator) -> ForgedS
     return fs.subset(np.sort(np.concatenate(keep)))
 
 
+def clean_persistence_peaks(model, schema: ChannelSchema, l1: L1Config, l2: L2Model, alert: AlertConfig,
+                            seeds: tuple[int, ...]) -> list[tuple[float, str, int]]:
+    """Per clean train / val run: the highest level the streaming L3 logit holds on k of n consecutive frames."""
+    W = l3_window(schema)
+    out = []
+    for split in ("train", "val"):
+        for seed in seeds:
+            for run in clean_runs(schema, split, (seed,)):
+                X = sliding_window_view(run.X, W, axis=0).transpose(0, 2, 1)   # every streaming window, [N, W, C]
+                T = sliding_window_view(run.t, W)
+                logits = logits_of(model, l3_features(X, T, schema, l1, l2))
+                out.append((never_alert_threshold(logits, replace(alert, warmup=0)), run.scenario, seed))
+    return sorted(out, reverse=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--schema", choices=["falcon9", "quad"], default="falcon9")
@@ -113,8 +137,8 @@ def main() -> None:
     if args.add_noise:
         forged = add_noise(forged, schema)
     clean = balance(clean_windows(schema, "train", (0, 1), CLEAN_STRIDE), 4 * args.per_attack, rng)
-    data = ForgedSet.concat([forged, clean])
-    print(f"featurizing {len(data)} windows ({int(data.y.sum())} forged)")
+    data = phase_balance(ForgedSet.concat([forged, clean]), rng, PHASE_BINS, MIN_CLEAN_PER_BIN)
+    print(f"featurizing {len(data)} phase-balanced windows ({int(data.y.sum())} forged)")
     F = l3_features(data.X, data.t, schema, l1, l2)
 
     scen = sorted(set(data.scenario))
@@ -122,11 +146,16 @@ def main() -> None:
     is_val = np.isin(data.scenario, list(val_scen))
     model = fit_l3_model(F[~is_val], data.y[~is_val], F[is_val], data.y[is_val], L3FitConfig(epochs=args.epochs))
 
-    # Threshold on clean *held-out* launches (never seen by L1/L2/L3 training), with streaming-like stride.
+    # Threshold like τ: L3 alerts on its own when its score is over τ on k of n frames, and l3_score =
+    # sigmoid(2·(logit − thr)) > τ  ⇔  logit > thr + logit(τ)/2. So thr is set from the highest level the logit holds
+    # for k of n frames on any clean train / val flight (several noise seeds), and no clean flight can alert.
+    alert = replace(AlertConfig.load(schema.name), k=L3_PERSIST_K, n=L3_PERSIST_N)   # L3's own sustained persistence
+    print("calibrating the logit threshold on clean train + val flights")
+    peaks = clean_persistence_peaks(model, schema, l1, l2, alert, CAL_SEEDS)
+    tau_logit = math.log(alert.tau / (1 - alert.tau))
+    logit_thr = max(peaks[0][0] - tau_logit / 2 + LOGIT_MARGIN, 0.0)
     clean_val = clean_windows(schema, "val", (100,), 5)
     lv = logits_of(model, l3_features(clean_val.X, clean_val.t, schema, l1, l2))
-    logit_thr = float(np.quantile(lv, L3FitConfig.clean_quantile))
-    logit_thr = max(logit_thr, 0.0)  # never alert on windows the model itself calls more-likely-clean
 
     lval = logits_of(model, F[is_val])
     per_attack = {}
@@ -142,7 +171,11 @@ def main() -> None:
     export_onnx(model, F[:2], onnx_path, "logit")
     meta = {
         "schema": schema.name, "context": L3_CONTEXT, "window": l3_window(schema), "features": feature_names(schema),
-        "logit_threshold": logit_thr, "clean_quantile": L3FitConfig.clean_quantile,
+        "logit_threshold": logit_thr,
+        "threshold_rule": f"max over clean train+val flights (seeds {list(CAL_SEEDS)}) of the logit level held on "
+                          f"{alert.k} of {alert.n} frames, minus logit(tau)/2, plus {LOGIT_MARGIN}",
+        "top_clean_peaks": [{"logit": round(p, 3), "scenario": s, "seed": sd} for p, s, sd in peaks[:5]],
+        "phase_bins": PHASE_BINS, "persistence_k": L3_PERSIST_K, "persistence_n": L3_PERSIST_N,
         "clean_val_windows": int(len(lv)), "clean_val_rate_over": float(np.mean(lv > logit_thr)),
         "noise_augmented": bool(args.add_noise), "val_scenarios": sorted(val_scen),
         "train_windows": int((~is_val).sum()), "val_windows": int(is_val.sum()),

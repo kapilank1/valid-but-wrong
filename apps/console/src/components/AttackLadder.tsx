@@ -4,7 +4,7 @@ import { Panel } from "@/components/Panel";
 
 const RUNGS: { name: string; label: string; note: string }[] = [
   { name: "bias", label: "Bias", note: "constant offset · L1 bait" },
-  { name: "drift", label: "Drift", note: "slow ramp · L2 territory" },
+  { name: "drift", label: "Drift", note: "slow ramp · long-window L1" },
   { name: "replay", label: "Replay", note: "old frames, fresh seq" },
   { name: "coordinated", label: "Coordinated", note: "consistent kinematics" },
   { name: "ppo", label: "PPO agent", note: "learned evasion" },

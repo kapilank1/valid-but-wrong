@@ -1,7 +1,8 @@
 # Pipeline server (FastAPI + runner + Tiger Data writer). Build from the repo root:
 #   docker build -f infra/Dockerfile.server -t vbw-server .
 # infra/Dockerfile.server.dockerignore keeps the console, raw data and venvs out of the context.
-# Note: uv.lock pins PyPI torch, which on linux/amd64 pulls the CUDA wheels, so the image is large (~6 GB).
+# torch comes from PyTorch's CPU wheel index on Linux (pyproject.toml [tool.uv.sources]), so the image no longer
+# pulls the ~4 GB of CUDA wheels that PyPI's linux torch bundles. Nothing here needs a GPU at runtime.
 FROM python:3.12-slim-bookworm
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.23 /uv /uvx /bin/
