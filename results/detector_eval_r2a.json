@@ -1,0 +1,138 @@
+{
+ "created": "2026-10-24T17:48:32+00:00",
+ "schema": "falcon9",
+ "split": "holdout (val launches set tau and the L3 threshold; test launches are scored only)",
+ "test_launches": [
+  "falcon9:iridium-next-5",
+  "falcon9:jcsat-16",
+  "falcon9:x-37b-otv-5"
+ ],
+ "attack_start": "35% of flight, runs to the end",
+ "picture_channel": "altitude",
+ "l3_trained": true,
+ "l3_model": "l3_falcon9_r1.onnx",
+ "ppo_shadow_detector": {
+  "ppo": "base",
+  "ppo_r2": "hardened (l3_falcon9_r1.onnx)"
+ },
+ "detectors": {
+  "base": {
+   "attacks": {
+    "ppo_r2": {
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 0.8333333333333334,
+      "mean_latency_s": 153.11999999999998,
+      "median_latency_s": 91.30000000000001,
+      "mean_max_lie_before_alert_m": 2022.1138559977214,
+      "mean_max_lie_m": 5678.710042317708,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 308.6,
+        "max_lie_before_alert": 3740.47802734375,
+        "max_lie": 3760.703369140625
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 4134.50244140625,
+        "max_lie": 4134.50244140625
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 76.9,
+        "max_lie_before_alert": 373.6253356933594,
+        "max_lie": 10357.2255859375
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 90.09999999999997,
+        "max_lie_before_alert": 634.2930297851562,
+        "max_lie": 7091.15380859375
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 91.30000000000001,
+        "max_lie_before_alert": 758.3568115234375,
+        "max_lie": 6129.966796875
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 198.7,
+        "max_lie_before_alert": 2491.427490234375,
+        "max_lie": 2598.708251953125
+       }
+      ]
+     }
+    }
+   }
+  },
+  "hardened": {
+   "attacks": {
+    "ppo_r2": {
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 166.83333333333334,
+      "median_latency_s": 135.5,
+      "mean_max_lie_before_alert_m": 1974.1308135986328,
+      "mean_max_lie_m": 5678.710042317708,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 308.6,
+        "max_lie_before_alert": 3740.47802734375,
+        "max_lie": 3760.703369140625
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 307.4,
+        "max_lie_before_alert": 4086.564208984375,
+        "max_lie": 4134.50244140625
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 48.400000000000006,
+        "max_lie_before_alert": 280.7366638183594,
+        "max_lie": 10357.2255859375
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 72.29999999999998,
+        "max_lie_before_alert": 571.7529296875,
+        "max_lie": 7091.15380859375
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 65.6,
+        "max_lie_before_alert": 673.8255615234375,
+        "max_lie": 6129.966796875
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 198.7,
+        "max_lie_before_alert": 2491.427490234375,
+        "max_lie": 2598.708251953125
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

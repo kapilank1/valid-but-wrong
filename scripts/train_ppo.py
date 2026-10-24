@@ -40,14 +40,16 @@ def make_env_thunk(trajectories, det_factory, schema, config):
     return thunk
 
 
-def evaluate_policy(model, schema, det_factory, trajectories, start_frac=0.35, seed=0):
-    """Mean induced picture-channel error before first alert + alert rate, for the trained policy."""
+def evaluate_policy(model, schema, det_factory, trajectories, start_frac=0.35, seed=0, detector_name="base"):
+    """Mean induced picture-channel error before first alert + alert rate, for the trained policy.
+
+    The policy's shadow detector is the one it trained against, so its score observations match training."""
     from vbw.attacker.env import PpoAttack
 
     results = []
     for t, x in trajectories:
         start_t = float(t[int(len(t) * start_frac)])
-        atk = PpoAttack(schema=schema, start_t=start_t, intensity=1.0)
+        atk = PpoAttack(schema=schema, start_t=start_t, intensity=1.0, detector_name=detector_name)
         atk._policy = model  # drive the in-memory policy directly
         atk.loaded = True
         results.append(evaluate_attack(t, x, schema, atk, det_factory(), start_t, seed=seed))
@@ -63,6 +65,8 @@ def main() -> None:
     ap.add_argument("--episode-len", type=int, default=400)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default=None, help="override output .zip path")
+    ap.add_argument("--metrics-out", default=None,
+                    help="override metrics JSON path (default results/ppo_<schema>_metrics.json)")
     args = ap.parse_args()
 
     from stable_baselines3 import PPO
@@ -98,8 +102,9 @@ def main() -> None:
     import torch
 
     torch.set_num_threads(1)  # evaluation predicts one frame at a time; extra threads only add overhead
-    ppo_train = evaluate_policy(model, schema, det_factory, trajectories[::5], seed=args.seed)
-    ppo_holdout = evaluate_policy(model, schema, det_factory, holdout, seed=args.seed)
+    ppo_train = evaluate_policy(model, schema, det_factory, trajectories[::5], seed=args.seed,
+                                detector_name=args.detector)
+    ppo_holdout = evaluate_policy(model, schema, det_factory, holdout, seed=args.seed, detector_name=args.detector)
 
     # scripted baselines over the same holdout launches, same start, for an apples-to-apples report
     scripted = {}
@@ -122,7 +127,7 @@ def main() -> None:
         "ppo_holdout": ppo_holdout,
         "scripted_holdout": scripted,
     }
-    metrics_path = RESULTS / f"ppo_{args.schema}_metrics.json"
+    metrics_path = Path(args.metrics_out) if args.metrics_out else RESULTS / f"ppo_{args.schema}_metrics.json"
     metrics_path.write_text(json.dumps(metrics, indent=2))
     print(f"[train] saved {out_path.name} in {train_s:.0f}s; metrics -> {metrics_path.name}")
     for split, ev in (("train", ppo_train), ("holdout", ppo_holdout)):

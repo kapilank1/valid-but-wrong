@@ -1,0 +1,128 @@
+{
+ "schema": "falcon9",
+ "context": 40,
+ "window": 160,
+ "features": [
+  "l1:vz_vs_altitude_rate",
+  "l1:vx_vs_downrange_rate",
+  "l1:accel_vs_speed_rate",
+  "l1:speed_vs_components",
+  "l1:angle_vs_velocity",
+  "l1:q_vs_density",
+  "l1:accel_envelope",
+  "l1:jerk_envelope",
+  "l1:frozen_channel",
+  "l2z:speed",
+  "l2z:altitude",
+  "l2z:vz",
+  "l2z:vx",
+  "l2z:downrange",
+  "l2z:accel",
+  "l2z:angle",
+  "l2z:q",
+  "diff:speed",
+  "diff:altitude",
+  "diff:vz",
+  "diff:vx",
+  "diff:downrange",
+  "diff:accel",
+  "diff:angle",
+  "diff:q"
+ ],
+ "logit_threshold": 6.880018521635444,
+ "threshold_rule": "max over clean train+val flights (seeds [0, 1]) of the logit level held on 40 of 50 frames, minus logit(tau)/2, plus 0.5",
+ "top_clean_peaks": [
+  {
+   "logit": 6.712,
+   "scenario": "falcon9:nrol-76",
+   "seed": 1
+  },
+  {
+   "logit": 6.449,
+   "scenario": "falcon9:nrol-76",
+   "seed": 0
+  },
+  {
+   "logit": 2.538,
+   "scenario": "falcon9:bangabandhu-1",
+   "seed": 1
+  },
+  {
+   "logit": 2.482,
+   "scenario": "falcon9:bangabandhu-1",
+   "seed": 0
+  },
+  {
+   "logit": 0.454,
+   "scenario": "falcon9:zuma",
+   "seed": 0
+  }
+ ],
+ "phase_bins": 10,
+ "persistence_k": 40,
+ "persistence_n": 50,
+ "clean_val_windows": 3051,
+ "clean_val_rate_over": 0.0075385119632907244,
+ "noise_augmented": false,
+ "val_scenarios": [
+  "falcon9:echostar-23",
+  "falcon9:inmarsat-5-f4",
+  "falcon9:jason-3",
+  "falcon9:ses-11",
+  "falcon9:spacex-crs-9"
+ ],
+ "train_windows": 44335,
+ "val_windows": 10759,
+ "val_per_attack": {
+  "bias": {
+   "windows": 1192,
+   "forged_detect_rate": 0.14069767441860465,
+   "clean_false_rate": 0.0
+  },
+  "clean": {
+   "windows": 2692,
+   "forged_detect_rate": null,
+   "clean_false_rate": 0.0
+  },
+  "coordinated": {
+   "windows": 1214,
+   "forged_detect_rate": 0.9988545246277205,
+   "clean_false_rate": 0.0
+  },
+  "drift": {
+   "windows": 1238,
+   "forged_detect_rate": 0.11920529801324503,
+   "clean_false_rate": 0.0
+  },
+  "freeze": {
+   "windows": 1270,
+   "forged_detect_rate": 0.994413407821229,
+   "clean_false_rate": 0.0
+  },
+  "none": {
+   "windows": 693,
+   "forged_detect_rate": null,
+   "clean_false_rate": 0.0
+  },
+  "ppo": {
+   "windows": 1219,
+   "forged_detect_rate": 0.7462165308498254,
+   "clean_false_rate": 0.0
+  },
+  "replay": {
+   "windows": 1241,
+   "forged_detect_rate": 0.9722222222222222,
+   "clean_false_rate": 0.0
+  }
+ },
+ "attacks": [
+  "bias",
+  "clean",
+  "coordinated",
+  "drift",
+  "freeze",
+  "none",
+  "ppo",
+  "replay"
+ ]
+}

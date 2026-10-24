@@ -52,6 +52,13 @@ class L3Model:
             return None
         return cls(onnx_path, json.loads(meta_path.read_text()))
 
+    @classmethod
+    def from_file(cls, onnx_path: Path | str) -> "L3Model":
+        """A specific saved discriminator, e.g. models/l3_falcon9_r1.onnx with models/l3_falcon9_r1_meta.json."""
+        onnx_path = Path(onnx_path)
+        meta_path = onnx_path.with_name(f"{onnx_path.stem}_meta.json")
+        return cls(onnx_path, json.loads(meta_path.read_text()))
+
     def logit(self, features: np.ndarray, batch: int = 8192) -> np.ndarray:
         """[N, context, F] float32 -> logit of P(forged) [N]."""
         out = [self.session.run(None, {"x": features[i:i + batch]})[0] for i in range(0, len(features), batch)]

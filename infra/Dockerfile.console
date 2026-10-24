@@ -7,7 +7,9 @@ ARG NEXT_PUBLIC_VBW_API=http://localhost:8000
 ENV NEXT_PUBLIC_VBW_API=$NEXT_PUBLIC_VBW_API \
     NEXT_TELEMETRY_DISABLED=1
 
-RUN corepack enable
+# The exact pnpm from package.json "packageManager", installed directly: corepack can fail to verify signatures of
+# newer pnpm releases with the keys bundled in an older Node image, and it may prompt before downloading.
+RUN npm install -g pnpm@11.10.0
 WORKDIR /app
 
 COPY apps/console/package.json apps/console/pnpm-lock.yaml apps/console/pnpm-workspace.yaml ./

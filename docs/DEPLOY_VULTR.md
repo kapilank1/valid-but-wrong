@@ -2,6 +2,31 @@
 
 There are two machines. A **Cloud Compute** instance hosts the live demo (TimescaleDB or Tiger Cloud, the pipeline
 server and the console). A **Cloud GPU** instance trains the models; you copy the results back and then destroy it.
+The models in this repo were trained on a laptop, so the GPU instance is optional.
+
+## Quick path: one script from Windows
+
+What to provide and where is in [INTEGRATIONS.md](INTEGRATIONS.md). With `VULTR_API_KEY` (and optionally
+`DATABASE_URL`) in the repo-root `.env` and `CARTESIA_API_KEY` in `apps/console/.env.local`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\deploy_vultr.ps1 -DryRun   # plan, price, API call bodies; creates nothing
+powershell -ExecutionPolicy Bypass -File scripts\deploy_vultr.ps1 -Yes      # create + deploy (~10-15 min first time)
+powershell -ExecutionPolicy Bypass -File scripts\deploy_vultr.ps1 -Update   # push new code/models, rebuild
+powershell -ExecutionPolicy Bypass -File scripts\deploy_vultr_destroy.ps1 -Yes   # stop billing
+```
+
+`deploy_vultr.ps1` picks the cheapest plan in `sjc` with at least 4 GB RAM and 2 vCPU (as of 2026-10-24:
+`vc2-2c-4gb`, $0.027/hour, $20/month cap) and Ubuntu 24.04. It creates the instance with
+[`infra/cloud-init.yaml`](../infra/cloud-init.yaml) (Docker, 4 GB swap, ports 22/80/443/3000/8000) and uploads a
+~7 MB bundle of this checkout, including the models, the processed Falcon 9 data and the eight SMAP/MSL demo channels.
+It writes `infra/.env` over SSH, so secrets never go into user-data, and runs
+[`scripts/deploy_remote.sh`](../scripts/deploy_remote.sh) on the host (`docker compose up --build`, then a
+health wait). Without a `DATABASE_URL` it also starts the bundled TimescaleDB container. `-Domain example.tech`
+adds Caddy HTTPS once the domain's A record points at the IP. `-GitUrl <url>` clones instead of uploading. The
+instance id and IP are kept in `%LOCALAPPDATA%\vbw\vultr-instance.json`.
+
+The manual steps below do the same thing by hand (e.g. from macOS or Linux).
 
 ## 0. One-time setup (laptop)
 
@@ -68,9 +93,11 @@ Copy in the new files and run `docker compose -f infra/docker-compose.yml restar
 
 1. Create a service at console.cloud.timescale.com and copy its connection string
    (`postgres://tsdbadmin:...@<id>.<project>.tsdb.cloud.timescale.com:<port>/tsdb?sslmode=require`).
-2. Apply the schema from your laptop:
-   `DATABASE_URL='<conn>' uv run python scripts/db_init.py --check`. This lists the hypertables, the
-   `verdicts_1s` continuous aggregate, and the refresh and compression jobs.
+2. Apply the schema from your laptop. Put `DATABASE_URL=<conn>` in the repo-root `.env`, then run
+   `uv run python scripts/db_init.py --check`. It checks the extension, the hypertables, the `verdicts_1s`
+   continuous aggregate and the refresh and compression jobs. It then writes a synthetic run through the server's own
+   store code, refreshes the aggregate, reads it back through the dashboard queries (runs, timeline with a 0.5 s
+   detection latency, analytics), and deletes everything it wrote.
 3. Put the same `DATABASE_URL` in `infra/.env` and run only the app containers:
    `docker compose -f infra/docker-compose.yml up -d --build --no-deps server console`.
 4. Showcase queries (served by the pipeline):

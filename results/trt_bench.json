@@ -1,0 +1,335 @@
+{
+ "created": "2026-10-24T17:27:21+00:00",
+ "gpu": {
+  "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "compute_capability": "12.0"
+ },
+ "cpu": "AMD64 Family 26 Model 96 Stepping 0, AuthenticAMD",
+ "models": {
+  "l2": {
+   "input_shape": [
+    20,
+    16
+   ],
+   "eval_windows": 30844,
+   "onnxruntime_cpu": {
+    "batch1": {
+     "p50_us": 41.4,
+     "p99_us": 54.8
+    },
+    "batches": {
+     "64": {
+      "p50_ms": 0.738,
+      "windows_per_s": 86774
+     },
+     "256": {
+      "p50_ms": 3.073,
+      "windows_per_s": 83313
+     },
+     "1024": {
+      "p50_ms": 11.728,
+      "windows_per_s": 87311
+     },
+     "4096": {
+      "p50_ms": 46.093,
+      "windows_per_s": 88864
+     },
+     "16384": {
+      "p50_ms": 203.854,
+      "windows_per_s": 80371
+     }
+    },
+    "streams_at_50hz": 1024
+   },
+   "tensorrt": {
+    "fp32": {
+     "build_s": 8.8,
+     "layers": {
+      "fp32": 33
+     },
+     "engine_kb": 673,
+     "accuracy": {
+      "max_abs_z_err": 0.0241,
+      "p99_abs_z_err": 0.0116,
+      "spike_decision_flips": 0.0,
+      "frames": 30844
+     },
+     "batch1": {
+      "p50_us": 566.6,
+      "p99_us": 1824.7
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.661,
+       "windows_per_s": 96808
+      },
+      "256": {
+       "p50_ms": 0.756,
+       "windows_per_s": 338692
+      },
+      "1024": {
+       "p50_ms": 2.835,
+       "windows_per_s": 361199
+      },
+      "4096": {
+       "p50_ms": 3.035,
+       "windows_per_s": 1349722
+      },
+      "16384": {
+       "p50_ms": 13.37,
+       "windows_per_s": 1225462
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "fp16": {
+     "build_s": 16.1,
+     "layers": {
+      "fp16": 31,
+      "fp32": 1
+     },
+     "engine_kb": 718,
+     "accuracy": {
+      "max_abs_z_err": 0.1007,
+      "p99_abs_z_err": 0.0342,
+      "spike_decision_flips": 0.0,
+      "frames": 30844
+     },
+     "batch1": {
+      "p50_us": 565.8,
+      "p99_us": 1032.5
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.58,
+       "windows_per_s": 110440
+      },
+      "256": {
+       "p50_ms": 0.645,
+       "windows_per_s": 396745
+      },
+      "1024": {
+       "p50_ms": 0.779,
+       "windows_per_s": 1314506
+      },
+      "4096": {
+       "p50_ms": 1.609,
+       "windows_per_s": 2545443
+      },
+      "16384": {
+       "p50_ms": 6.087,
+       "windows_per_s": 2691837
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "int8": {
+     "build_s": 5.9,
+     "layers": {
+      "fp32": 32,
+      "int8": 2
+     },
+     "engine_kb": 804,
+     "accuracy": {
+      "max_abs_z_err": 1.7297,
+      "p99_abs_z_err": 1.3343,
+      "spike_decision_flips": 0.0,
+      "frames": 30844
+     },
+     "batch1": {
+      "p50_us": 555.6,
+      "p99_us": 799.2
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.6,
+       "windows_per_s": 106649
+      },
+      "256": {
+       "p50_ms": 0.679,
+       "windows_per_s": 377247
+      },
+      "1024": {
+       "p50_ms": 0.928,
+       "windows_per_s": 1103389
+      },
+      "4096": {
+       "p50_ms": 2.749,
+       "windows_per_s": 1489780
+      },
+      "16384": {
+       "p50_ms": 11.989,
+       "windows_per_s": 1366615
+      }
+     },
+     "streams_at_50hz": 16384
+    }
+   }
+  },
+  "l3": {
+   "input_shape": [
+    40,
+    25
+   ],
+   "eval_windows": 9008,
+   "onnxruntime_cpu": {
+    "batch1": {
+     "p50_us": 39.5,
+     "p99_us": 192.2
+    },
+    "batches": {
+     "64": {
+      "p50_ms": 0.334,
+      "windows_per_s": 191818
+     },
+     "256": {
+      "p50_ms": 1.238,
+      "windows_per_s": 206752
+     },
+     "1024": {
+      "p50_ms": 4.233,
+      "windows_per_s": 241923
+     },
+     "4096": {
+      "p50_ms": 25.599,
+      "windows_per_s": 160006
+     },
+     "16384": {
+      "p50_ms": 70.259,
+      "windows_per_s": 233193
+     }
+    },
+    "streams_at_50hz": 1024
+   },
+   "tensorrt": {
+    "fp32": {
+     "build_s": 5.6,
+     "layers": {
+      "fp32": 11
+     },
+     "engine_kb": 253,
+     "accuracy": {
+      "max_abs_logit_err": 0.0471,
+      "p99_abs_logit_err": 0.0218,
+      "decision_flips": 0.0,
+      "windows": 9008,
+      "logit_threshold": 6.88
+     },
+     "batch1": {
+      "p50_us": 229.0,
+      "p99_us": 358.3
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.257,
+       "windows_per_s": 248834
+      },
+      "256": {
+       "p50_ms": 0.336,
+       "windows_per_s": 761905
+      },
+      "1024": {
+       "p50_ms": 0.755,
+       "windows_per_s": 1355753
+      },
+      "4096": {
+       "p50_ms": 2.783,
+       "windows_per_s": 1471555
+      },
+      "16384": {
+       "p50_ms": 11.657,
+       "windows_per_s": 1405526
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "fp16": {
+     "build_s": 6.5,
+     "layers": {
+      "fp16": 10,
+      "fp32": 1
+     },
+     "engine_kb": 237,
+     "accuracy": {
+      "max_abs_logit_err": 0.2126,
+      "p99_abs_logit_err": 0.0573,
+      "decision_flips": 0.0,
+      "windows": 9008,
+      "logit_threshold": 6.88
+     },
+     "batch1": {
+      "p50_us": 223.4,
+      "p99_us": 425.8
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.227,
+       "windows_per_s": 281690
+      },
+      "256": {
+       "p50_ms": 0.311,
+       "windows_per_s": 821830
+      },
+      "1024": {
+       "p50_ms": 0.669,
+       "windows_per_s": 1530872
+      },
+      "4096": {
+       "p50_ms": 2.328,
+       "windows_per_s": 1759564
+      },
+      "16384": {
+       "p50_ms": 9.107,
+       "windows_per_s": 1799125
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "int8": {
+     "build_s": 10.7,
+     "layers": {
+      "fp32": 5,
+      "int8": 6
+     },
+     "engine_kb": 512,
+     "accuracy": {
+      "max_abs_logit_err": 5.9996,
+      "p99_abs_logit_err": 1.8388,
+      "decision_flips": 0.011656305506216696,
+      "windows": 9008,
+      "logit_threshold": 6.88
+     },
+     "batch1": {
+      "p50_us": 214.0,
+      "p99_us": 349.0
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.238,
+       "windows_per_s": 268738
+      },
+      "256": {
+       "p50_ms": 0.33,
+       "windows_per_s": 774701
+      },
+      "1024": {
+       "p50_ms": 0.669,
+       "windows_per_s": 1530528
+      },
+      "4096": {
+       "p50_ms": 2.515,
+       "windows_per_s": 1628661
+      },
+      "16384": {
+       "p50_ms": 10.476,
+       "windows_per_s": 1564015
+      }
+     },
+     "streams_at_50hz": 16384
+    }
+   }
+  }
+ },
+ "tensorrt": "11.4.0.106",
+ "int8_calibration": "minmax"
+}

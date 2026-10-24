@@ -6,6 +6,9 @@ data/cache/
 models/*.pt
 models/*.zip
 !models/ppo_falcon9.zip
+!models/ppo_falcon9_r2.zip
+# TensorRT engines are GPU/driver-specific and the FP16/INT8 graphs are derived: rebuild with scripts/trt_bench.py
+models/trt/
 node_modules/
 .next/
 .env

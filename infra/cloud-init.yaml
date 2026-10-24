@@ -1,0 +1,27 @@
+#cloud-config
+# Valid-But-Wrong demo host (Vultr, Ubuntu 24.04 x64). Sent as user-data by scripts/deploy_vultr.ps1.
+#
+# No secrets and no repo-specific data here on purpose: Vultr serves user-data back through the instance
+# metadata service. DATABASE_URL / CARTESIA_API_KEY and the code are copied over SSH afterwards, and
+# scripts/deploy_remote.sh (run over SSH) builds and starts the stack.
+package_update: true
+packages:
+  - ca-certificates
+  - curl
+  - git
+  - python3
+  - ufw
+
+runcmd:
+  # 4 GB swap: the console's `next build` and the server image build run on a small (4 GB RAM) plan.
+  - [bash, -c, "if ! swapon --show | grep -q /swapfile; then fallocate -l 4G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile && echo '/swapfile none swap sw 0 0' >> /etc/fstab; fi"]
+  # Docker Engine + buildx + compose plugin from Docker's repo (the Dockerfiles use BuildKit cache mounts).
+  - [bash, -c, "curl -fsSL https://get.docker.com -o /tmp/get-docker.sh && sh /tmp/get-docker.sh"]
+  - [systemctl, enable, --now, docker]
+  # Vultr's Ubuntu images ship with ufw allowing only SSH. Open the demo ports (Docker-published ports bypass ufw,
+  # but keep the rules explicit): console 3000, API + WebSocket 8000, Caddy 80/443 for the optional --edge profile.
+  - [bash, -c, "ufw allow 22/tcp && ufw allow 80/tcp && ufw allow 443/tcp && ufw allow 3000/tcp && ufw allow 8000/tcp && (ufw status | grep -q inactive || ufw reload)"]
+  - [mkdir, -p, /opt/vbw]
+  - [touch, /var/lib/vbw-host-ready]
+
+final_message: "vbw host ready after $UPTIME s"

@@ -20,10 +20,11 @@ interface TopBarProps {
   onDetector(name: string): void;
   onToggleMute(): void;
   onRetryLive(): void;
+  demo?: ReactNode; // the one-click pitch control, centered in the title row
 }
 
 export function TopBar(props: TopBarProps) {
-  const { connection, scenario, missionT, muted, onToggleMute, onRetryLive } = props;
+  const { connection, scenario, missionT, muted, onToggleMute, onRetryLive, demo } = props;
   return (
     <header className="bg-panel">
       <div className="flex h-[42px] items-center gap-5 border-b border-line px-4">
@@ -35,13 +36,14 @@ export function TopBar(props: TopBarProps) {
           </div>
         </div>
         <div className="h-6 w-px bg-line-strong" />
-        <div className="min-w-0 leading-none">
+        <div className="min-w-0 max-w-[280px] flex-none leading-none">
           <div className="truncate text-[13px] text-text">{scenario?.label ?? "No scenario loaded"}</div>
           <div className="num mt-0.5 truncate text-[10px] text-muted">
             {scenario ? `${scenario.vehicle_id} · ${scenario.rate_hz} Hz · ${scenario.id}` : "—"}
           </div>
         </div>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex min-w-0 flex-1 justify-center">{demo}</div>
+        <div className="flex flex-none items-center gap-3">
           <ConnectionPill connection={connection} onRetryLive={onRetryLive} />
           <button type="button" className="btn w-[74px]" aria-pressed={!muted} onClick={onToggleMute} title="Voice callouts">
             {muted ? "Voice off" : "Voice on"}
@@ -98,14 +100,17 @@ function ConnectionPill({ connection, onRetryLive }: { connection: ConnectionInf
   );
 }
 
+// The catalog labels ("Physics + learned (L1+L2)") are too long for the strip at 1440 px; the tooltip keeps them.
+const SHORT_DETECTOR_LABELS: Record<string, string> = { base: "Base · L1+L2", hardened: "Hardened · +L3" };
+
 function ControlStrip({ catalog, controls, running, onControls, onStart, onStop, onReset, onDetector }: TopBarProps) {
   const disabled = !controls || !catalog;
   const c = controls;
   return (
-    <div className="flex h-[40px] items-center gap-3 overflow-x-auto px-4 scroll-thin">
+    <div className="flex h-[40px] items-center gap-2 overflow-x-auto px-4 scroll-thin">
       <Field label="Scenario">
         <select
-          className="ctl w-[196px]"
+          className="ctl w-[176px]"
           value={c?.scenario ?? ""}
           disabled={disabled}
           onChange={(e) => onControls({ scenario: e.target.value })}
@@ -137,7 +142,7 @@ function ControlStrip({ catalog, controls, running, onControls, onStart, onStop,
       <Field label="Intensity">
         <input
           type="range"
-          className="ctl-range"
+          className="ctl-range w-[68px]"
           min={0}
           max={1}
           step={0.05}
@@ -151,7 +156,7 @@ function ControlStrip({ catalog, controls, running, onControls, onStart, onStop,
       <Field label="Start T+">
         <input
           type="number"
-          className="ctl w-[64px]"
+          className="ctl w-[62px] px-1.5"
           min={0}
           step={5}
           value={c?.startT ?? 60}
@@ -173,10 +178,10 @@ function ControlStrip({ catalog, controls, running, onControls, onStart, onStop,
                 className="btn"
                 aria-pressed={c?.detector === d.name}
                 disabled={disabled || !avail.available}
-                title={avail.available ? d.description : avail.reason}
+                title={avail.available ? `${d.label}: ${d.description}` : avail.reason}
                 onClick={() => onDetector(d.name)}
               >
-                {d.label}
+                {SHORT_DETECTOR_LABELS[d.name] ?? d.label}
               </button>
             );
           })}
@@ -196,7 +201,7 @@ function ControlStrip({ catalog, controls, running, onControls, onStart, onStop,
       </div>
       <Field label="Speed">
         <select
-          className="ctl w-[64px]"
+          className="ctl w-[58px]"
           value={c?.speed ?? 1}
           disabled={disabled}
           onChange={(e) => onControls({ speed: Number(e.target.value) })}

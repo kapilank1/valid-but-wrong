@@ -1,0 +1,1376 @@
+{
+ "created": "2026-10-24T17:57:42+00:00",
+ "schema": "falcon9",
+ "split": "holdout (val launches set tau and the L3 threshold; test launches are scored only)",
+ "test_launches": [
+  "falcon9:iridium-next-5",
+  "falcon9:jcsat-16",
+  "falcon9:x-37b-otv-5"
+ ],
+ "attack_start": "35% of flight, runs to the end",
+ "picture_channel": "altitude",
+ "l3_trained": true,
+ "l3_model": "l3_falcon9_r2.onnx",
+ "ppo_shadow_detector": {
+  "ppo": "base",
+  "ppo_r2": "hardened (l3_falcon9_r1.onnx)"
+ },
+ "detectors": {
+  "base": {
+   "attacks": {
+    "bias": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 0.5,
+      "mean_latency_s": 239.5,
+      "median_latency_s": 232.2,
+      "mean_max_lie_before_alert_m": 1200.0,
+      "mean_max_lie_m": 1200.0,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 260.20000000000005,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 232.2,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 226.10000000000002,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6166666666666695,
+      "median_latency_s": 0.6000000000000085,
+      "mean_max_lie_before_alert_m": 3000.0,
+      "mean_max_lie_m": 3000.0,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.6999999999999886,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       }
+      ]
+     }
+    },
+    "drift": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 0.5,
+      "mean_latency_s": 239.0333333333333,
+      "median_latency_s": 231.89999999999998,
+      "mean_max_lie_before_alert_m": 3476.9999999999986,
+      "mean_max_lie_m": 4025.399999999999,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 4250.399999999994,
+        "max_lie": 4250.399999999994
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 3813.600000000006,
+        "max_lie": 3813.600000000006
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 259.5,
+        "max_lie_before_alert": 3112.800000000003,
+        "max_lie": 4344.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 231.89999999999998,
+        "max_lie_before_alert": 2781.5999999999985,
+        "max_lie": 3883.2
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 225.7,
+        "max_lie_before_alert": 2707.199999999997,
+        "max_lie": 3664.7999999999997
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 4196.399999999994,
+        "max_lie": 4196.399999999994
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 137.03333333333333,
+      "median_latency_s": 104.10000000000001,
+      "mean_max_lie_before_alert_m": 4108.0,
+      "mean_max_lie_m": 10063.5,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 73.10000000000002,
+        "max_lie_before_alert": 2190.0,
+        "max_lie": 10626.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 104.20000000000002,
+        "max_lie_before_alert": 3123.0,
+        "max_lie": 9534.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 91.99999999999997,
+        "max_lie_before_alert": 2757.0,
+        "max_lie": 10860.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 223.2,
+        "max_lie_before_alert": 6693.0,
+        "max_lie": 9707.999999999998
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 225.7,
+        "max_lie_before_alert": 6768.0,
+        "max_lie": 9162.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 104.0,
+        "max_lie_before_alert": 3117.0,
+        "max_lie": 10491.0
+       }
+      ]
+     }
+    },
+    "replay": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 5379.729166666667,
+      "mean_max_lie_m": 96734.01242389281,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4708.015625,
+        "max_lie": 81398.3359375
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5422.90625,
+        "max_lie": 98601.421875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5210.171875,
+        "max_lie": 128426.33110463619
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 6210.0546875,
+        "max_lie": 97720.50119018555
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5882.40625,
+        "max_lie": 83375.06256103516
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4844.8203125,
+        "max_lie": 90882.421875
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 5379.729166666667,
+      "mean_max_lie_m": 96734.01242389281,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4708.015625,
+        "max_lie": 81398.3359375
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5422.90625,
+        "max_lie": 98601.421875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5210.171875,
+        "max_lie": 128426.33110463619
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 6210.0546875,
+        "max_lie": 97720.50119018555
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5882.40625,
+        "max_lie": 83375.06256103516
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4844.8203125,
+        "max_lie": 90882.421875
+       }
+      ]
+     }
+    },
+    "freeze": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 522.3385416666666,
+      "mean_max_lie_m": 94388.71541486184,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 467.3515625,
+        "max_lie": 76772.7578125
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 520.1328125,
+        "max_lie": 93269.921875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 487.640625,
+        "max_lie": 128426.3594828844
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 583.3515625,
+        "max_lie": 97933.63933563232
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 579.9609375,
+        "max_lie": 83808.8327331543
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 495.59375,
+        "max_lie": 86120.78125
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 522.3385416666666,
+      "mean_max_lie_m": 94388.71541486184,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 467.3515625,
+        "max_lie": 76772.7578125
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 520.1328125,
+        "max_lie": 93269.921875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 487.640625,
+        "max_lie": 128426.3594828844
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 583.3515625,
+        "max_lie": 97933.63933563232
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 579.9609375,
+        "max_lie": 83808.8327331543
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 495.59375,
+        "max_lie": 86120.78125
+       }
+      ]
+     }
+    },
+    "coordinated": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 49.23333333333335,
+      "median_latency_s": 7.6000000000000085,
+      "mean_max_lie_before_alert_m": 491.3333333333333,
+      "mean_max_lie_m": 3354.5,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 265.7,
+        "max_lie_before_alert": 2656.0,
+        "max_lie": 3542.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 8.900000000000006,
+        "max_lie_before_alert": 88.0,
+        "max_lie": 3178.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5.0,
+        "max_lie": 3620.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 5.0,
+        "max_lie_before_alert": 49.0,
+        "max_lie": 3235.9999999999995
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 6.5,
+        "max_lie_before_alert": 64.0,
+        "max_lie": 3054.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 8.700000000000017,
+        "max_lie_before_alert": 86.0,
+        "max_lie": 3497.0
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 5.283333333333331,
+      "median_latency_s": 5.700000000000003,
+      "mean_max_lie_before_alert_m": 129.58333333333334,
+      "mean_max_lie_m": 8386.25,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 8.900000000000006,
+        "max_lie_before_alert": 220.0,
+        "max_lie": 8855.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 6.5,
+        "max_lie_before_alert": 160.0,
+        "max_lie": 7945.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 12.5,
+        "max_lie": 9050.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 3.799999999999983,
+        "max_lie_before_alert": 92.5,
+        "max_lie": 8090.0
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 4.900000000000006,
+        "max_lie_before_alert": 120.0,
+        "max_lie": 7634.999999999999
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 7.0,
+        "max_lie_before_alert": 172.5,
+        "max_lie": 8742.5
+       }
+      ]
+     }
+    },
+    "ppo": {
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 189.75,
+      "median_latency_s": 189.05,
+      "mean_max_lie_before_alert_m": 12260.944091796875,
+      "mean_max_lie_m": 16451.362386067707,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 314.6,
+        "max_lie_before_alert": 23762.484375,
+        "max_lie": 27732.484375
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 312.0,
+        "max_lie_before_alert": 23132.150390625,
+        "max_lie": 23722.150390625
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 61.20000000000002,
+        "max_lie_before_alert": 947.9386596679688,
+        "max_lie": 8829.896484375
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 64.6,
+        "max_lie_before_alert": 498.8740234375,
+        "max_lie": 6044.6689453125
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 66.1,
+        "max_lie_before_alert": 667.9299926757812,
+        "max_lie": 4842.68701171875
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 320.0,
+        "max_lie_before_alert": 24556.287109375,
+        "max_lie": 27536.287109375
+       }
+      ]
+     }
+    },
+    "ppo_r2": {
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 0.8333333333333334,
+      "mean_latency_s": 153.11999999999998,
+      "median_latency_s": 91.30000000000001,
+      "mean_max_lie_before_alert_m": 2022.1138559977214,
+      "mean_max_lie_m": 5678.710042317708,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 308.6,
+        "max_lie_before_alert": 3740.47802734375,
+        "max_lie": 3760.703369140625
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": false,
+        "latency_s": null,
+        "max_lie_before_alert": 4134.50244140625,
+        "max_lie": 4134.50244140625
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 76.9,
+        "max_lie_before_alert": 373.6253356933594,
+        "max_lie": 10357.2255859375
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 90.09999999999997,
+        "max_lie_before_alert": 634.2930297851562,
+        "max_lie": 7091.15380859375
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 91.30000000000001,
+        "max_lie_before_alert": 758.3568115234375,
+        "max_lie": 6129.966796875
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 198.7,
+        "max_lie_before_alert": 2491.427490234375,
+        "max_lie": 2598.708251953125
+       }
+      ]
+     }
+    }
+   },
+   "clean": {
+    "runs": 18,
+    "launches": 6,
+    "flight_hours": 2.58,
+    "frames": 92910,
+    "runs_with_false_alert": 0,
+    "false_alert_episodes": 0,
+    "false_alerts_per_flight": 0.0,
+    "false_alerts_per_flight_hour": 0.0,
+    "alerting_scenarios": [],
+    "ms_per_frame": 1.1101330900562323
+   },
+   "clean_test_only": {
+    "runs": 9,
+    "launches": 3,
+    "flight_hours": 1.27,
+    "frames": 45750,
+    "runs_with_false_alert": 0,
+    "false_alert_episodes": 0,
+    "false_alerts_per_flight": 0.0,
+    "false_alerts_per_flight_hour": 0.0,
+    "alerting_scenarios": [],
+    "ms_per_frame": 1.1430003635333488
+   }
+  },
+  "hardened": {
+   "attacks": {
+    "bias": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 6.850000000000004,
+      "median_latency_s": 6.800000000000011,
+      "mean_max_lie_before_alert_m": 1200.0,
+      "mean_max_lie_m": 1200.0,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 6.400000000000006,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 6.700000000000017,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 7.5,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 6.899999999999977,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 6.800000000000011,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 6.800000000000011,
+        "max_lie_before_alert": 1200.0,
+        "max_lie": 1200.0
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6166666666666695,
+      "median_latency_s": 0.6000000000000085,
+      "mean_max_lie_before_alert_m": 3000.0,
+      "mean_max_lie_m": 3000.0,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.6999999999999886,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 3000.0,
+        "max_lie": 3000.0
+       }
+      ]
+     }
+    },
+    "drift": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 131.81666666666666,
+      "median_latency_s": 129.75,
+      "mean_max_lie_before_alert_m": 1580.5999999999997,
+      "mean_max_lie_m": 4025.399999999999,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 33.80000000000001,
+        "max_lie_before_alert": 404.3999999999942,
+        "max_lie": 4250.399999999994
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 23.599999999999994,
+        "max_lie_before_alert": 282.0,
+        "max_lie": 3813.600000000006
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 259.5,
+        "max_lie_before_alert": 3112.800000000003,
+        "max_lie": 4344.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 231.89999999999998,
+        "max_lie_before_alert": 2781.5999999999985,
+        "max_lie": 3883.2
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 225.7,
+        "max_lie_before_alert": 2707.199999999997,
+        "max_lie": 3664.7999999999997
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 16.400000000000006,
+        "max_lie_before_alert": 195.60000000000582,
+        "max_lie": 4196.399999999994
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 18.53333333333333,
+      "median_latency_s": 14.799999999999997,
+      "mean_max_lie_before_alert_m": 553.0,
+      "mean_max_lie_m": 10063.5,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 10.300000000000011,
+        "max_lie_before_alert": 306.0,
+        "max_lie": 10626.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 10.099999999999994,
+        "max_lie_before_alert": 300.0,
+        "max_lie": 9534.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 13.599999999999994,
+        "max_lie_before_alert": 405.0,
+        "max_lie": 10860.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 25.299999999999983,
+        "max_lie_before_alert": 756.0,
+        "max_lie": 9707.999999999998
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 35.900000000000006,
+        "max_lie_before_alert": 1074.0,
+        "max_lie": 9162.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 16.0,
+        "max_lie_before_alert": 477.0,
+        "max_lie": 10491.0
+       }
+      ]
+     }
+    },
+    "replay": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 5379.729166666667,
+      "mean_max_lie_m": 96734.01242389281,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4708.015625,
+        "max_lie": 81398.3359375
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5422.90625,
+        "max_lie": 98601.421875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5210.171875,
+        "max_lie": 128426.33110463619
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 6210.0546875,
+        "max_lie": 97720.50119018555
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5882.40625,
+        "max_lie": 83375.06256103516
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4844.8203125,
+        "max_lie": 90882.421875
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 5379.729166666667,
+      "mean_max_lie_m": 96734.01242389281,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4708.015625,
+        "max_lie": 81398.3359375
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5422.90625,
+        "max_lie": 98601.421875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5210.171875,
+        "max_lie": 128426.33110463619
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 6210.0546875,
+        "max_lie": 97720.50119018555
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5882.40625,
+        "max_lie": 83375.06256103516
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 4844.8203125,
+        "max_lie": 90882.421875
+       }
+      ]
+     }
+    },
+    "freeze": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 522.3385416666666,
+      "mean_max_lie_m": 94388.71541486184,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 467.3515625,
+        "max_lie": 76772.7578125
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 520.1328125,
+        "max_lie": 93269.921875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 487.640625,
+        "max_lie": 128426.3594828844
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 583.3515625,
+        "max_lie": 97933.63933563232
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 579.9609375,
+        "max_lie": 83808.8327331543
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 495.59375,
+        "max_lie": 86120.78125
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.6000000000000038,
+      "median_latency_s": 0.5999999999999943,
+      "mean_max_lie_before_alert_m": 522.3385416666666,
+      "mean_max_lie_m": 94388.71541486184,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 467.3515625,
+        "max_lie": 76772.7578125
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 520.1328125,
+        "max_lie": 93269.921875
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 487.640625,
+        "max_lie": 128426.3594828844
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 583.3515625,
+        "max_lie": 97933.63933563232
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 579.9609375,
+        "max_lie": 83808.8327331543
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 0.6000000000000227,
+        "max_lie_before_alert": 495.59375,
+        "max_lie": 86120.78125
+       }
+      ]
+     }
+    },
+    "coordinated": {
+     "0.4": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 3.616666666666665,
+      "median_latency_s": 4.1499999999999915,
+      "mean_max_lie_before_alert_m": 35.166666666666664,
+      "mean_max_lie_m": 3354.5,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 4.5,
+        "max_lie_before_alert": 44.0,
+        "max_lie": 3542.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 4.099999999999994,
+        "max_lie_before_alert": 40.0,
+        "max_lie": 3178.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 5.0,
+        "max_lie": 3620.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 4.199999999999989,
+        "max_lie_before_alert": 41.0,
+        "max_lie": 3235.9999999999995
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 4.300000000000011,
+        "max_lie_before_alert": 42.0,
+        "max_lie": 3054.0
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 4.0,
+        "max_lie_before_alert": 39.0,
+        "max_lie": 3497.0
+       }
+      ]
+     },
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 3.6000000000000036,
+      "median_latency_s": 4.150000000000006,
+      "mean_max_lie_before_alert_m": 87.5,
+      "mean_max_lie_m": 8386.25,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 4.600000000000023,
+        "max_lie_before_alert": 112.5,
+        "max_lie": 8855.0
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 4.0,
+        "max_lie_before_alert": 97.5,
+        "max_lie": 7945.0
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 0.5999999999999943,
+        "max_lie_before_alert": 12.5,
+        "max_lie": 9050.0
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 3.799999999999983,
+        "max_lie_before_alert": 92.5,
+        "max_lie": 8090.0
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 4.300000000000011,
+        "max_lie_before_alert": 105.0,
+        "max_lie": 7634.999999999999
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 4.300000000000011,
+        "max_lie_before_alert": 105.0,
+        "max_lie": 8742.5
+       }
+      ]
+     }
+    },
+    "ppo": {
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 40.483333333333334,
+      "median_latency_s": 37.2,
+      "mean_max_lie_before_alert_m": 719.2560679117838,
+      "mean_max_lie_m": 16451.362386067707,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 33.60000000000002,
+        "max_lie_before_alert": 592.5214233398438,
+        "max_lie": 27732.484375
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 61.5,
+        "max_lie_before_alert": 1330.5430908203125,
+        "max_lie": 23722.150390625
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 47.5,
+        "max_lie_before_alert": 472.9982604980469,
+        "max_lie": 8829.896484375
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 25.899999999999977,
+        "max_lie_before_alert": 498.8740234375,
+        "max_lie": 6044.6689453125
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 35.400000000000006,
+        "max_lie_before_alert": 667.9299926757812,
+        "max_lie": 4842.68701171875
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 39.0,
+        "max_lie_before_alert": 752.6696166992188,
+        "max_lie": 27536.287109375
+       }
+      ]
+     }
+    },
+    "ppo_r2": {
+     "1.0": {
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 35.85,
+      "median_latency_s": 34.2,
+      "mean_max_lie_before_alert_m": 383.80498758951825,
+      "mean_max_lie_m": 5678.710042317708,
+      "runs_alerting_before_onset": 0,
+      "per_run": [
+       {
+        "scenario": "falcon9:ses-9",
+        "detected": true,
+        "latency_s": 33.5,
+        "max_lie_before_alert": 465.7857971191406,
+        "max_lie": 3760.703369140625
+       },
+       {
+        "scenario": "falcon9:jcsat-16",
+        "detected": true,
+        "latency_s": 23.5,
+        "max_lie_before_alert": 311.3265075683594,
+        "max_lie": 4134.50244140625
+       },
+       {
+        "scenario": "falcon9:nrol-76",
+        "detected": true,
+        "latency_s": 60.900000000000006,
+        "max_lie_before_alert": 323.3911437988281,
+        "max_lie": 10357.2255859375
+       },
+       {
+        "scenario": "falcon9:x-37b-otv-5",
+        "detected": true,
+        "latency_s": 42.79999999999998,
+        "max_lie_before_alert": 438.98199462890625,
+        "max_lie": 7091.15380859375
+       },
+       {
+        "scenario": "falcon9:zuma",
+        "detected": true,
+        "latency_s": 34.900000000000006,
+        "max_lie_before_alert": 506.337158203125,
+        "max_lie": 6129.966796875
+       },
+       {
+        "scenario": "falcon9:iridium-next-5",
+        "detected": true,
+        "latency_s": 19.5,
+        "max_lie_before_alert": 257.00732421875,
+        "max_lie": 2598.708251953125
+       }
+      ]
+     }
+    }
+   },
+   "clean": {
+    "runs": 18,
+    "launches": 6,
+    "flight_hours": 2.58,
+    "frames": 92910,
+    "runs_with_false_alert": 0,
+    "false_alert_episodes": 0,
+    "false_alerts_per_flight": 0.0,
+    "false_alerts_per_flight_hour": 0.0,
+    "alerting_scenarios": [],
+    "ms_per_frame": 1.3455159513858381
+   },
+   "clean_test_only": {
+    "runs": 9,
+    "launches": 3,
+    "flight_hours": 1.27,
+    "frames": 45750,
+    "runs_with_false_alert": 0,
+    "false_alert_episodes": 0,
+    "false_alerts_per_flight": 0.0,
+    "false_alerts_per_flight_hour": 0.0,
+    "alerting_scenarios": [],
+    "ms_per_frame": 1.3412186493520677
+   }
+  }
+ }
+}

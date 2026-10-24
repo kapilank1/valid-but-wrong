@@ -59,6 +59,12 @@ before that alert. Bias and replay lies are their full size at onset (a 3 km ste
 We are below Telemanom, mostly on MSL recall. The benchmark shows the learned layer is a working anomaly detector,
 not that it is state of the art.
 
+**Fleet scale on a laptop GPU (TensorRT)** ([docs/TENSORRT.md](docs/TENSORRT.md), `results/trt_bench.json`): with the
+L2 and L3 models as TensorRT FP16 engines on an RTX 5060 Laptop GPU, one batch covering **16,384 vehicle streams takes
+~15 ms, inside a 50 Hz frame**: 33× (L2) and 7.7× (L3) faster than ONNX Runtime on the CPU, with **zero** detection
+decisions changed on held-out flights. INT8 (explicit Q/DQ) was measured too and loses on models this small: slower
+than FP16, and it flips 1.2% of L3 decisions.
+
 ---
 
 ## How it works

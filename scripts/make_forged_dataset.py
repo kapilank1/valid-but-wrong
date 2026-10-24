@@ -147,6 +147,10 @@ def eval_attacks(schema: ChannelSchema, detector_name: str = "base") -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--schema", default="falcon9")
+    ap.add_argument("--ppo-only", metavar="ATTACK", default=None,
+                    help="only build forged_<schema>_<ATTACK>.npz for a learned attack (ppo, ppo_r2); leaves the "
+                         "scripted sets and results/attacks_eval.json alone")
+    ap.add_argument("--workers", type=int, default=12)
     args = ap.parse_args()
     import torch
 
@@ -156,12 +160,16 @@ def main() -> None:
     RESULTS.mkdir(exist_ok=True)
     w = _window(schema)
 
+    if args.ppo_only:
+        _build_ppo_dataset(schema, w, {}, workers=args.workers, attack=args.ppo_only)
+        return
+
     summary = build_datasets(schema, w)
 
     # PPO forged set if a trained policy exists
     model = ROOT / "models" / f"ppo_{schema.name}.zip"
     if model.exists():
-        _build_ppo_dataset(schema, w, summary)
+        _build_ppo_dataset(schema, w, summary, workers=args.workers)
 
     report = eval_attacks(schema)
     (RESULTS / "attacks_eval.json").write_text(json.dumps(report, indent=2))
@@ -169,40 +177,40 @@ def main() -> None:
     print(f"[forge] wrote results/attacks_eval.json (detector={report['detector']})")
 
 
-def _ppo_run(job: tuple[str, int, float]) -> tuple[str, np.ndarray, np.ndarray, np.ndarray] | None:
-    """One launch under the PPO attack from one onset: (scenario, t, reported, active), or None without a policy."""
+def _ppo_run(job: tuple[str, int, float, str]) -> tuple[str, np.ndarray, np.ndarray, np.ndarray] | None:
+    """One launch under a learned attack from one onset: (scenario, t, reported, active), or None without a policy."""
     import torch
 
-    from vbw.attacker.env import PpoAttack
-
     torch.set_num_threads(1)
-    schema_name, idx, start_frac = job
+    schema_name, idx, start_frac, attack = job
     schema = SCHEMAS_BY_NAME[schema_name]
     scenario, t, x = _trajectories(schema)[idx]
     start_t = float(t[int(len(t) * start_frac)])
-    atk = PpoAttack(schema=schema, start_t=start_t, intensity=1.0)
+    atk = make_attack(attack, schema, start_t=start_t, intensity=1.0)
     if not atk.loaded:
         return None
     return scenario, t, _apply_over(schema, t, x, atk), t >= start_t
 
 
-def _build_ppo_dataset(schema: ChannelSchema, w: int, summary: dict, workers: int = 12) -> None:
+def _build_ppo_dataset(schema: ChannelSchema, w: int, summary: dict, workers: int = 12, attack: str = "ppo") -> None:
+    """data/cache/forged_<schema>_<attack>.npz from a learned attack (ppo, ppo_r2) at every training onset."""
     from concurrent.futures import ProcessPoolExecutor
 
     n = len(_trajectories(schema))
-    jobs = [(schema.name, i, f) for i in range(n) for f in TRAIN_START_FRACS]
+    jobs = [(schema.name, i, f, attack) for i in range(n) for f in TRAIN_START_FRACS]
     with ProcessPoolExecutor(workers) as ex:
         runs = list(ex.map(_ppo_run, jobs))
     if any(r is None for r in runs):
+        print(f"[forge] {attack}: no trained policy, skipped")
         return
     X, TT, Y, ATK, SCN = [], [], [], [], []
     for scenario, t, reported, active in runs:
         for xw, tw, yw in _windows(reported, t, active, w, STRIDE):
-            X.append(xw); TT.append(tw); Y.append(yw); ATK.append("ppo"); SCN.append(scenario)
-    path = CACHE / f"forged_{schema.name}_ppo.npz"
+            X.append(xw); TT.append(tw); Y.append(yw); ATK.append(attack); SCN.append(scenario)
+    path = CACHE / f"forged_{schema.name}_{attack}.npz"
     _save_npz(path, np.asarray(X, dtype=np.float32), np.asarray(TT),
               np.asarray(Y, dtype=np.int8), ATK, SCN, schema.name, w)
-    summary["ppo"] = {"file": path.name, "windows": len(Y), "positives": int(np.sum(Y))}
+    summary[attack] = {"file": path.name, "windows": len(Y), "positives": int(np.sum(Y))}
     print(f"[forge] {path.name}: {len(Y)} windows ({int(np.sum(Y))} forged)")
 
 

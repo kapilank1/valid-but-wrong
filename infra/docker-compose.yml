@@ -57,8 +57,11 @@ services:
         NEXT_PUBLIC_VBW_API: ${NEXT_PUBLIC_VBW_API:-http://localhost:8000}
     environment:
       CARTESIA_API_KEY: ${CARTESIA_API_KEY:-}
-      CARTESIA_VOICE_ID: ${CARTESIA_VOICE_ID:-}
-      CARTESIA_MODEL_ID: ${CARTESIA_MODEL_ID:-}
+      # Real defaults, not empty strings: the TTS route falls back with `??`, which an empty string defeats, and
+      # Cartesia rejects an empty voice id / model id.
+      CARTESIA_VOICE_ID: ${CARTESIA_VOICE_ID:-6ccbfb76-1fc6-48f7-b71d-91ac6298247b}
+      CARTESIA_MODEL_ID: ${CARTESIA_MODEL_ID:-sonic-3.6}
+      CARTESIA_VERSION: ${CARTESIA_VERSION:-2026-08-14}
     ports:
       - "3000:3000"
     depends_on:

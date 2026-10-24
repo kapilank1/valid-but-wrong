@@ -36,11 +36,16 @@ _META: dict[str, tuple[str, str, list[str], dict[str, Any]]] = {
                     "per-channel physics rules.", ["falcon9", "quad"], {"channels": []}),
     "ppo": ("PPO (learned)", "RL policy trained to maximise operator-picture error while staying under "
             "the detector's alert threshold.", ["falcon9", "quad"], {}),
+    "ppo_r2": ("PPO round 2", "Arms race round 2: a PPO policy retrained against the hardened detector "
+               "(round-1 discriminator).", ["falcon9"], {}),
 }
 
+# Learned attacks: name -> model file suffix (models/ppo_<schema><suffix>.zip).
+_LEARNED = {"ppo": "", "ppo_r2": "_r2"}
 
-def _model_path(schema_name: str) -> Path:
-    return MODELS / f"ppo_{schema_name}.zip"
+
+def _model_path(schema_name: str, attack: str = "ppo") -> Path:
+    return MODELS / f"ppo_{schema_name}{_LEARNED[attack]}.zip"
 
 
 def list_attacks() -> list[dict]:
@@ -50,8 +55,8 @@ def list_attacks() -> list[dict]:
             "name": name, "label": label, "description": desc, "schemas": schemas,
             "params": {**_COMMON, **extra},
         }
-        if name == "ppo":
-            entry["available"] = any(_model_path(s).exists() for s in schemas)
+        if name in _LEARNED:
+            entry["available"] = any(_model_path(s, name).exists() for s in schemas)
         out.append(entry)
     return out
 
@@ -62,6 +67,10 @@ def make_attack(name: str, schema: ChannelSchema, **params: Any) -> _Attack:
         from vbw.attacker.env import PpoAttack  # lazy: avoids importing SB3 unless needed
 
         return PpoAttack(schema=schema, **_filter(PpoAttack, params))
+    if name == "ppo_r2":
+        from vbw.attacker.env import PpoR2Attack
+
+        return PpoR2Attack(schema=schema, **_filter(PpoR2Attack, params))
     cls = SCRIPTED.get(name)
     if cls is None:
         raise KeyError(f"unknown attack {name!r}; have {sorted(_META)}")

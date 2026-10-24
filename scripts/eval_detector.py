@@ -10,7 +10,12 @@ them: sensor noise + float32 wire rounding.
            alert, i.e. false alerts per flight.
 - attacks: each attack starts at 35% of the flight and runs to the end. Detection rate, latency from onset to the
            first alert, the largest altitude lie the operator saw before that alert, and any alert before onset.
-           PPO's shadow detector is always `base`: the policy was trained to beat base and knows nothing about L3.
+           Each learned attacker's shadow detector is the one it trained against: `ppo` (round 1) shadows base,
+           `ppo_r2` (round 2) shadows the round-1 hardened detector (models/l3_<schema>_r1.onnx).
+
+Arms-race options: `--l3 models/l3_falcon9_r1.onnx` scores the hardened detector with a specific discriminator,
+`--attacks none,ppo_r2` / `--detectors hardened` restrict the runs, `--out` writes somewhere other than
+results/detector_eval.json.
 """
 
 from __future__ import annotations
@@ -27,7 +32,8 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 DETECTORS = ("base", "hardened")
-ATTACKS = ("bias", "drift", "replay", "freeze", "coordinated", "ppo")
+ATTACKS = ("bias", "drift", "replay", "freeze", "coordinated", "ppo", "ppo_r2")
+LEARNED = {"ppo": "", "ppo_r2": "_r2"}   # learned attack -> model suffix; they ignore intensity, so run once
 INTENSITIES = (0.4, 1.0)
 CLEAN_SEEDS = (0, 1, 2)
 START_FRAC = 0.35
@@ -47,7 +53,12 @@ def run_one(job: dict) -> dict:
     attack = make_attack(job["attack"], schema, start_t=0.0 if job["attack"] == "none" else start_t,
                          intensity=job["intensity"])
     attack.reset(0)
-    det = make_detector(job["detector"], schema)
+    if job["detector"] == "hardened" and job.get("l3"):
+        from vbw.detector.l3 import HardenedDetector, L3Model
+
+        det = HardenedDetector(schema, l3=L3Model.from_file(job["l3"]))
+    else:
+        det = make_detector(job["detector"], schema)
     pic = schema.channels.index(PICTURE[schema.name])
 
     alerts = np.zeros(len(t), bool)
@@ -113,10 +124,21 @@ def summarize_attack(rows: list[dict]) -> dict:
     }
 
 
+def available_attacks(schema_name: str, wanted: list[str]) -> list[str]:
+    """`wanted` minus learned attacks whose policy file is missing."""
+    return [a for a in wanted
+            if a not in LEARNED or (ROOT / "models" / f"ppo_{schema_name}{LEARNED[a]}.zip").exists()]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--schema", choices=["falcon9"], default="falcon9")
     ap.add_argument("--workers", type=int, default=12)
+    ap.add_argument("--attacks", default="none," + ",".join(ATTACKS),
+                    help="comma list; 'none' means the clean false-alert runs")
+    ap.add_argument("--detectors", default=",".join(DETECTORS))
+    ap.add_argument("--l3", default=None, help="L3 .onnx (with <stem>_meta.json) for the hardened detector")
+    ap.add_argument("--out", default=str(RESULTS / "detector_eval.json"))
     args = ap.parse_args()
 
     from vbw.detector.data import clean_runs
@@ -125,14 +147,16 @@ def main() -> None:
     schema = SCHEMAS_BY_NAME[args.schema]
     n_hold = len(clean_runs(schema, "holdout", (0,)))
     test = {r.scenario for r in clean_runs(schema, "test", (0,))}
-    attacks = [a for a in ATTACKS if a != "ppo" or (ROOT / "models" / f"ppo_{schema.name}.zip").exists()]
+    wanted = [a for a in args.attacks.split(",") if a]
+    detectors = [d for d in args.detectors.split(",") if d]
+    attacks = available_attacks(schema.name, [a for a in wanted if a != "none"])
     jobs = []
-    for d in DETECTORS:
-        jobs += [dict(schema=schema.name, detector=d, attack="none", intensity=0.0, split="holdout", seed=s, idx=i)
-                 for s in CLEAN_SEEDS for i in range(n_hold)]
-        # The PPO policy ignores intensity, so it only runs once.
-        jobs += [dict(schema=schema.name, detector=d, attack=a, intensity=k, split="holdout", seed=0, idx=i)
-                 for a in attacks for k in ((1.0,) if a == "ppo" else INTENSITIES) for i in range(n_hold)]
+    for d in detectors:
+        if "none" in wanted:
+            jobs += [dict(schema=schema.name, detector=d, attack="none", intensity=0.0, split="holdout", seed=s, idx=i,
+                          l3=args.l3) for s in CLEAN_SEEDS for i in range(n_hold)]
+        jobs += [dict(schema=schema.name, detector=d, attack=a, intensity=k, split="holdout", seed=0, idx=i, l3=args.l3)
+                 for a in attacks for k in ((1.0,) if a in LEARNED else INTENSITIES) for i in range(n_hold)]
     print(f"{len(jobs)} runs on {args.workers} workers")
     t0 = time.time()
     with ProcessPoolExecutor(args.workers) as ex:
@@ -149,33 +173,39 @@ def main() -> None:
         "attack_start": f"{int(START_FRAC * 100)}% of flight, runs to the end",
         "picture_channel": PICTURE[schema.name],
         "l3_trained": l3_paths(schema)[0].exists(),
-        "ppo_shadow_detector": "base",
+        "l3_model": Path(args.l3).name if args.l3 else l3_paths(schema)[0].name,
+        "ppo_shadow_detector": {"ppo": "base", "ppo_r2": f"hardened (l3_{schema.name}_r1.onnx)"},
         "detectors": {},
     }
-    for d in DETECTORS:
+    for d in detectors:
         mine = [r for r in rows if r["detector"] == d]
         clean = [r for r in mine if r["attack"] == "none"]
-        entry = {"clean": summarize_clean(clean),
-                 "clean_test_only": summarize_clean([r for r in clean if r["scenario"] in test]),
-                 "attacks": {}}
+        entry = {"attacks": {}}
+        if clean:
+            entry["clean"] = summarize_clean(clean)
+            entry["clean_test_only"] = summarize_clean([r for r in clean if r["scenario"] in test])
         for a in attacks:
             by_k = {k: [r for r in mine if r["attack"] == a and r["intensity"] == k] for k in INTENSITIES}
             entry["attacks"][a] = {f"{k:.1f}": summarize_attack(rs) for k, rs in by_k.items() if rs}
         out["detectors"][d] = entry
 
-    RESULTS.mkdir(exist_ok=True)
-    (RESULTS / "detector_eval.json").write_text(json.dumps(out, indent=1))
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(out, indent=1))
     for d, e in out["detectors"].items():
-        c = e["clean"]
-        print(f"[{d}] clean: {c['runs_with_false_alert']}/{c['runs']} runs alert, {c['false_alert_episodes']} episodes "
-              f"over {c['flight_hours']} h, {c['ms_per_frame']:.2f} ms/frame")
+        c = e.get("clean")
+        if c:
+            print(f"[{d}] clean: {c['runs_with_false_alert']}/{c['runs']} runs alert, {c['false_alert_episodes']} "
+                  f"episodes over {c['flight_hours']} h, {c['ms_per_frame']:.2f} ms/frame")
+        else:
+            print(f"[{d}]")
         for a, by_k in e["attacks"].items():
             s = by_k["1.0"]
             lat = f"{s['mean_latency_s']:.1f}s" if s["mean_latency_s"] is not None else "-"
             low = f"   (@0.4: detect {by_k['0.4']['detection_rate']:.2f})" if "0.4" in by_k else ""
             print(f"   {a:12s} detect {s['detection_rate']:.2f} latency {lat:>7s} lie-before-alert "
                   f"{s['mean_max_lie_before_alert_m']:9.0f} m{low}")
-    print("wrote results/detector_eval.json")
+    print(f"wrote {out_path}")
 
 
 if __name__ == "__main__":

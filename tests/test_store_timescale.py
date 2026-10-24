@@ -13,8 +13,8 @@ from vbw.schema import FALCON9, Frame, L0Result, Verdict, Violation
 from vbw.store import queries
 from vbw.store.base import NullStore, RunRecord, TickRecord
 from vbw.store.timescale import (
-    Batch, PostgresDatabase, RunEnd, TimescaleStore, frame_rows, schema_statements, split_sql,
-    store_from_env, verdict_row,
+    Batch, PostgresDatabase, RunEnd, ThreadedPostgresDatabase, TimescaleStore, frame_rows, schema_statements,
+    split_sql, store_from_env, verdict_row,
 )
 
 T0 = datetime(2026, 10, 24, 12, 0, 0, tzinfo=timezone.utc)
@@ -239,6 +239,136 @@ def test_postgres_database_reconnects_after_a_failed_write():
 
     asyncio.run(main())
     assert len(connections) == 2 and connections[0].closed
+
+
+class SyncCopy:
+    def __init__(self, log, sql):
+        self.log, self.sql, self.rows = log, sql, []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.log.append(("copy", self.sql, self.rows))
+
+    def write_row(self, row):
+        self.rows.append(row)
+
+
+class SyncCursor:
+    def __init__(self, log, rows):
+        self.log, self.rows = log, rows
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return None
+
+    def execute(self, sql, params=None):
+        self.log.append(("execute", sql, params))
+
+    def copy(self, sql):
+        return SyncCopy(self.log, sql)
+
+    def fetchall(self):
+        return self.rows
+
+
+class SyncTransaction:
+    def __init__(self, log):
+        self.log = log
+
+    def __enter__(self):
+        self.log.append(("begin",))
+
+    def __exit__(self, exc_type, *exc):
+        self.log.append(("rollback",) if exc_type else ("commit",))
+
+
+class SyncConnection:
+    def __init__(self, rows=None):
+        self.log: list[tuple] = []
+        self.rows = rows or []
+        self.closed = False
+
+    def transaction(self):
+        return SyncTransaction(self.log)
+
+    def cursor(self):
+        return SyncCursor(self.log, self.rows)
+
+    def execute(self, sql, params=None):
+        self.log.append(("execute", sql, params))
+
+    def close(self):
+        self.closed = True
+
+
+def test_threaded_database_writes_reads_and_applies_schema_like_the_async_one():
+    conns = []
+
+    def connect():
+        conns.append(SyncConnection(rows=[{"run_id": "x"}]))
+        return conns[-1]
+
+    run = make_run()
+    batch = Batch(meta=[run])
+    tick = make_tick(run, 1, active=True)
+    batch.frames.extend(frame_rows(tick))
+    batch.verdicts.append(verdict_row(tick))
+
+    async def main():
+        db = ThreadedPostgresDatabase(connect=connect)
+        await db.apply_schema(["SELECT 1"])
+        await db.write(batch)
+        rows = await db.fetch(queries.LIST_RUNS, {"limit": 5})
+        await db.close()
+        return rows
+
+    rows = asyncio.run(main())
+    writer, reader = conns
+    assert [e[0] for e in writer.log] == ["execute", "begin", "execute", "copy", "copy", "commit"]
+    assert writer.log[3][1] == queries.COPY_FRAMES and len(writer.log[3][2]) == 2
+    assert rows == [{"run_id": "x"}] and reader.log[0][2] == {"limit": 5}
+    assert writer.closed and reader.closed
+
+
+def test_threaded_database_reconnects_after_a_failed_write():
+    conns = []
+
+    class Broken(SyncConnection):
+        def transaction(self):
+            raise ConnectionError("server closed the connection")
+
+    def connect():
+        conns.append(Broken() if not conns else SyncConnection())
+        return conns[-1]
+
+    async def main():
+        db = ThreadedPostgresDatabase(connect=connect)
+        try:
+            await db.write(Batch(meta=[make_run()]))
+        except ConnectionError:
+            pass
+        await db.write(Batch(meta=[make_run()]))
+
+    asyncio.run(main())
+    assert len(conns) == 2 and conns[0].closed
+
+
+def test_async_driver_is_avoided_only_on_windows_proactor_loops(monkeypatch):
+    import vbw.store.timescale as ts
+
+    class Proactor:
+        pass
+
+    monkeypatch.setattr(ts.asyncio, "ProactorEventLoop", Proactor, raising=False)
+    monkeypatch.setattr(ts.sys, "platform", "win32")
+    assert ts.async_driver_ok(Proactor()) is False
+    assert ts.async_driver_ok(object()) is True
+    monkeypatch.setattr(ts.sys, "platform", "linux")
+    assert ts.async_driver_ok(Proactor()) is True
 
 
 # ---------------------------------------------------------------------------------- batching

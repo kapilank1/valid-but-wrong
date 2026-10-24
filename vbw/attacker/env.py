@@ -279,6 +279,7 @@ class PpoAttack(_Attack):
     name = "ppo"
     model_path: str | None = None
     detector_name: str = "base"
+    shadow_l3: str | None = None   # hardened shadow only: the specific L3 file the policy was trained against
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -286,7 +287,7 @@ class PpoAttack(_Attack):
         self._step_bound = np.array(self.spec.step_bound, dtype=np.float32) if self.spec else None
         self._policy = self._load_policy()
         self.loaded = self._policy is not None
-        self._shadow = _make_shadow(self.detector_name, self.schema)
+        self._shadow = _make_shadow(self.detector_name, self.schema, self.shadow_l3)
         self._reset_state()
 
     def _load_policy(self):
@@ -342,8 +343,32 @@ class PpoAttack(_Attack):
         return out
 
 
-def _make_shadow(detector_name: str, schema: ChannelSchema):
+@dataclass
+class PpoR2Attack(PpoAttack):
+    """Arms race round 2: a policy trained against the hardened detector (round-1 L3).
+
+    Its shadow is the round-1 hardened detector it learned against (models/l3_<schema>_r1.onnx), even when a newer
+    L3 is deployed: the attacker doesn't know the defender retrained.
+    """
+
+    name = "ppo_r2"
+    detector_name: str = "hardened"
+
+    def __post_init__(self) -> None:
+        if self.model_path is None:
+            self.model_path = str(MODELS / f"ppo_{self.schema.name}_r2.zip")
+        if self.shadow_l3 is None:
+            r1 = MODELS / f"l3_{self.schema.name}_r1.onnx"
+            self.shadow_l3 = str(r1) if r1.exists() else None
+        super().__post_init__()
+
+
+def _make_shadow(detector_name: str, schema: ChannelSchema, shadow_l3: str | None = None):
     try:
+        if detector_name == "hardened" and shadow_l3:
+            from vbw.detector.l3 import HardenedDetector, L3Model
+
+            return HardenedDetector(schema, l3=L3Model.from_file(shadow_l3))
         from vbw.detector.registry import make_detector
 
         return make_detector(detector_name, schema)

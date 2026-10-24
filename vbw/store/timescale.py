@@ -5,7 +5,8 @@
 `record_*` only appends to a bounded deque, so the runner never waits on the database. If the database stalls,
 the queue fills and new ticks are dropped and counted; failed batches are dropped and counted too, while
 run start/end records are kept and retried. `store_from_env()` returns this store when DATABASE_URL is set
-and the no-op NullStore otherwise.
+and the no-op NullStore otherwise. The driver is psycopg async, or sync psycopg on a worker thread where the
+running loop can't host the async driver (Windows' ProactorEventLoop, uvicorn's default there).
 """
 
 from __future__ import annotations
@@ -14,8 +15,10 @@ import asyncio
 import logging
 import math
 import os
+import sys
 import uuid
 from collections import deque
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -261,6 +264,123 @@ class PostgresDatabase:
         await self._discard("_reader")
 
 
+SyncConnect = Callable[[], Any]
+
+
+class ThreadedPostgresDatabase:
+    """The same database calls with *sync* psycopg on one worker thread.
+
+    psycopg's async driver refuses Windows' ProactorEventLoop, which is the loop uvicorn runs on Windows unless
+    --reload is set, so `scripts/serve.py` on a Windows laptop would drop every write. One thread keeps reads and
+    writes serialized on their two connections, exactly like the async version.
+    """
+
+    def __init__(self, dsn: str | None = None, connect: SyncConnect | None = None):
+        if connect is None:
+            if not dsn:
+                raise ValueError("need a dsn or a connect factory")
+
+            def connect() -> Any:
+                import psycopg
+                from psycopg.rows import dict_row
+
+                return psycopg.connect(dsn, autocommit=True, row_factory=dict_row)
+
+        self._connect = connect
+        self._writer: Any = None
+        self._reader: Any = None
+        self._pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="vbw-db")
+
+    def _conn(self, attr: str) -> Any:
+        conn = getattr(self, attr)
+        if conn is None or getattr(conn, "closed", False):
+            conn = self._connect()
+            setattr(self, attr, conn)
+        return conn
+
+    def _discard(self, attr: str) -> None:
+        conn = getattr(self, attr)
+        setattr(self, attr, None)
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:  # noqa: BLE001
+                pass
+
+    async def _run(self, fn: Callable[..., Any], *args: Any) -> Any:
+        return await asyncio.get_running_loop().run_in_executor(self._pool, fn, *args)
+
+    def _write(self, batch: Batch) -> None:
+        conn = self._conn("_writer")
+        try:
+            with conn.transaction():
+                with conn.cursor() as cur:
+                    for item in batch.meta:
+                        if isinstance(item, RunRecord):
+                            cur.execute(queries.UPSERT_RUN, run_params(item))
+                        else:
+                            cur.execute(queries.END_RUN, vars(item))
+                    for sql, rows in ((queries.COPY_FRAMES, batch.frames), (queries.COPY_VERDICTS, batch.verdicts)):
+                        if rows:
+                            with cur.copy(sql) as copy:
+                                for row in rows:
+                                    copy.write_row(row)
+        except BaseException:
+            self._discard("_writer")
+            raise
+
+    def _fetch(self, sql: str, params: dict[str, Any] | None) -> list[dict[str, Any]]:
+        conn = self._conn("_reader")
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, params or {})
+                return list(cur.fetchall())
+        except BaseException:
+            self._discard("_reader")
+            raise
+
+    def _apply(self, statements: list[str]) -> None:
+        conn = self._conn("_writer")
+        try:
+            for stmt in statements:
+                conn.execute(stmt)
+        except BaseException:
+            self._discard("_writer")
+            raise
+
+    async def write(self, batch: Batch) -> None:
+        await self._run(self._write, batch)
+
+    async def fetch(self, sql: str, params: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+        return await self._run(self._fetch, sql, params)
+
+    async def apply_schema(self, statements: list[str]) -> None:
+        await self._run(self._apply, statements)
+
+    async def close(self) -> None:
+        await self._run(self._discard, "_writer")
+        await self._run(self._discard, "_reader")
+        self._pool.shutdown(wait=False)
+
+
+def async_driver_ok(loop: asyncio.AbstractEventLoop | None = None) -> bool:
+    """psycopg's async driver works on every loop except Windows' ProactorEventLoop."""
+    if sys.platform != "win32":
+        return True
+    if loop is None:
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            return False
+    proactor = getattr(asyncio, "ProactorEventLoop", None)
+    return not (proactor is not None and isinstance(loop, proactor))
+
+
+def make_database(dsn: str) -> Database:
+    """The async driver where it works, else the threaded sync one (Windows + ProactorEventLoop)."""
+    return PostgresDatabase(dsn) if async_driver_ok() else ThreadedPostgresDatabase(dsn)
+
+
 # ===================================================================================== store
 
 
@@ -456,4 +576,4 @@ def store_from_env(env: dict[str, str] | None = None) -> Store:
     if not dsn:
         return NullStore()
     auto_init = env.get("VBW_DB_AUTO_INIT", "1").strip() not in ("0", "false", "no")
-    return TimescaleStore(PostgresDatabase(dsn), auto_init=auto_init)
+    return TimescaleStore(make_database(dsn), auto_init=auto_init)

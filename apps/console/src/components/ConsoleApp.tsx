@@ -3,18 +3,23 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { detectorThreshold } from "@/lib/catalog";
 import { attackParams, initialControls, resetRequest, startRequest, type RunControls } from "@/lib/controls";
+import { DEMO_SCENARIO, DEMO_SPEED } from "@/lib/demo/script";
+import { useDemo } from "@/lib/demo/useDemo";
 import { resolveSchema } from "@/lib/scenario";
 import { missionTime, selectAlertBanner } from "@/lib/stream/reducer";
+import { linkValidity, truthGap } from "@/lib/truthGap";
 import { AlertBanner } from "@/components/AlertBanner";
 import { AttackLadder } from "@/components/AttackLadder";
 import { BenchCard } from "@/components/BenchCard";
 import { ChannelStrips } from "@/components/ChannelStrips";
+import { DemoControl } from "@/components/DemoControl";
 import { DetectorPanel } from "@/components/DetectorPanel";
 import { useConsole, useEngine, writeMuted } from "@/components/EngineProvider";
 import { EventLog } from "@/components/EventLog";
 import { HeroPlot } from "@/components/HeroPlot";
 import { LinkPanel } from "@/components/LinkPanel";
 import { TopBar } from "@/components/TopBar";
+import { TruthGapReadout } from "@/components/TruthGapReadout";
 
 export function ConsoleApp() {
   const engine = useEngine();
@@ -22,6 +27,7 @@ export function ConsoleApp() {
   const { catalog, status, scenario, latest, link } = stream;
   const [controls, setControls] = useState<RunControls | null>(null);
   const [muted, setMuted] = useState(false);
+  const demo = useDemo(engine, stream);
 
   useEffect(() => setMuted(engine.voice?.isMuted ?? false), [engine]);
 
@@ -71,6 +77,12 @@ export function ConsoleApp() {
 
   const loadBench = useCallback(() => engine.getBench(), [engine]);
 
+  const startDemo = () => {
+    // Show what the script is about to run in the top bar, then hand over to it.
+    patchControls({ scenario: DEMO_SCENARIO, speed: DEMO_SPEED, detector: "base", attack: "none", intensity: 1 });
+    demo.start();
+  };
+
   return (
     <div className="console">
       <TopBar
@@ -88,8 +100,21 @@ export function ConsoleApp() {
         onDetector={hotSwapDetector}
         onToggleMute={toggleMute}
         onRetryLive={() => void engine.start({ forceMock: false })}
+        demo={
+          <DemoControl
+            view={demo.view}
+            disabled={!catalog || connection.state !== "open"}
+            onStart={startDemo}
+            onCancel={demo.cancel}
+          />
+        }
       />
-      <AlertBanner view={banner} framesPassing={link.frames === link.allOk} running={running} />
+      <AlertBanner
+        view={banner}
+        framesPassing={link.frames === link.allOk}
+        running={running}
+        readout={<TruthGapReadout link={linkValidity(link)} gap={truthGap(latest, schema)} alert={banner.live} />}
+      />
       <main className="console-main">
         <div className="col col-left">
           <LinkPanel link={link} l0={latest?.verdict.l0 ?? null} />

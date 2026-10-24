@@ -36,6 +36,9 @@ check but describe impossible or implausible motion.
   frame on CPU.
 - NASA SMAP/MSL benchmark (event-level): F1 72.8% combined vs. Telemanom's 83.6%. We are below the published
   baseline and say so.
+- **Fleet scale on a laptop GPU:** as TensorRT FP16 engines on an RTX 5060 Laptop GPU, the learned layers score
+  16,384 vehicle streams in ~15 ms per frame (inside 50 Hz), 33× / 7.7× faster than the CPU, with zero detection
+  decisions changed. INT8 was measured too and didn't pay off on models this small.
 
 ## How we built it
 
@@ -47,6 +50,8 @@ check but describe impossible or implausible motion.
   and more). L2 is a GRU next-step predictor exported to **ONNX Runtime** (under 2 ms per frame on CPU). L3 is a
   1D-CNN over L1/L2 features of the last 4 s. Scores combine with a noisy-OR, and alerts need 3 of 5 frames over a
   threshold calibrated so no clean training or validation flight ever alerts.
+- **GPU path:** TensorRT 11 engines (strongly typed, so FP16 via graph conversion and INT8 via explicit Q/DQ from
+  calibrated static quantization) benchmarked against ONNX Runtime for fleet-scale scoring.
 - **Pipeline:** FastAPI + WebSocket server with live attack/detector hot-swap, writing frames and verdicts to
   **Tiger Data (TimescaleDB)** hypertables, with a `verdicts_1s` continuous aggregate for the run timeline.
 - **Console:** Next.js 15 + canvas rendering at 10 Hz, Cartesia TTS proxied through a server route, and a mock
@@ -100,5 +105,5 @@ check but describe impossible or implausible motion.
 
 ## Built with
 
-Python, PyTorch, ONNX Runtime, Stable-Baselines3, Gymnasium, FastAPI, TimescaleDB / Tiger Data, Next.js, React,
+Python, PyTorch, ONNX Runtime, TensorRT, CUDA, Stable-Baselines3, Gymnasium, FastAPI, TimescaleDB / Tiger Data, Next.js, React,
 TypeScript, Tailwind CSS, Cartesia, Docker, Vultr, uv, pnpm, Cursor.

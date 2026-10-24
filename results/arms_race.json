@@ -1,0 +1,68 @@
+{
+ "created": "2026-10-24T17:58:20+00:00",
+ "split": "6 holdout launches; attack starts at 35% of flight; clean = 6 launches x 3 noise seeds",
+ "rounds": [
+  {
+   "attacker": "PPO r1 (trained vs base)",
+   "defender": "base",
+   "source": "detector_eval_r2.json",
+   "detection_rate": 1.0,
+   "mean_latency_s": 189.8,
+   "mean_max_lie_before_alert_m": 12261,
+   "clean_false_alert_runs": "0/18"
+  },
+  {
+   "attacker": "PPO r1 (trained vs base)",
+   "defender": "hardened r1",
+   "source": "detector_eval.json",
+   "detection_rate": 1.0,
+   "mean_latency_s": 65.6,
+   "mean_max_lie_before_alert_m": 1950,
+   "clean_false_alert_runs": "0/18"
+  },
+  {
+   "attacker": "PPO r2 (trained vs hardened r1)",
+   "defender": "base",
+   "source": "detector_eval_r2a.json",
+   "detection_rate": 0.8333333333333334,
+   "mean_latency_s": 153.1,
+   "mean_max_lie_before_alert_m": 2022,
+   "clean_false_alert_runs": "0/18"
+  },
+  {
+   "attacker": "PPO r2 (trained vs hardened r1)",
+   "defender": "hardened r1",
+   "source": "detector_eval_r2a.json",
+   "detection_rate": 1.0,
+   "mean_latency_s": 166.8,
+   "mean_max_lie_before_alert_m": 1974,
+   "clean_false_alert_runs": "0/18"
+  },
+  {
+   "attacker": "PPO r2 (trained vs hardened r1)",
+   "defender": "hardened r2",
+   "source": "detector_eval_r2.json",
+   "detection_rate": 1.0,
+   "mean_latency_s": 35.9,
+   "mean_max_lie_before_alert_m": 384,
+   "clean_false_alert_runs": "0/18"
+  },
+  {
+   "attacker": "PPO r1 (trained vs base)",
+   "defender": "hardened r2",
+   "source": "detector_eval_r2.json",
+   "detection_rate": 1.0,
+   "mean_latency_s": 40.5,
+   "mean_max_lie_before_alert_m": 719,
+   "clean_false_alert_runs": "0/18"
+  }
+ ],
+ "clean_flight_hours": 2.58,
+ "shipped_l3": "r2",
+ "ship_rule": "keep r2 only if clean false alerts stay 0/18 and PPO r1 latency is within ~20% of r1's",
+ "l3_files": {
+  "r1": "models/l3_falcon9_r1.onnx",
+  "r2": "models/l3_falcon9_r2.onnx",
+  "deployed": "models/l3_falcon9.onnx"
+ }
+}

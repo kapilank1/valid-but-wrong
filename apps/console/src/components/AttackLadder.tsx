@@ -9,6 +9,8 @@ const RUNGS: { name: string; label: string; note: string }[] = [
   { name: "coordinated", label: "Coordinated", note: "consistent kinematics" },
   { name: "ppo", label: "PPO agent", note: "learned evasion" },
 ];
+// Shown only when the server offers it: the attacker retrained against the hardened detector.
+const ROUND_2 = { name: "ppo_r2", label: "PPO round 2", note: "trained vs hardened" };
 
 interface AttackLadderProps {
   catalog: Catalog | null;
@@ -23,6 +25,7 @@ interface AttackLadderProps {
 export function AttackLadder({ catalog, schema, currentAttack, attackActive, detector, onAttack, onDetector }: AttackLadderProps) {
   const hardened = detector === "hardened";
   const hardenable = detectorAvailability(catalog, "hardened");
+  const rungs = catalog?.attacks.some((a) => a.name === ROUND_2.name) ? [...RUNGS, ROUND_2] : RUNGS;
   return (
     <Panel
       title="Attack ladder · red team"
@@ -33,7 +36,7 @@ export function AttackLadder({ catalog, schema, currentAttack, attackActive, det
       }
     >
       <ol className="flex flex-col gap-1">
-        {RUNGS.map((r, i) => {
+        {rungs.map((r, i) => {
           const avail = attackAvailability(catalog, r.name, schema);
           const selected = currentAttack === r.name;
           return (

@@ -13,10 +13,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const CARTESIA_URL = "https://api.cartesia.ai/tts/bytes";
-const CARTESIA_VERSION = process.env.CARTESIA_VERSION ?? "2026-08-14";
-const MODEL_ID = process.env.CARTESIA_MODEL_ID ?? "sonic-3.6";
+// `||`, not `??`: docker compose passes unset vars as empty strings, which must still fall back to the defaults.
+const CARTESIA_VERSION = process.env.CARTESIA_VERSION || "2026-08-14";
+const MODEL_ID = process.env.CARTESIA_MODEL_ID || "sonic-3.6";
 // Voice from Cartesia's own Next.js example (docs.cartesia.ai/examples/nextjs); override via env.
-const VOICE_ID = process.env.CARTESIA_VOICE_ID ?? "6ccbfb76-1fc6-48f7-b71d-91ac6298247b";
+const VOICE_ID = process.env.CARTESIA_VOICE_ID || "6ccbfb76-1fc6-48f7-b71d-91ac6298247b";
 const MAX_TEXT = 400;
 const TIMEOUT_MS = 8000;
 

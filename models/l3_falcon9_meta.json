@@ -29,40 +29,40 @@
   "diff:angle",
   "diff:q"
  ],
- "logit_threshold": 6.880018521635444,
+ "logit_threshold": 4.325529385893256,
  "threshold_rule": "max over clean train+val flights (seeds [0, 1]) of the logit level held on 40 of 50 frames, minus logit(tau)/2, plus 0.5",
  "top_clean_peaks": [
   {
-   "logit": 6.712,
+   "logit": 4.157,
    "scenario": "falcon9:nrol-76",
    "seed": 1
   },
   {
-   "logit": 6.449,
+   "logit": 4.081,
    "scenario": "falcon9:nrol-76",
    "seed": 0
   },
   {
-   "logit": 2.538,
+   "logit": 2.254,
    "scenario": "falcon9:bangabandhu-1",
    "seed": 1
   },
   {
-   "logit": 2.482,
+   "logit": 2.252,
    "scenario": "falcon9:bangabandhu-1",
    "seed": 0
   },
   {
-   "logit": 0.454,
+   "logit": 2.109,
    "scenario": "falcon9:zuma",
-   "seed": 0
+   "seed": 1
   }
  ],
  "phase_bins": 10,
  "persistence_k": 40,
  "persistence_n": 50,
  "clean_val_windows": 3051,
- "clean_val_rate_over": 0.0075385119632907244,
+ "clean_val_rate_over": 0.011143887250081941,
  "noise_augmented": false,
  "val_scenarios": [
   "falcon9:echostar-23",
@@ -71,47 +71,52 @@
   "falcon9:ses-11",
   "falcon9:spacex-crs-9"
  ],
- "train_windows": 44335,
- "val_windows": 10759,
+ "train_windows": 49157,
+ "val_windows": 11925,
  "val_per_attack": {
   "bias": {
-   "windows": 1192,
-   "forged_detect_rate": 0.14069767441860465,
+   "windows": 1195,
+   "forged_detect_rate": 0.15262515262515264,
    "clean_false_rate": 0.0
   },
   "clean": {
-   "windows": 2692,
+   "windows": 2766,
    "forged_detect_rate": null,
    "clean_false_rate": 0.0
   },
   "coordinated": {
-   "windows": 1214,
-   "forged_detect_rate": 0.9988545246277205,
+   "windows": 1212,
+   "forged_detect_rate": 0.9988358556461001,
    "clean_false_rate": 0.0
   },
   "drift": {
-   "windows": 1238,
-   "forged_detect_rate": 0.11920529801324503,
+   "windows": 1209,
+   "forged_detect_rate": 0.8070175438596491,
    "clean_false_rate": 0.0
   },
   "freeze": {
-   "windows": 1270,
-   "forged_detect_rate": 0.994413407821229,
+   "windows": 1214,
+   "forged_detect_rate": 0.9964788732394366,
    "clean_false_rate": 0.0
   },
   "none": {
-   "windows": 693,
+   "windows": 705,
    "forged_detect_rate": null,
    "clean_false_rate": 0.0
   },
   "ppo": {
-   "windows": 1219,
-   "forged_detect_rate": 0.7462165308498254,
+   "windows": 1192,
+   "forged_detect_rate": 0.9011264080100125,
+   "clean_false_rate": 0.0
+  },
+  "ppo_r2": {
+   "windows": 1189,
+   "forged_detect_rate": 0.8266509433962265,
    "clean_false_rate": 0.0
   },
   "replay": {
-   "windows": 1241,
-   "forged_detect_rate": 0.9722222222222222,
+   "windows": 1243,
+   "forged_detect_rate": 1.0,
    "clean_false_rate": 0.0
   }
  },
@@ -123,6 +128,7 @@
   "freeze",
   "none",
   "ppo",
+  "ppo_r2",
   "replay"
  ]
 }
