@@ -31,9 +31,9 @@ Prize targets: SpaceXSI (built in Cursor, Grok Bot bonus), Armadin Best Security
 MLH Tiger Data, MLH Vultr, Cartesia.
 
 ## 2. This machine (Windows 11, PowerShell) — read before running anything
-- **git is NOT installed.** Nothing from the 2026-10-24 session is committed. Install Git for Windows (or use
-  Cursor's prompt to install it), then commit everything before doing more work. `.gitignore` already excludes
-  `data/raw`, `data/cache`, `.venv`, `node_modules`.
+- **git** installed 2026-10-24 (winget, 2.56); all work through 03:30 is committed (`a455875`). No remote yet: create
+  a GitHub repo and push before submitting. If `git` isn't on PATH in an old shell, use
+  `"C:\Program Files\Git\cmd\git.exe"`. `models/ppo_falcon9.zip` is tracked via a `.gitignore` exception.
 - **uv needs `--system-certs` for anything that touches the network** (TLS interception here), e.g.
   `uv sync --system-certs`, `uv lock --system-certs`. Plain `uv run ...` works offline once synced.
 - Shell is PowerShell 5.1: no `&&`; use `;`. Background jobs: Python `print` is buffered when redirected to a file.
