@@ -1,13 +1,22 @@
-# CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 03:30 PDT)
+# CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 ~12:45 PDT)
 
-> **Latest (03:30):** detector eval is DONE and the hardened detector works: PPO caught in 66 s / 1.95 km lie vs
-> 190 s / 12.3 km for base, 0 clean false alerts for both (`results/detector_eval.json`). README + DEVPOST results are
-> filled. Live console click-through verified, including PPO → Harden. Steps 1–3 of §6 below are done; see the last
-> HANDOFF.md entry for details. Remaining: §6 steps 4–6 (human items, ship assets, git commit, nice-to-haves).
-> Demo script: SES-9, speed 10×, start; at ~T+190 s click PPO; watch the lie grow with base silent; click Harden.
-> Run the Coordinated rung at intensity 1.0 (at 0.5 it evades both detectors on SES-9).
-> Changes since the sections below were written: L3 drops the corridor feature and has its own 40-of-50-frame
-> persistence (threshold 6.88); 213 tests pass.
+> **Latest (Sat 12:45):** the build is feature-complete and verified; what's left is credentials, deploy, and ship assets.
+> - **Hardened r2 ships** (`models/l3_falcon9.onnx` = r2; r1 kept as `models/l3_falcon9_r1.*`). On 6 held-out
+>   launches it catches PPO r1 in 41 s / 0.72 km (base: 190 s / 12.3 km) and PPO r2 in 36 s / 0.38 km, 0/18 clean
+>   false alerts (`results/detector_eval_r2.json`).
+> - **Arms race round 2 done** (`results/arms_race.json`): PPO r2, retrained against hardened r1, survived it 2.5×
+>   longer (167 s vs 66 s); retraining L3 on its output gives hardened r2.
+> - **TensorRT done** (`docs/TENSORRT.md`, `results/trt_bench.json`, AC power, shipped L3 r2): FP16 scores 16,384
+>   streams in ~15.9 ms (L2 6.7 ms vs CPU 232 ms = 35×; L3 9.2 ms vs 80 ms = 8.7×), 0 decisions changed; INT8 measured
+>   and not worth it (slower than FP16, flips 3.0% of L3 decisions). Battery run: `results/trt_bench_battery.json`.
+> - **Console demo verified live**: ▶ Demo (title row) runs bias → PPO → harden on SES-9 at 10×. With policy
+>   preloading at server startup (`vbw/attacker/env.py` `load_policy` / `preload_policies`), PPO goes active at
+>   T+190.0 s, the lie reaches 3.70 km with base silent, and hardened r2 alerts 0.1 s after the hot-swap (T+288.6).
+>   PPO round 2 rung verified live too: 2.44 km lie at T+349 with base at 0.03; hardened r2 caught it 43 s after swap.
+> - **Deploy prep done** (`docs/INTEGRATIONS.md`, `scripts/deploy_vultr.ps1`), **blocked on the user's keys**:
+>   `VULTR_API_KEY` and `DATABASE_URL` in repo-root `.env`, `CARTESIA_API_KEY` in `apps/console/.env.local`.
+> - **git**: commits `a455875`, `f52e085`, `7264e60` and later. No remote: create a GitHub repo and push before submitting.
+> - Tests: 221 passed + 1 skipped (the GPU test without TensorRT); console 73.
 
 Read this first. It says what the project is, what is built and measured, and exactly what to do next.
 `HANDOFF.md` is the chronological log (with the reasoning behind every change). `PLAN.md` is the original hackathon
@@ -31,20 +40,25 @@ Prize targets: SpaceXSI (built in Cursor, Grok Bot bonus), Armadin Best Security
 MLH Tiger Data, MLH Vultr, Cartesia.
 
 ## 2. This machine (Windows 11, PowerShell) — read before running anything
-- **git** installed 2026-10-24 (winget, 2.56); all work through 03:30 is committed (`a455875`). No remote yet: create
-  a GitHub repo and push before submitting. If `git` isn't on PATH in an old shell, use
-  `"C:\Program Files\Git\cmd\git.exe"`. `models/ppo_falcon9.zip` is tracked via a `.gitignore` exception.
+- **git** installed 2026-10-24 (winget, 2.56); latest commit `7264e60`. No remote yet: create a GitHub repo and push
+  before submitting. If `git` isn't on PATH in an old shell, use `"C:\Program Files\Git\cmd\git.exe"`.
+  `models/ppo_falcon9.zip` and `models/ppo_falcon9_r2.zip` are tracked via `.gitignore` exceptions; `models/trt/`
+  (engines) is ignored. PowerShell 5.1 mangles here-string commit messages: use `git commit -F <file>`.
 - **uv needs `--system-certs` for anything that touches the network** (TLS interception here), e.g.
   `uv sync --system-certs`, `uv lock --system-certs`. Plain `uv run ...` works offline once synced.
 - Shell is PowerShell 5.1: no `&&`; use `;`. Background jobs: Python `print` is buffered when redirected to a file.
-- Hardware: Ryzen AI 7 350 (8C/16T), 31 GB RAM, no GPU used. No Docker, no local Postgres.
+- Hardware: Ryzen AI 7 350 (8C/16T), 31 GB RAM, **NVIDIA RTX 5060 Laptop GPU** (8 GB, compute 12.0, driver 576.76,
+  CUDA 12.9; used only by the TensorRT bench). No Docker, no local Postgres. **On battery the CPU and GPU are throttled**
+  (benchmarks ~1.3–1.8× slower): plug in before timing anything.
+- GPU packages are not in the default env: `uv run --with tensorrt-cu12 --with "cuda-python>=12.6,<13" --with
+  onnxconverter-common ...` (`cuda-python` 13.x fails with this driver).
 - `.claude/launch.json` has `api` (uv run python scripts/serve.py, :8000) and `console` (pnpm --dir apps/console dev,
-  :3000) for the Claude desktop preview. Nothing is running now.
+  :3000) for the Claude desktop preview. Restart the API after any model change (no auto-reload).
 
 ```powershell
 uv sync --system-certs            # Python 3.12 env
-uv run pytest -q                  # expect 211 passed
-cd apps/console; pnpm install; pnpm test; cd ../..   # expect 57 passed
+uv run pytest -q                  # expect 221 passed, 1 skipped
+cd apps/console; pnpm install; pnpm test; cd ../..   # expect 73 passed
 uv run python scripts/serve.py    # API + WebSocket on :8000
 pnpm --dir apps/console dev       # console on :3000 (?mock=1 runs without the server)
 ```
@@ -58,12 +72,13 @@ pnpm --dir apps/console dev       # console on :3000 (?mock=1 runs without the s
 | `vbw/detector/` L1 | DONE | 11 Falcon 9 rules incl. NEW `vz_vs_altitude_rate_60s` (threshold 20.4 m/s). Thresholds `models/l1_thresholds.json` (falcon9 + quad). |
 | L2 | DONE | `models/l2_falcon9.onnx`, `models/l2_quad.onnx` (+ `_norm.json`). |
 | Alerting | DONE | τ calibrated by `scripts/calibrate_alert.py` → `models/l1_alert.json`: **falcon9 τ = 0.66, quad τ = 0.53**, k=3 of n=5. |
-| L3 / hardened | TRAINED, NOT YET EVALUATED | `models/l3_falcon9.onnx` + `_meta.json` (logit threshold 28.53). Hardened score = max(noisy-OR(L1,L2), l3_score). |
-| `vbw/attacker/` | DONE | Scripted ladder + **real PPO** `models/ppo_falcon9.zip` (v3, 1.5M steps vs base). `models/ppo_falcon9_stub.zip` is an obsolete stub; safe to delete. |
-| `vbw/pipeline/`, `vbw/store/`, `infra/` | DONE | FastAPI + WS, hot-swap, Timescale writer. SQL has **never run on a real TimescaleDB** (needs DATABASE_URL). Linux torch now CPU-only via `pyproject.toml [tool.uv.sources]` (Docker image not rebuilt/verified). |
+| L3 / hardened | DONE, r2 SHIPPED | `models/l3_falcon9.onnx` + `_meta.json` = **hardened r2** (logit threshold 4.33; corridor feature excluded; own alert stream, 40 of 50 frames). r1 backup `models/l3_falcon9_r1.*`, r2 copy `models/l3_falcon9_r2.*`. Verdict score = max(noisy-OR(L1,L2), l3_score). |
+| TensorRT | DONE | `vbw/detector/trt.py`, `scripts/trt_bench.py`, `docs/TENSORRT.md`. Engines in `models/trt/` (gitignored, rebuilt by the bench). |
+| `vbw/attacker/` | DONE | Scripted ladder + **PPO r1** `models/ppo_falcon9.zip` (vs base) + **PPO r2** `models/ppo_falcon9_r2.zip` (vs hardened r1; attack `ppo_r2`, shadow = hardened r1). `models/ppo_falcon9_stub.zip` is an obsolete stub (gitignored). |
+| `vbw/pipeline/`, `vbw/store/`, `infra/` | DONE, UNDEPLOYED | FastAPI + WS, hot-swap, Timescale writer (threaded psycopg store on Windows). `scripts/db_init.py --check` is end to end. SQL has **never run on a real TimescaleDB** (needs DATABASE_URL). Docker images not built here (no Docker); `scripts/deploy_vultr.ps1` builds them on the VM. |
 | `vbw/bench/` | DONE | SMAP/MSL numbers below; `docs/BENCH.md` filled in. |
-| `apps/console/` | BUILDS, PARTLY VERIFIED | `pnpm build` OK, 57 vitest pass. Live-tested: start SES-9, Bias (alert 0.2 s after onset), Clear, Drift. **Not yet clicked live: Replay, Coordinated, PPO, Harden.** Gauge shows calibrated τ (catalog `thresholds` per schema). |
-| `README.md`, `docs/DEVPOST.md` | DRAFTED | Contain placeholders `RESULTS_SECTION` (README) and `DEVPOST_RESULTS` (DEVPOST) to fill from `results/detector_eval.json`. |
+| `apps/console/` | DONE, VERIFIED LIVE | 73 vitest, build OK. ▶ Demo button, "LINK 100% VALID / PICTURE OFF BY x km" readout, PPO round 2 rung, fits 1440×900. Bias, Drift, Replay, Coordinated, PPO, Harden and the Demo verified live; **the PPO round 2 rung has not been clicked live yet.** |
+| `README.md`, `docs/DEVPOST.md`, `docs/TENSORRT.md` | WRITTEN | Numbers from `results/detector_eval_r2.json`, `results/arms_race.json`, `results/trt_bench*.json`. |
 
 ## 4. Measured numbers (all from files in `results/` or `models/`; quote only these)
 
@@ -87,11 +102,20 @@ the first ~100 s while the lie reaches ~3.7 km; it is finally caught by speed-vs
 bookkeeping drifts. Live demo note: an attack started early (in the atmosphere, e.g. T+70 s) is caught much faster by
 the dynamic-pressure-vs-altitude rule (drift caught in 15 s live).
 
-**L3 (hardened) validation, per forged window at the calibrated threshold** (`models/l3_falcon9_meta.json`):
-freeze 99%, replay 98%, coordinated 86%, **PPO 59%**, bias 13%, drift 10%; clean val windows over threshold: 0%.
-The threshold (28.5) is set by `nrol-76`'s entry-burn OCR glitch (next highest clean flight: 11.3).
-**Whether hardened catches PPO on holdout launches end to end, and hardened's clean false alerts, are NOT measured
-yet** — that is step 1 below.
+**Hardened r2 (shipped) vs attacks** (`results/detector_eval_r2.json`, same protocol): bias 0.6 s, replay 0.6 s,
+freeze 0.6 s, coordinated 3.6 s / 0.09 km, drift 18.5 s / 0.55 km, **PPO r1 41 s / 0.72 km, PPO r2 36 s / 0.38 km**, all
+6/6. At intensity 0.4: bias and drift 6/6 (base 3/6). Clean: 0/18 runs (2.58 h), test half 0/9 (1.27 h), for both
+detectors; no run alerted before its attack. 1.1 ms/frame (base), 1.3 ms/frame (hardened). SES-9 PPO r1: base
+315 s / 23.8 km, hardened r2 34 s / 0.59 km.
+
+**Arms race** (`results/arms_race.json`): PPO r1 vs base 190 s / 12.3 km → vs hardened r1 66 s / 1.95 km; PPO r2 vs
+base 5/6 caught, 153 s (over the 5) / 2.0 km; PPO r2 vs hardened r1 167 s / 1.97 km; PPO r2 vs hardened r2 36 s / 0.38 km;
+PPO r1 vs hardened r2 41 s / 0.72 km. Every row 0/18 clean false alerts.
+
+**TensorRT** (`results/trt_bench.json`, AC power, L3 r2): 16,384 streams per batch — L2 FP16 6.7 ms vs ONNX Runtime
+CPU 232 ms (35×), L3 FP16 9.2 ms vs 80 ms (8.7×); FP16 changes 0 decisions; INT8 slower than FP16 and flips 3.0% of L3
+decisions. Batch of 1: GPU ~0.2–0.6 ms vs CPU ~0.04–0.06 ms. On battery (`results/trt_bench_battery.json`) everything
+is ~1.3–1.8× slower: 4,096 streams ~6 ms, 16,384 ~21.5 ms.
 
 **SMAP/MSL benchmark** (event-level, `results/bench_summary.json`): SMAP F1 76.3%, MSL 64.3%, combined
 P 78.9 / R 67.6 / F1 72.8%. Telemanom (paper): combined F1 83.6%. We are below it; say so.
@@ -106,35 +130,38 @@ P 78.9 / R 67.6 / F1 72.8%. Telemanom (paper): combined F1 83.6%. We are below i
   (downrange-rate rule is ~1 m/s tight), so it controls altitude, vz, speed only. Env warmup 620 frames (longest L1
   lookback is 610).
 - **10 s vs 60 s windows:** clean |vz − dalt/dt| max is 81.9 m/s at 10 s but 13.6 m/s at 60 s (OCR glitches cancel).
-- **L3 confound:** with all attacks starting at 35%, L3 learned "late flight = forged" and saturated on clean stage-1
+- **L3 confounds:** with all attacks starting at 35%, L3 learned "late flight = forged" and saturated on clean stage-1
   entry/landing burns. Fixed by spreading training onsets (10/40/70%) and phase-balancing (`features.phase_balance`).
-  L3 is its own alert stream (max), calibrated by 3-of-5 persistence on clean train+val flights, because L1+L2 already
-  sit at 0.655 on abs-2a and any noisy-OR addition would false-alert.
+  Then it learned "near the corridor edge = forged" on held-out stage-1 coasts (zeroing the corridor feature: logit
+  23 → 1), so corridor is excluded from L3 features (`features.L3_EXCLUDED_RULES`). L3 is its own alert stream (max,
+  not noisy-OR, because L1+L2 already sit at 0.655 on abs-2a) with sustained persistence 40 of 50 frames
+  (`l3.L3_PERSIST_K/N`), calibrated on clean train+val flights, so 1–3 s boostback transients don't set its threshold.
+- **TensorRT 11 is strongly typed**: no FP16/INT8 builder flags or implicit calibrator. FP16 = ONNX converted with
+  onnxconverter-common; INT8 = ORT static QDQ (symmetric, per-channel, `QuantizeBias: False`, first layer float).
+  ORT's histogram calibrators (percentile, entropy) crash on these graphs; min/max is used. TF32 makes "FP32"
+  engines differ from CPU by ~3e-4. No GRU tactic exists for a 65,536 batch.
+- **PPO cold start**: the first SB3 policy load after a server restart takes seconds (≈1 min of flight at 10×).
+  Fixed: cached `load_policy` + `preload_policies` in the server lifespan (log line "attacker policies preloaded").
+- **Benchmark plugged in**: on battery (Balanced plan) CPU and GPU timings are ~1.3–1.8× slower.
 - Quad: `quad_scenarios()` used to include `sitl:udp:14550` (blocks on a socket) — fixed. Quad test split = held mission
   (hover) on seeds +1000.
 - SMAP original S3 bucket 403s; `scripts/fetch_smap.py` uses the TranAD mirror.
 
 ## 6. What's left (in priority order)
-1. **Detector eval** (script ready, never run): `uv run python scripts/eval_detector.py --schema falcon9 --workers 12`
-   (~5 min) → `results/detector_eval.json`: clean false alerts per flight (base vs hardened), detection rate / latency /
-   lie-before-alert per attack at intensity 0.4 and 1.0, PPO vs both detectors, ms per frame.
-   - If **hardened has clean false alerts**: raise `LOGIT_MARGIN` in `scripts/train_l3.py` or check which flight.
-   - If **hardened doesn't catch PPO well on holdout**: the honest story still works (PPO lies 12 km on average past
-     base); consider a vz corridor or longer L3 context. Don't overfit to holdout.
-2. **Fill the results** into `README.md` (`RESULTS_SECTION`) and `docs/DEVPOST.md` (`DEVPOST_RESULTS`) from
-   `results/detector_eval.json` + section 4. Never invent numbers.
-3. **Console live click-through** against the server: Start (SES-9) → Bias → Drift → Replay → Coordinated → PPO →
-   Harden detector. Check the PPO rung is enabled (it reads `available` from the catalog), the L3 P(forged) readout
-   updates after Harden, and layout at 1440×900. Restart the API after model changes (no auto-reload).
-4. **Human-only items:** `DATABASE_URL` (Tiger Data) then `uv run python scripts/db_init.py --check`;
-   `CARTESIA_API_KEY` in `apps/console/.env.local`; Vultr account if deploying (`docs/DEPLOY_VULTR.md`).
-5. **Ship:** Devpost image (console screenshot mid-attack), recorded backup demo video, screenshots of Cursor + Grok
-   usage for SpaceXSI, commit everything. Update the resume bullet to match what was built (ONNX Runtime, not TensorRT;
-   no Kubernetes).
-6. Nice to have: verify the CPU-torch Docker image builds; delete `models/ppo_falcon9_stub.zip`; quad PPO.
+1. ~~PPO preload fix~~ and ~~TensorRT rerun on AC power~~: done and verified (see Latest).
+2. **Credentials (user):** `VULTR_API_KEY` + `DATABASE_URL` in repo-root `.env`, `CARTESIA_API_KEY` in
+   `apps/console/.env.local` (see `docs/INTEGRATIONS.md`). Then, in this order:
+   - **Vultr:** `scripts/deploy_vultr.ps1 -DryRun`, show the user the plan + price (default `vc2-2c-4gb`, ~$0.027/h),
+     and create only after they confirm (`-Yes`). Destroy with `scripts/deploy_vultr_destroy.ps1 -Yes` after judging.
+   - **Tiger Data:** `uv run python scripts/db_init.py --check`, then run a demo so runs land in the hypertables.
+   - **Cartesia:** restart the console, confirm voice callouts use Cartesia.
+3. **Ship:** push to GitHub, Devpost image (console screenshot mid-attack), recorded backup demo video, screenshots
+   of Cursor + Grok usage for SpaceXSI. Update the resume bullet to match what was built (TensorRT FP16/INT8 was
+   benchmarked, the live path is ONNX Runtime; no Kubernetes; no C++ monitor).
+4. **Optional (only if the user asks):** C++ MAVLink/UDP edge monitor; quad PPO; delete the stub model.
 
-Cut order if behind: Docker → quad → console polish. Never cut: the live Falcon 9 attack-and-catch demo and the
-SMAP/MSL benchmark number.
+Cut order if behind: optional items → TensorRT rerun → Cartesia. Never cut: the live Falcon 9 attack-and-catch demo
+and the SMAP/MSL benchmark number.
 
 ## 7. Reproduce the whole pipeline (in this order; each step's outputs feed the next)
 ```powershell
@@ -148,5 +175,13 @@ uv run python scripts/train_ppo.py --schema falcon9 --detector base --timesteps 
 uv run python scripts/make_forged_dataset.py --schema falcon9   # data/cache/forged_*.npz + results/attacks_eval.json (~6 min)
 uv run python scripts/train_l3.py --schema falcon9              # models/l3_falcon9.onnx (~5 min)
 uv run python scripts/eval_detector.py --schema falcon9         # results/detector_eval.json
+# arms race round 2
+uv run python scripts/train_ppo.py --schema falcon9 --detector hardened --timesteps 1500000 --n-envs 10 --episode-len 1500 --out models/ppo_falcon9_r2.zip --metrics-out results/ppo_falcon9_r2_metrics.json   # ~40 min
+uv run python scripts/make_forged_dataset.py --schema falcon9 --ppo-only ppo_r2
+uv run python scripts/train_l3.py --schema falcon9              # hardened r2
+uv run python scripts/eval_detector.py --schema falcon9 --l3 models/l3_falcon9_r2.onnx --out results/detector_eval_r2.json
+uv run python scripts/arms_race_report.py                       # results/arms_race.json
+# GPU (plugged in, servers stopped)
+uv run --with tensorrt-cu12 --with "cuda-python>=12.6,<13" --with onnxconverter-common python scripts/trt_bench.py
 ```
 If any L1 rule or τ changes, retrain PPO (it learns the detector), then forge → L3 → eval.

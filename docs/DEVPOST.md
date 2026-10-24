@@ -28,17 +28,20 @@ check but describe impossible or implausible motion.
 ## Results
 
 - **On SES-9, a launch the detector never trained on, the base detector lets the PPO attacker walk altitude off
-  by 23.8 km over 315 s before alerting. The hardened detector catches it at 95 s (3.4 km).**
-- Across six held-out launches, PPO is caught at 190 s mean with a 12.3 km lie by the base detector, and at 66 s
-  mean with a 2.0 km lie by the hardened detector. Bias, replay and freeze are caught in 0.6 s, and the coordinated
-  self-consistent fake in 3.6–5.3 s.
-- **Zero false alerts** on 18 clean held-out flights (2.58 flight-hours), for both detectors. Cost is 1.2–1.4 ms per
-  frame on CPU.
+  by 23.8 km over 315 s before alerting. The hardened detector catches it at 34 s (0.6 km).**
+- Across six held-out launches, PPO is caught at 190 s mean with a 12.3 km lie by the base detector, and at 41 s
+  mean with a 0.72 km lie by the hardened detector. Bias, replay and freeze are caught in 0.6 s, a 30 m/s drift in
+  18.5 s (base: 137 s), and the coordinated self-consistent fake in 3.6–5.3 s.
+- **A two-round arms race.** PPO retrained against the first hardened detector learned a slower, smaller lie
+  (~2 km) and survived it 2.5× longer (167 s vs 66 s); base never caught it on one launch. L3 retrained on that
+  attacker's output (the detector we ship) catches it in 36 s with a 0.38 km lie, and the round-1 attacker in 41 s.
+- **Zero false alerts** on 18 clean held-out flights (2.58 flight-hours) at every stage, for every detector. Cost is
+  1.1–1.3 ms per frame on CPU.
 - NASA SMAP/MSL benchmark (event-level): F1 72.8% combined vs. Telemanom's 83.6%. We are below the published
   baseline and say so.
 - **Fleet scale on a laptop GPU:** as TensorRT FP16 engines on an RTX 5060 Laptop GPU, the learned layers score
-  16,384 vehicle streams in ~15 ms per frame (inside 50 Hz), 33× / 7.7× faster than the CPU, with zero detection
-  decisions changed. INT8 was measured too and didn't pay off on models this small.
+  16,384 vehicle streams in ~16 ms per frame (inside 50 Hz, on AC power), 35× / 8.7× faster than the CPU, with zero
+  detection decisions changed. INT8 was measured too and didn't pay off on models this small.
 
 ## How we built it
 
@@ -48,17 +51,20 @@ check but describe impossible or implausible motion.
 - **Detector:** L1 has eleven windowed physics rules for Falcon 9 (vz vs. altitude rate over 10 s and over 60 s, vx vs. downrange rate, speed
   vs. velocity components, dynamic pressure vs. a fitted atmosphere, a flight corridor learned from every launch,
   and more). L2 is a GRU next-step predictor exported to **ONNX Runtime** (under 2 ms per frame on CPU). L3 is a
-  1D-CNN over L1/L2 features of the last 4 s. Scores combine with a noisy-OR, and alerts need 3 of 5 frames over a
-  threshold calibrated so no clean training or validation flight ever alerts.
+  1D-CNN over L1/L2 features of the last 4 s. L1 and L2 combine with a noisy-OR, and alerts need 3 of 5 frames over a
+  threshold calibrated so no clean training or validation flight ever alerts; L3 is its own alert stream that must
+  stay over its (equally calibrated) threshold for 40 of 50 frames.
 - **GPU path:** TensorRT 11 engines (strongly typed, so FP16 via graph conversion and INT8 via explicit Q/DQ from
   calibrated static quantization) benchmarked against ONNX Runtime for fleet-scale scoring.
 - **Pipeline:** FastAPI + WebSocket server with live attack/detector hot-swap, writing frames and verdicts to
   **Tiger Data (TimescaleDB)** hypertables, with a `verdicts_1s` continuous aggregate for the run timeline.
-- **Console:** Next.js 15 + canvas rendering at 10 Hz, Cartesia TTS proxied through a server route, and a mock
-  mode that runs entirely in the browser.
+- **Console:** Next.js 15 + canvas rendering at 10 Hz, a "LINK 100% VALID / PICTURE OFF BY x km" headline, a
+  one-click scripted demo (bias → PPO → harden), Cartesia TTS proxied through a server route, and a mock mode that
+  runs entirely in the browser.
 - **Benchmark:** we reimplemented the Telemanom protocol (Hundman et al., KDD 2018) on SMAP/MSL: per-channel LSTM,
   nonparametric dynamic thresholding, event-level scoring.
-- **Infra:** Docker images, docker-compose with TimescaleDB, and a Vultr deployment guide.
+- **Infra:** Docker images, docker-compose with TimescaleDB, cloud-init, and a Vultr deploy script (dry run and price
+  confirmation before anything is created).
 
 ## Challenges we ran into
 
@@ -86,7 +92,9 @@ check but describe impossible or implausible motion.
 
 - An end-to-end live system: real launch data → link codec → MITM → three detection layers → console with voice,
   all streaming at 10 Hz with hot-swappable attackers and detectors.
-- A learned attacker and a learned defender that train against each other, on real flight data.
+- A learned attacker and a learned defender that trained against each other for two full rounds on real flight
+  data: each new attacker stayed hidden far longer from the defender it trained against, and each new defender
+  caught every attacker faster, without a single false alert on clean held-out flights.
 - A faithful reimplementation of a published spacecraft anomaly benchmark, with the numbers reported honestly even
   where we fall short of it.
 
@@ -99,7 +107,7 @@ check but describe impossible or implausible motion.
 
 ## What's next
 
-- Train the attacker against the hardened detector, and keep alternating rounds.
+- Round 3 and beyond: retrain the attacker against the round-2 detector, and keep alternating.
 - Run the MAVLink bridge against real ArduPilot SITL and real drone logs (e.g. CMU ALFA).
 - Higher-rate vehicle telemetry, where the physics rules can be much tighter.
 

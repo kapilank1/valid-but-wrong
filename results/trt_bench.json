@@ -1,5 +1,5 @@
 {
- "created": "2026-10-24T17:27:21+00:00",
+ "created": "2026-10-24T19:36:18+00:00",
  "gpu": {
   "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
   "compute_capability": "12.0"
@@ -14,40 +14,40 @@
    "eval_windows": 30844,
    "onnxruntime_cpu": {
     "batch1": {
-     "p50_us": 41.4,
-     "p99_us": 54.8
+     "p50_us": 57.2,
+     "p99_us": 153.5
     },
     "batches": {
      "64": {
-      "p50_ms": 0.738,
-      "windows_per_s": 86774
+      "p50_ms": 0.963,
+      "windows_per_s": 66476
      },
      "256": {
-      "p50_ms": 3.073,
-      "windows_per_s": 83313
+      "p50_ms": 3.569,
+      "windows_per_s": 71719
      },
      "1024": {
-      "p50_ms": 11.728,
-      "windows_per_s": 87311
+      "p50_ms": 14.105,
+      "windows_per_s": 72596
      },
      "4096": {
-      "p50_ms": 46.093,
-      "windows_per_s": 88864
+      "p50_ms": 53.905,
+      "windows_per_s": 75986
      },
      "16384": {
-      "p50_ms": 203.854,
-      "windows_per_s": 80371
+      "p50_ms": 232.425,
+      "windows_per_s": 70492
      }
     },
     "streams_at_50hz": 1024
    },
    "tensorrt": {
     "fp32": {
-     "build_s": 8.8,
+     "build_s": 10.3,
      "layers": {
       "fp32": 33
      },
-     "engine_kb": 673,
+     "engine_kb": 685,
      "accuracy": {
       "max_abs_z_err": 0.0241,
       "p99_abs_z_err": 0.0116,
@@ -55,81 +55,81 @@
       "frames": 30844
      },
      "batch1": {
-      "p50_us": 566.6,
-      "p99_us": 1824.7
+      "p50_us": 582.1,
+      "p99_us": 1422.9
      },
      "batches": {
       "64": {
-       "p50_ms": 0.661,
-       "windows_per_s": 96808
+       "p50_ms": 0.588,
+       "windows_per_s": 108807
       },
       "256": {
-       "p50_ms": 0.756,
-       "windows_per_s": 338692
+       "p50_ms": 0.658,
+       "windows_per_s": 389354
       },
       "1024": {
-       "p50_ms": 2.835,
-       "windows_per_s": 361199
+       "p50_ms": 0.954,
+       "windows_per_s": 1073432
       },
       "4096": {
-       "p50_ms": 3.035,
-       "windows_per_s": 1349722
+       "p50_ms": 2.694,
+       "windows_per_s": 1520500
       },
       "16384": {
-       "p50_ms": 13.37,
-       "windows_per_s": 1225462
+       "p50_ms": 11.256,
+       "windows_per_s": 1455579
       }
      },
      "streams_at_50hz": 16384
     },
     "fp16": {
-     "build_s": 16.1,
+     "build_s": 18.9,
      "layers": {
       "fp16": 31,
       "fp32": 1
      },
-     "engine_kb": 718,
+     "engine_kb": 725,
      "accuracy": {
-      "max_abs_z_err": 0.1007,
-      "p99_abs_z_err": 0.0342,
+      "max_abs_z_err": 0.1245,
+      "p99_abs_z_err": 0.0344,
       "spike_decision_flips": 0.0,
       "frames": 30844
      },
      "batch1": {
-      "p50_us": 565.8,
-      "p99_us": 1032.5
+      "p50_us": 567.8,
+      "p99_us": 872.3
      },
      "batches": {
       "64": {
-       "p50_ms": 0.58,
-       "windows_per_s": 110440
+       "p50_ms": 0.614,
+       "windows_per_s": 104226
       },
       "256": {
-       "p50_ms": 0.645,
-       "windows_per_s": 396745
+       "p50_ms": 0.712,
+       "windows_per_s": 359626
       },
       "1024": {
-       "p50_ms": 0.779,
-       "windows_per_s": 1314506
+       "p50_ms": 1.111,
+       "windows_per_s": 921900
       },
       "4096": {
-       "p50_ms": 1.609,
-       "windows_per_s": 2545443
+       "p50_ms": 1.842,
+       "windows_per_s": 2223972
       },
       "16384": {
-       "p50_ms": 6.087,
-       "windows_per_s": 2691837
+       "p50_ms": 6.657,
+       "windows_per_s": 2461150
       }
      },
      "streams_at_50hz": 16384
     },
     "int8": {
-     "build_s": 5.9,
+     "build_s": 6.8,
      "layers": {
       "fp32": 32,
       "int8": 2
      },
-     "engine_kb": 804,
+     "engine_kb": 825,
      "accuracy": {
       "max_abs_z_err": 1.7297,
       "p99_abs_z_err": 1.3343,
@@ -137,29 +137,29 @@
       "frames": 30844
      },
      "batch1": {
-      "p50_us": 555.6,
-      "p99_us": 799.2
+      "p50_us": 555.0,
+      "p99_us": 1483.2
      },
      "batches": {
       "64": {
-       "p50_ms": 0.6,
-       "windows_per_s": 106649
+       "p50_ms": 0.571,
+       "windows_per_s": 112064
       },
       "256": {
-       "p50_ms": 0.679,
-       "windows_per_s": 377247
+       "p50_ms": 0.632,
+       "windows_per_s": 405063
       },
       "1024": {
-       "p50_ms": 0.928,
-       "windows_per_s": 1103389
+       "p50_ms": 0.86,
+       "windows_per_s": 1191113
       },
       "4096": {
-       "p50_ms": 2.749,
-       "windows_per_s": 1489780
+       "p50_ms": 2.596,
+       "windows_per_s": 1577873
       },
       "16384": {
-       "p50_ms": 11.989,
-       "windows_per_s": 1366615
+       "p50_ms": 10.662,
+       "windows_per_s": 1536687
       }
      },
      "streams_at_50hz": 16384
@@ -174,155 +174,155 @@
    "eval_windows": 9008,
    "onnxruntime_cpu": {
     "batch1": {
-     "p50_us": 39.5,
-     "p99_us": 192.2
+     "p50_us": 38.9,
+     "p99_us": 67.4
     },
     "batches": {
      "64": {
-      "p50_ms": 0.334,
-      "windows_per_s": 191818
+      "p50_ms": 0.379,
+      "windows_per_s": 168955
      },
      "256": {
-      "p50_ms": 1.238,
-      "windows_per_s": 206752
+      "p50_ms": 1.285,
+      "windows_per_s": 199245
      },
      "1024": {
-      "p50_ms": 4.233,
-      "windows_per_s": 241923
+      "p50_ms": 4.92,
+      "windows_per_s": 208136
      },
      "4096": {
-      "p50_ms": 25.599,
-      "windows_per_s": 160006
+      "p50_ms": 18.967,
+      "windows_per_s": 215955
      },
      "16384": {
-      "p50_ms": 70.259,
-      "windows_per_s": 233193
+      "p50_ms": 80.03,
+      "windows_per_s": 204722
      }
     },
-    "streams_at_50hz": 1024
+    "streams_at_50hz": 4096
    },
    "tensorrt": {
     "fp32": {
-     "build_s": 5.6,
+     "build_s": 5.9,
      "layers": {
       "fp32": 11
      },
-     "engine_kb": 253,
+     "engine_kb": 254,
      "accuracy": {
-      "max_abs_logit_err": 0.0471,
-      "p99_abs_logit_err": 0.0218,
+      "max_abs_logit_err": 0.0309,
+      "p99_abs_logit_err": 0.0134,
       "decision_flips": 0.0,
       "windows": 9008,
-      "logit_threshold": 6.88
+      "logit_threshold": 4.326
      },
      "batch1": {
-      "p50_us": 229.0,
-      "p99_us": 358.3
+      "p50_us": 234.9,
+      "p99_us": 616.3
      },
      "batches": {
       "64": {
-       "p50_ms": 0.257,
-       "windows_per_s": 248834
+       "p50_ms": 0.242,
+       "windows_per_s": 264791
       },
       "256": {
-       "p50_ms": 0.336,
-       "windows_per_s": 761905
+       "p50_ms": 0.329,
+       "windows_per_s": 777289
       },
       "1024": {
-       "p50_ms": 0.755,
-       "windows_per_s": 1355753
+       "p50_ms": 0.655,
+       "windows_per_s": 1562524
       },
       "4096": {
-       "p50_ms": 2.783,
-       "windows_per_s": 1471555
+       "p50_ms": 2.514,
+       "windows_per_s": 1629438
       },
       "16384": {
-       "p50_ms": 11.657,
-       "windows_per_s": 1405526
+       "p50_ms": 10.9,
+       "windows_per_s": 1503168
       }
      },
      "streams_at_50hz": 16384
     },
     "fp16": {
-     "build_s": 6.5,
+     "build_s": 6.6,
      "layers": {
       "fp16": 10,
       "fp32": 1
      },
-     "engine_kb": 237,
+     "engine_kb": 256,
      "accuracy": {
-      "max_abs_logit_err": 0.2126,
-      "p99_abs_logit_err": 0.0573,
+      "max_abs_logit_err": 0.1449,
+      "p99_abs_logit_err": 0.0563,
       "decision_flips": 0.0,
       "windows": 9008,
-      "logit_threshold": 6.88
+      "logit_threshold": 4.326
      },
      "batch1": {
-      "p50_us": 223.4,
-      "p99_us": 425.8
+      "p50_us": 239.5,
+      "p99_us": 556.9
      },
      "batches": {
       "64": {
-       "p50_ms": 0.227,
-       "windows_per_s": 281690
+       "p50_ms": 0.261,
+       "windows_per_s": 244929
       },
       "256": {
-       "p50_ms": 0.311,
-       "windows_per_s": 821830
+       "p50_ms": 0.313,
+       "windows_per_s": 819200
       },
       "1024": {
-       "p50_ms": 0.669,
-       "windows_per_s": 1530872
+       "p50_ms": 0.616,
+       "windows_per_s": 1661259
       },
       "4096": {
-       "p50_ms": 2.328,
-       "windows_per_s": 1759564
+       "p50_ms": 2.296,
+       "windows_per_s": 1783700
       },
       "16384": {
-       "p50_ms": 9.107,
-       "windows_per_s": 1799125
+       "p50_ms": 9.249,
+       "windows_per_s": 1771444
       }
      },
      "streams_at_50hz": 16384
     },
     "int8": {
-     "build_s": 10.7,
+     "build_s": 11.8,
      "layers": {
       "fp32": 5,
       "int8": 6
      },
-     "engine_kb": 512,
+     "engine_kb": 476,
      "accuracy": {
-      "max_abs_logit_err": 5.9996,
-      "p99_abs_logit_err": 1.8388,
-      "decision_flips": 0.011656305506216696,
+      "max_abs_logit_err": 4.0267,
+      "p99_abs_logit_err": 2.154,
+      "decision_flips": 0.02952930728241563,
       "windows": 9008,
-      "logit_threshold": 6.88
+      "logit_threshold": 4.326
      },
      "batch1": {
-      "p50_us": 214.0,
-      "p99_us": 349.0
+      "p50_us": 223.8,
+      "p99_us": 336.8
      },
      "batches": {
       "64": {
-       "p50_ms": 0.238,
-       "windows_per_s": 268738
+       "p50_ms": 0.22,
+       "windows_per_s": 290645
       },
       "256": {
-       "p50_ms": 0.33,
-       "windows_per_s": 774701
+       "p50_ms": 0.31,
+       "windows_per_s": 825940
       },
       "1024": {
-       "p50_ms": 0.669,
-       "windows_per_s": 1530528
+       "p50_ms": 0.66,
+       "windows_per_s": 1552456
       },
       "4096": {
-       "p50_ms": 2.515,
-       "windows_per_s": 1628661
+       "p50_ms": 2.433,
+       "windows_per_s": 1683207
       },
       "16384": {
-       "p50_ms": 10.476,
-       "windows_per_s": 1564015
+       "p50_ms": 10.36,
+       "windows_per_s": 1581505
       }
      },
      "streams_at_50hz": 16384

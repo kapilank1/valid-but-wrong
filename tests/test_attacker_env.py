@@ -87,6 +87,24 @@ def test_make_spoof_env_uses_real_launches():
     assert len(env.trajectories) > 0
 
 
+def test_policies_are_loaded_once_and_reloaded_when_the_file_changes(tmp_path):
+    import os
+
+    from stable_baselines3 import PPO
+
+    from vbw.attacker.env import load_policy, preload_policies
+
+    env = SpoofEnv(_synthetic_trajectory(), lambda: StubDetector(FALCON9), FALCON9, config=SpoofEnvConfig(episode_len=20))
+    path = tmp_path / "ppo_falcon9.zip"
+    PPO("MlpPolicy", env, n_steps=64, batch_size=64, device="cpu").save(str(path))
+    PPO("MlpPolicy", env, n_steps=64, batch_size=64, device="cpu").save(str(tmp_path / "ppo_falcon9_stub.zip"))
+    first = load_policy(path)
+    assert load_policy(path) is first                      # cached: no second multi-second load
+    os.utime(path, (path.stat().st_atime, path.stat().st_mtime + 10))
+    assert load_policy(path) is not first                  # retrained file on disk -> fresh load
+    assert preload_policies(tmp_path) == ["ppo_falcon9.zip"]   # stubs are never preloaded
+
+
 def test_ppo_attack_without_model_is_identity(tmp_path):
     from vbw.attacker.registry import make_attack
     from vbw.schema import Frame

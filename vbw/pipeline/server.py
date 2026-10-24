@@ -82,6 +82,17 @@ def read_bench(path: Path) -> dict[str, Any]:
     return data if isinstance(data, dict) else {"available": True, "results": data}
 
 
+async def _preload_policies() -> None:
+    """Load the PPO attacker policies in the background at startup, so the first PPO attack starts on time."""
+    try:
+        from vbw.attacker.env import preload_policies
+
+        loaded = await asyncio.to_thread(preload_policies)
+        log.info("attacker policies preloaded: %s", ", ".join(loaded) or "none")
+    except Exception as exc:  # noqa: BLE001 - optional warm-up; attacks still load on demand
+        log.warning("attacker policy preload failed: %s", exc)
+
+
 def create_app(
     registries: Registries | None = None,
     store: Store | None = None,
@@ -105,9 +116,12 @@ def create_app(
                                   app.state.store, runner_config)
         await app.state.store.start()
         log.info("pipeline up (store: %s)", type(app.state.store).__name__)
+        preload = asyncio.create_task(_preload_policies()) if registries is None else None
         try:
             yield
         finally:
+            if preload is not None and not preload.done():
+                preload.cancel()
             await app.state.runner.shutdown()
             await app.state.store.close()
 

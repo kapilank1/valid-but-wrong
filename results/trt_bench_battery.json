@@ -1,0 +1,336 @@
+{
+ "created": "2026-10-24T19:28:47+00:00",
+ "gpu": {
+  "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "compute_capability": "12.0"
+ },
+ "cpu": "AMD64 Family 26 Model 96 Stepping 0, AuthenticAMD",
+ "models": {
+  "l2": {
+   "input_shape": [
+    20,
+    16
+   ],
+   "eval_windows": 30844,
+   "onnxruntime_cpu": {
+    "batch1": {
+     "p50_us": 75.3,
+     "p99_us": 219.0
+    },
+    "batches": {
+     "64": {
+      "p50_ms": 1.399,
+      "windows_per_s": 45736
+     },
+     "256": {
+      "p50_ms": 4.655,
+      "windows_per_s": 54996
+     },
+     "1024": {
+      "p50_ms": 19.909,
+      "windows_per_s": 51433
+     },
+     "4096": {
+      "p50_ms": 83.815,
+      "windows_per_s": 48870
+     },
+     "16384": {
+      "p50_ms": 354.781,
+      "windows_per_s": 46181
+     }
+    },
+    "streams_at_50hz": 1024
+   },
+   "tensorrt": {
+    "fp32": {
+     "build_s": 18.1,
+     "layers": {
+      "fp32": 33
+     },
+     "engine_kb": 647,
+     "accuracy": {
+      "max_abs_z_err": 0.0225,
+      "p99_abs_z_err": 0.0093,
+      "spike_decision_flips": 0.0,
+      "frames": 30844
+     },
+     "batch1": {
+      "p50_us": 1469.7,
+      "p99_us": 5314.3
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.933,
+       "windows_per_s": 68614
+      },
+      "256": {
+       "p50_ms": 0.909,
+       "windows_per_s": 281535
+      },
+      "1024": {
+       "p50_ms": 1.135,
+       "windows_per_s": 902600
+      },
+      "4096": {
+       "p50_ms": 2.958,
+       "windows_per_s": 1384626
+      },
+      "16384": {
+       "p50_ms": 11.605,
+       "windows_per_s": 1411805
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "fp16": {
+     "build_s": 34.6,
+     "layers": {
+      "fp16": 31,
+      "fp32": 1
+     },
+     "engine_kb": 710,
+     "accuracy": {
+      "max_abs_z_err": 0.1007,
+      "p99_abs_z_err": 0.0342,
+      "spike_decision_flips": 0.0,
+      "frames": 30844
+     },
+     "batch1": {
+      "p50_us": 937.2,
+      "p99_us": 2853.0
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 1.02,
+       "windows_per_s": 62764
+      },
+      "256": {
+       "p50_ms": 1.147,
+       "windows_per_s": 223279
+      },
+      "1024": {
+       "p50_ms": 1.642,
+       "windows_per_s": 623706
+      },
+      "4096": {
+       "p50_ms": 2.802,
+       "windows_per_s": 1462074
+      },
+      "16384": {
+       "p50_ms": 7.168,
+       "windows_per_s": 2285730
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "int8": {
+     "build_s": 13.3,
+     "layers": {
+      "fp32": 32,
+      "int8": 2
+     },
+     "engine_kb": 841,
+     "accuracy": {
+      "max_abs_z_err": 1.7297,
+      "p99_abs_z_err": 1.3343,
+      "spike_decision_flips": 0.0,
+      "frames": 30844
+     },
+     "batch1": {
+      "p50_us": 900.4,
+      "p99_us": 2878.7
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.922,
+       "windows_per_s": 69403
+      },
+      "256": {
+       "p50_ms": 0.963,
+       "windows_per_s": 265739
+      },
+      "1024": {
+       "p50_ms": 1.148,
+       "windows_per_s": 892336
+      },
+      "4096": {
+       "p50_ms": 2.742,
+       "windows_per_s": 1493664
+      },
+      "16384": {
+       "p50_ms": 11.761,
+       "windows_per_s": 1393055
+      }
+     },
+     "streams_at_50hz": 16384
+    }
+   }
+  },
+  "l3": {
+   "input_shape": [
+    40,
+    25
+   ],
+   "eval_windows": 9008,
+   "onnxruntime_cpu": {
+    "batch1": {
+     "p50_us": 51.1,
+     "p99_us": 85.5
+    },
+    "batches": {
+     "64": {
+      "p50_ms": 0.806,
+      "windows_per_s": 79429
+     },
+     "256": {
+      "p50_ms": 1.886,
+      "windows_per_s": 135751
+     },
+     "1024": {
+      "p50_ms": 7.362,
+      "windows_per_s": 139088
+     },
+     "4096": {
+      "p50_ms": 30.227,
+      "windows_per_s": 135508
+     },
+     "16384": {
+      "p50_ms": 115.723,
+      "windows_per_s": 141579
+     }
+    },
+    "streams_at_50hz": 1024
+   },
+   "tensorrt": {
+    "fp32": {
+     "build_s": 12.9,
+     "layers": {
+      "fp32": 11
+     },
+     "engine_kb": 290,
+     "accuracy": {
+      "max_abs_logit_err": 0.0284,
+      "p99_abs_logit_err": 0.0085,
+      "decision_flips": 0.0,
+      "windows": 9008,
+      "logit_threshold": 4.326
+     },
+     "batch1": {
+      "p50_us": 365.7,
+      "p99_us": 1543.0
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.394,
+       "windows_per_s": 162457
+      },
+      "256": {
+       "p50_ms": 0.465,
+       "windows_per_s": 550775
+      },
+      "1024": {
+       "p50_ms": 1.035,
+       "windows_per_s": 989563
+      },
+      "4096": {
+       "p50_ms": 3.73,
+       "windows_per_s": 1098094
+      },
+      "16384": {
+       "p50_ms": 16.522,
+       "windows_per_s": 991660
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "fp16": {
+     "build_s": 15.0,
+     "layers": {
+      "fp16": 10,
+      "fp32": 1
+     },
+     "engine_kb": 231,
+     "accuracy": {
+      "max_abs_logit_err": 0.1347,
+      "p99_abs_logit_err": 0.0524,
+      "decision_flips": 0.0,
+      "windows": 9008,
+      "logit_threshold": 4.326
+     },
+     "batch1": {
+      "p50_us": 341.9,
+      "p99_us": 1720.8
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.563,
+       "windows_per_s": 113677
+      },
+      "256": {
+       "p50_ms": 0.635,
+       "windows_per_s": 403086
+      },
+      "1024": {
+       "p50_ms": 1.406,
+       "windows_per_s": 728333
+      },
+      "4096": {
+       "p50_ms": 3.166,
+       "windows_per_s": 1293807
+      },
+      "16384": {
+       "p50_ms": 14.371,
+       "windows_per_s": 1140058
+      }
+     },
+     "streams_at_50hz": 16384
+    },
+    "int8": {
+     "build_s": 44.1,
+     "layers": {
+      "fp32": 5,
+      "int8": 6
+     },
+     "engine_kb": 488,
+     "accuracy": {
+      "max_abs_logit_err": 4.0267,
+      "p99_abs_logit_err": 2.154,
+      "decision_flips": 0.02952930728241563,
+      "windows": 9008,
+      "logit_threshold": 4.326
+     },
+     "batch1": {
+      "p50_us": 368.0,
+      "p99_us": 1372.8
+     },
+     "batches": {
+      "64": {
+       "p50_ms": 0.484,
+       "windows_per_s": 132286
+      },
+      "256": {
+       "p50_ms": 0.63,
+       "windows_per_s": 406478
+      },
+      "1024": {
+       "p50_ms": 1.002,
+       "windows_per_s": 1022466
+      },
+      "4096": {
+       "p50_ms": 3.887,
+       "windows_per_s": 1053837
+      },
+      "16384": {
+       "p50_ms": 15.928,
+       "windows_per_s": 1028651
+      }
+     },
+     "streams_at_50hz": 16384
+    }
+   }
+  }
+ },
+ "tensorrt": "11.4.0.106",
+ "int8_calibration": "minmax",
+ "note": "Measured on battery power (Balanced plan, throttled CPU+GPU), L3 = hardened r2. The plugged-in run is results/trt_bench.json."
+}

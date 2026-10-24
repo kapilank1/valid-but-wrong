@@ -17,6 +17,7 @@ Design notes:
 
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -33,6 +34,40 @@ MODELS = ROOT / "models"
 
 Trajectory = tuple[np.ndarray, np.ndarray]  # (t [T], X [T, C]) in schema channel order
 DetectorFactory = Callable[[], object]       # () -> object with reset() and update(frame, l0) -> Verdict
+
+_POLICIES: dict[tuple[str, float], object] = {}
+_POLICIES_LOCK = threading.Lock()
+
+
+def load_policy(path: Path):
+    """An SB3 PPO policy from disk, cached by (path, mtime).
+
+    The first load imports torch + Stable-Baselines3 and takes seconds, which is over a minute of flight at 10x
+    replay speed; the live demo armed PPO at T+273 s instead of T+190 s because of it. A retrained file (new mtime)
+    is loaded fresh.
+    """
+    path = Path(path)
+    key = (str(path.resolve()), path.stat().st_mtime)
+    with _POLICIES_LOCK:
+        if key not in _POLICIES:
+            from stable_baselines3 import PPO
+
+            _POLICIES[key] = PPO.load(str(path), device="cpu")
+        return _POLICIES[key]
+
+
+def preload_policies(models_dir: Path = MODELS) -> list[str]:
+    """Load every trained attacker policy (models/ppo_<schema>[_r2].zip, never stubs) so the first attack is instant."""
+    loaded = []
+    for path in sorted(models_dir.glob("ppo_*.zip")):
+        if "stub" in path.stem:
+            continue
+        try:
+            load_policy(path)
+            loaded.append(path.name)
+        except Exception:  # a bad file must not take the server down; PpoAttack reports loaded=False later
+            pass
+    return loaded
 
 
 # ------------------------------------------------------------------ observation / offset spec
@@ -295,9 +330,7 @@ class PpoAttack(_Attack):
         if not path.exists() or self.spec is None:
             return None
         try:
-            from stable_baselines3 import PPO
-
-            return PPO.load(str(path), device="cpu")
+            return load_policy(path)
         except Exception:  # missing SB3 or a bad model shouldn't take the pipeline down
             return None
 

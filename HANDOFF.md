@@ -1,5 +1,8 @@
 # HANDOFF / build memory
 
+<!-- Latest entry is at the bottom. -->
+
+
 Living log of the build. If a session is cut off, the next one starts here.
 
 ## Context
@@ -101,3 +104,46 @@ Living log of the build. If a session is cut off, the next one starts here.
     clear verified earlier. Coordinated at the console's default intensity 0.5 evaded both detectors on SES-9 (2.65 km
     by T+7:07) — use intensity 1.0 for that rung in the demo.
   - 213 tests pass (new tests/test_detector_l3_stream.py).
+- 2026-10-24 ~10:15–12:45 (user back; machine has an RTX 5060 Laptop GPU; asked for TensorRT, arms race, demo polish,
+  Vultr/Tiger/Cartesia; three forked subagents ran in parallel with the TensorRT work)
+  - **TensorRT** (`vbw/detector/trt.py`, `scripts/trt_bench.py`, `docs/TENSORRT.md`, `tests/test_detector_trt.py`):
+    TRT 11.4 is strongly typed (no FP16/INT8 builder flags, no implicit calibrator). FP16 = ONNX converted with
+    onnxconverter-common; INT8 = ORT static QDQ, symmetric, per-channel, `QuantizeBias: False` (TRT rejects int32
+    biases), first quantizable layer kept float. ORT's percentile/entropy calibrators crash on these graphs → min/max.
+    cuda-python must be <13 for driver 576 (CUDA 12.9). AC-power results: 16,384 streams, L2 FP16 6.1 ms vs ORT CPU
+    204 ms (33×), L3 FP16 9.1 ms vs 70 ms (7.7×), 0 decision flips; INT8 slower than FP16, L3 flips 1.2%; batch 1 the
+    GPU loses (~0.2–0.6 ms vs ~0.04 ms CPU). Engines in `models/trt/` (gitignored).
+  - **Arms race round 2** (subagent; `results/arms_race.json`): PPO r2 trained 1.5M steps against hardened r1
+    (`models/ppo_falcon9_r2.zip`, attack `ppo_r2`). On 6 holdout launches: PPO r2 vs base 5/6 (jcsat-16 never caught),
+    153 s / 2.0 km; vs hardened r1 167 s / 1.97 km (r1 caught PPO r1 in 66 s). L3 retrained with PPO r2 windows =
+    hardened r2: PPO r2 36 s / 0.38 km, PPO r1 41 s / 0.72 km, drift 18.5 s (was 59), bias/drift @0.4 6/6, clean 0/18.
+    Shipped r2 (rule: 0/18 clean and PPO r1 latency not worse). Logit threshold 4.33. Scripts gained
+    `--metrics-out`, `--ppo-only`, `--attacks/--detectors/--l3/--out`; `scripts/arms_race_report.py`.
+  - **Console polish** (subagent): `TruthGapReadout` ("LINK 100% VALID · N forged frames passed / PICTURE OFF BY
+    x km"), ▶ Demo (`lib/demo/script.ts` pure step machine + `useDemo.ts` + `DemoControl.tsx`), PPO round 2 rung,
+    control strip fixed to fit 1440 px. 73 vitest. Demo verified live; with hardened r2 it ended "Hardened caught it at
+    T+305 s". Note: retracting the bias produces short echo alerts at ~T+75 and ~T+125 (step leaving the 10 s / 60 s
+    windows) — correct behavior; the script waits them out.
+  - **Deploy prep** (subagent; nothing created, no keys used): fixed (1) Windows Proactor event loop vs async psycopg
+    → `ThreadedPostgresDatabase` in `vbw/store/timescale.py`; (2) Dockerfile.server uv pin 0.11 → 0.13.5 to read the
+    lock (revision 5); (3) compose passed empty CARTESIA_* env, which beat the route's `??` defaults (compose now passes
+    real defaults, route uses `||`); (4) console Dockerfile installs pnpm directly instead of corepack.
+    New: `scripts/deploy_vultr.ps1` (-DryRun, price shown, -Yes required; default vc2-2c-4gb sjc ~$0.027/h),
+    `deploy_vultr_destroy.ps1`, `deploy_remote.sh`, `infra/cloud-init.yaml`, end-to-end `db_init.py --check`,
+    `docs/INTEGRATIONS.md`, `.gitattributes` (LF for *.sh). Not verified: real Vultr instance, Docker builds, real
+    Tiger Cloud.
+  - **Battery power**: a later TRT rerun (L3 r2) came out ~1.3–1.8× slower on both CPU and GPU; the laptop was
+    discharging on the Balanced plan. Saved as `results/trt_bench_battery.json` (r2 accuracy: FP16 0 flips, INT8 3.0%);
+    `results/trt_bench.json` restored to the AC-power run (L3 r1, same architecture). Rerun plugged in.
+  - **PPO cold start**: the demo armed PPO at T+273 s instead of T+190 s right after an API restart because the first
+    SB3 load takes seconds. Fix: cached `load_policy` + `preload_policies` in `vbw/attacker/env.py`, background preload
+    in the server lifespan (`vbw/pipeline/server.py`), test in `tests/test_attacker_env.py`. Re-verify the demo.
+  - git installed; commits a455875, f52e085, 7264e60. 221 passed + 1 skipped (GPU test), console 73.
+- 2026-10-24 ~12:45–13:15
+  - Preload verified: server logs "attacker policies preloaded: ppo_falcon9.zip, ppo_falcon9_r2.zip"; ▶ Demo now arms
+    PPO at T+190.0, lie 3.70 km with base silent, hardened r2 alert at T+288.6 (0.1 s after the swap).
+  - PPO round 2 rung verified live: active T+190.4, 2.44 km lie at T+349 with base 0.03; hardened r2 alert T+396.7
+    (swap at T+354).
+  - Laptop back on AC: TensorRT rerun with L3 r2 → `results/trt_bench.json`. 16,384 streams: L2 FP16 6.66 ms vs CPU
+    232 ms (35×), L3 FP16 9.25 ms vs 80.0 ms (8.7×), sum ~15.9 ms; FP16 0 decision flips; INT8 L3 3.0% flips.
+    docs/TENSORRT.md, README, DEVPOST, CONTINUE_HERE updated.
