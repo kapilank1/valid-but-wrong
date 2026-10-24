@@ -132,6 +132,7 @@ export interface DetectorInfo {
   label: string;
   description: string;
   available?: boolean;
+  threshold?: number; // optional: alert threshold on the combined score (console defaults to 0.5)
 }
 
 export interface Catalog {

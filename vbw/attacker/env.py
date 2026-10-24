@@ -150,10 +150,11 @@ class StubDetector:
 @dataclass
 class SpoofEnvConfig:
     episode_len: int = 400
-    picture_gain: float = 50.0     # scales the (normalized) picture-error reward to compete with penalties
+    picture_gain: float = 200.0    # scales the (normalized) picture-error reward to compete with penalties
     lam: float = 0.5               # detector-score penalty weight
     alert_penalty: float = 10.0    # one-off penalty when an alert fires
     terminate_on_alert: bool = True
+    warmup: int = 150              # clean frames fed to the detector before the episode (max L1 lookback is 110)
 
 
 class SpoofEnv(gym.Env):
@@ -196,6 +197,16 @@ class SpoofEnv(gym.Env):
         self._prev_err = 0.0
         self.detector = self.detector_factory()
         self.detector.reset()
+        # Warm the detector on the clean frames leading up to the episode, as the ground station would be.
+        for idx in range(max(start - self.cfg.warmup, 0), start):
+            verdict = self.detector.update(self._frame_at(idx, {}), L0Result())
+            self._last_score = float(getattr(verdict, "score", 0.0))
+            self._last_alert = bool(getattr(verdict, "alert", False))
+
+    def _frame_at(self, idx: int, offsets: dict[str, float]) -> Frame:
+        row = self._x_arr[idx]
+        channels = {c: float(row[j]) + offsets.get(c, 0.0) for j, c in enumerate(self.schema.channels)}
+        return Frame("rl", self.schema.schema_id, idx & 0xFFFF, float(self._t_arr[idx]), channels)
 
     def _obs(self) -> np.ndarray:
         row = self._x_arr[self._start + self._i]
@@ -210,21 +221,15 @@ class SpoofEnv(gym.Env):
             self._rng = np.random.default_rng(seed)
         traj_idx = int(self._rng.integers(len(self.trajectories)))
         t_arr, _ = self.trajectories[traj_idx]
-        max_start = max(len(t_arr) - self.cfg.episode_len - 1, 0)
-        start = int(self._rng.integers(max_start + 1))
+        min_start = min(self.cfg.warmup, max(len(t_arr) - self.cfg.episode_len - 1, 0))
+        max_start = max(len(t_arr) - self.cfg.episode_len - 1, min_start)
+        start = int(self._rng.integers(min_start, max_start + 1))
         self._reset_episode(traj_idx, start)
         return self._obs(), {}
 
     def _reported_frame(self) -> tuple[Frame, dict[str, float]]:
-        idx = self._start + self._i
-        row = self._x_arr[idx]
-        channels = {c: float(row[j]) for j, c in enumerate(self.schema.channels)}
-        off_map: dict[str, float] = {}
-        for k, ch in enumerate(self.spoof_spec.target_channels):
-            channels[ch] += float(self._offsets[k])
-            off_map[ch] = float(self._offsets[k])
-        frame = Frame("rl", self.schema.schema_id, idx & 0xFFFF, float(self._t_arr[idx]), channels)
-        return frame, off_map
+        off_map = {ch: float(self._offsets[k]) for k, ch in enumerate(self.spoof_spec.target_channels)}
+        return self._frame_at(self._start + self._i, off_map), off_map
 
     def step(self, action: np.ndarray):
         action = np.clip(np.asarray(action, dtype=np.float32), -1.0, 1.0)
@@ -308,6 +313,10 @@ class PpoAttack(_Attack):
 
     def __call__(self, frame: Frame) -> Frame:
         if not self._active(frame) or self._policy is None or self.spec is None:
+            if self._shadow is not None:  # keep the shadow's history identical to the ground's
+                v = self._shadow.update(frame.copy(), L0Result())
+                self._last_score = float(getattr(v, "score", 0.0))
+                self._last_alert = bool(getattr(v, "alert", False))
             self._last = frame.copy()
             return frame.copy()
         action, _ = self._policy.predict(self._obs(frame), deterministic=True)
@@ -335,19 +344,28 @@ def _make_shadow(detector_name: str, schema: ChannelSchema):
 # ------------------------------------------------------------------ training helpers
 
 
-def load_training_trajectories(schema_name: str = "falcon9", holdout: bool = False) -> list[Trajectory]:
-    """Load clean (t, X) arrays for the train (or holdout) launches in schema channel order."""
-    from vbw.detector.splits import holdout_slugs, load_falcon9, train_slugs
+def load_training_trajectories(
+    schema_name: str = "falcon9", holdout: bool = False, seeds: tuple[int, ...] = (0, 1, 2)
+) -> list[Trajectory]:
+    """(t, X) arrays as the ground decodes them (sensor noise + float32 wire rounding), schema channel order.
 
-    slugs = holdout_slugs() if holdout else train_slugs()
-    return [load_falcon9(s) for s in slugs]
+    Uses the detector's own run builder so the attacker trains on exactly the frames the detector was
+    calibrated on. Noise-free CSVs are not used: real sensors are never perfectly smooth, and the
+    detector's frozen-channel rule fires on them.
+    """
+    from vbw.detector.data import clean_runs
+
+    runs = clean_runs(SCHEMAS_BY_NAME[schema_name], "holdout" if holdout else "train", seeds=seeds)
+    return [(run.t, run.X) for run in runs]
 
 
 def make_detector_factory(detector_name: str, schema: ChannelSchema) -> DetectorFactory:
-    """A factory that builds a fresh detector per episode, falling back to the stub if unavailable."""
+    """A factory that builds a fresh real detector per episode. Fails loudly if the detector is missing,
+    so a policy is never silently trained against the stub."""
+    from vbw.detector.registry import make_detector
 
     def factory():
-        return _make_shadow(detector_name, schema)
+        return make_detector(detector_name, schema)
 
     return factory
 

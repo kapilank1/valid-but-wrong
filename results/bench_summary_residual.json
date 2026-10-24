@@ -1,0 +1,192 @@
+{
+  "available": true,
+  "generated_at": "2026-10-24T03:26:20+00:00",
+  "model": {
+    "name": "Per-channel LSTM next-step predictor (residual ablation) + nonparametric dynamic thresholding",
+    "framework": "torch 2.14.1",
+    "config": {
+      "l_s": 250,
+      "n_predictions": 10,
+      "hidden": 80,
+      "layers": 2,
+      "dropout": 0.3,
+      "batch_size": 64,
+      "epochs": 35,
+      "patience": 10,
+      "min_delta": 0.0003,
+      "val_split": 0.2,
+      "lr": 0.001,
+      "predict_batch": 1024,
+      "seed": 0,
+      "residual": true
+    },
+    "threshold": {
+      "batch_size": 70,
+      "window_size": 30,
+      "smoothing_perc": 0.05,
+      "error_buffer": 100,
+      "p": 0.13,
+      "l_s": 250,
+      "z_min": 2.5,
+      "z_max": 12.0,
+      "z_step": 0.5,
+      "max_seqs": 5,
+      "max_anom_frac": 0.5,
+      "min_error_scale": 0.05
+    },
+    "params_smap": 86890,
+    "params_msl": 96490,
+    "devices": [
+      "mps",
+      "mps",
+      "mps",
+      "mps",
+      "mps",
+      "cpu",
+      "cpu"
+    ],
+    "host": "Darwin arm64, 12 cores"
+  },
+  "runtime_s": 752.5,
+  "runtime_detail": {
+    "train_predict_wall_s": 751.6,
+    "threshold_eval_s": 0.9,
+    "per_channel_train_s_sum": 5105.2,
+    "mean_epochs": 23.4,
+    "note": "wall times cover only channels not loaded from --cache-dir; train_s sums are from the run that produced each prediction"
+  },
+  "subset": null,
+  "datasets": {
+    "smap": {
+      "precision": 0.9286,
+      "recall": 0.5652,
+      "f1": 0.7027,
+      "f0_5": 0.8228,
+      "tp": 39,
+      "fp": 3,
+      "fn": 30,
+      "channels": 55,
+      "unique_channels": 54,
+      "anomalies": 69,
+      "recall_by_class": {
+        "contextual": {
+          "recall": 0.5,
+          "hit": 13,
+          "total": 26
+        },
+        "point": {
+          "recall": 0.6046511627906976,
+          "hit": 26,
+          "total": 43
+        }
+      },
+      "point_adjusted_optimistic": {
+        "precision": 0.8311,
+        "recall": 0.3595,
+        "f1": 0.5019,
+        "note": "point-wise after point adjustment; inflates scores, not comparable to event-level"
+      },
+      "mean_normalized_error": 0.0208
+    },
+    "msl": {
+      "precision": 0.8,
+      "recall": 0.4444,
+      "f1": 0.5714,
+      "f0_5": 0.6897,
+      "tp": 16,
+      "fp": 4,
+      "fn": 20,
+      "channels": 27,
+      "unique_channels": 27,
+      "anomalies": 36,
+      "recall_by_class": {
+        "contextual": {
+          "recall": 0.4117647058823529,
+          "hit": 7,
+          "total": 17
+        },
+        "point": {
+          "recall": 0.47368421052631576,
+          "hit": 9,
+          "total": 19
+        }
+      },
+      "point_adjusted_optimistic": {
+        "precision": 0.4595,
+        "recall": 0.3305,
+        "f1": 0.3845,
+        "note": "point-wise after point adjustment; inflates scores, not comparable to event-level"
+      },
+      "mean_normalized_error": 0.0354
+    },
+    "combined": {
+      "precision": 0.8871,
+      "recall": 0.5238,
+      "f1": 0.6587,
+      "f0_5": 0.779,
+      "tp": 55,
+      "fp": 7,
+      "fn": 50,
+      "channels": 82,
+      "unique_channels": 81,
+      "anomalies": 105,
+      "recall_by_class": {
+        "contextual": {
+          "recall": 0.46511627906976744,
+          "hit": 20,
+          "total": 43
+        },
+        "point": {
+          "recall": 0.5645161290322581,
+          "hit": 35,
+          "total": 62
+        }
+      },
+      "point_adjusted_optimistic": {
+        "precision": 0.7625,
+        "recall": 0.356,
+        "f1": 0.4854,
+        "note": "point-wise after point adjustment; inflates scores, not comparable to event-level"
+      },
+      "mean_normalized_error": 0.0256
+    }
+  },
+  "baseline": {
+    "name": "Telemanom (Hundman et al., KDD 2018)",
+    "source_url": "https://arxiv.org/abs/1802.04431",
+    "source_detail": "Table 2, Non-Parametric w/ Pruning (p = 0.13); also khundman/telemanom README",
+    "f1_derived": true,
+    "smap": {
+      "precision": 0.855,
+      "recall": 0.855,
+      "f0_5_reported": 0.71,
+      "anomalies": 69,
+      "channels": 55,
+      "f1": 0.855
+    },
+    "msl": {
+      "precision": 0.926,
+      "recall": 0.694,
+      "f0_5_reported": 0.69,
+      "anomalies": 36,
+      "channels": 27,
+      "f1": 0.7934
+    },
+    "combined": {
+      "precision": 0.875,
+      "recall": 0.8,
+      "f0_5_reported": 0.71,
+      "anomalies": 105,
+      "channels": 82,
+      "f1": 0.8358
+    }
+  },
+  "notes": [
+    "Protocol: every row of telemanom's labeled_anomalies.csv is one stream (55 SMAP rows / 69 anomalies, 27 MSL rows / 36 anomalies). P-2 (SMAP) is listed twice with slightly different labels; like telemanom we score both rows, using one model. T-10 has data files but no label row, so it is not evaluated.",
+    "Event-level scoring per the paper: a labeled sequence overlapped by any predicted sequence is a TP; unmatched labeled sequences are FN; predicted sequences overlapping no label are FP.",
+    "Hyperparameters are the paper's defaults (l_s=250, 2x80 LSTM, dropout 0.3, batch 64, <=35 epochs, early stopping patience 10 / min_delta 3e-4; thresholding batch 70, window 30, smoothing 5%, buffer 100, p=0.13). Nothing was tuned on the test labels.",
+    "Differences from telemanom: PyTorch instead of Keras; best-validation weights restored after early stopping; no C-2 special case (telemanom hard-codes one for that channel); the last thresholding window judges all its new points.",
+    "Baseline F1 is derived from the paper's reported precision/recall; the paper reports F0.5.",
+    "Point-adjusted F1 is point-wise with segment-level adjustment. It is optimistic and not comparable to the event-level numbers."
+  ]
+}

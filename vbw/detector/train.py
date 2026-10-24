@@ -21,6 +21,9 @@ from vbw.detector.nets import GRUPredictor, export_onnx
 from vbw.schema import ChannelSchema
 
 
+MAD_FLOOR = 0.02   # normalized delta units; well below the sensor-noise residual of every channel
+
+
 @dataclass
 class FitConfig:
     epochs: int = 6
@@ -80,7 +83,7 @@ def fit_l2_model(norm: L2Norm, train: list[Run], val: list[Run], cfg: FitConfig)
             loss.backward()
             opt.step()
             sched.step()
-            total += float(loss) * len(idx)
+            total += float(loss.detach()) * len(idx)
         model.eval()
         with torch.no_grad():
             val_loss = float(np.mean([float(loss_fn(model(xv[i:i + 8192]), yv[i:i + 8192])) for i in range(0, len(xv), 8192)]))
@@ -103,15 +106,19 @@ def calibrate_l2(model: L2Model, val: list[Run], margin: float = 1.25) -> dict:
     """Set residual median/MAD and the instant / EWMA aggregate thresholds on clean validation runs."""
     norm = model.norm
     start = model.needs - 1
-    raw = []
-    for r in val:
-        model._med, model._mad = np.zeros(len(norm.channels)), np.ones(len(norm.channels))
-        raw.append(model.zscore_series(r.X)[start:])
-    allres = np.concatenate(raw)
-    med = np.median(allres, 0)
-    mad = 1.4826 * np.median(np.abs(allres - med), 0)
-    norm.res_median, norm.res_mad = med.tolist(), np.maximum(mad, 1e-6).tolist()
-    model._med, model._mad = med, np.maximum(mad, 1e-6)
+    pairs = [model.residual_series(r.X) for r in val]
+    res = np.concatenate([p[0][start:] for p in pairs])
+    tgt = np.concatenate([p[1][start:] for p in pairs])
+    C = len(norm.channels)
+    med, mad = np.zeros(C), np.ones(C)
+    for c in range(C):
+        # Frames where the channel genuinely doesn't move (q = 0 in vacuum) would collapse the MAD to ~0.
+        live = res[tgt[:, c] != 0, c]
+        if live.size:
+            med[c] = np.median(live)
+            mad[c] = max(1.4826 * np.median(np.abs(live - med[c])), MAD_FLOOR)
+    norm.res_median, norm.res_mad = med.tolist(), mad.tolist()
+    model._med, model._mad = med, mad
 
     inst, slow = [], []
     for r in val:
@@ -147,3 +154,58 @@ def train_and_export_l2(schema: ChannelSchema, train: list[Run], val: list[Run],
                  "hidden": cfg.hidden, "epochs": cfg.epochs, "onnx_torch_max_abs_diff": parity, "val_stats": stats}
     norm.save(norm_path)
     return l2, stats
+
+
+# --------------------------------------------------------------------------- L3 discriminator
+
+
+@dataclass
+class L3FitConfig:
+    epochs: int = 8
+    batch: int = 512
+    lr: float = 2e-3
+    hidden: int = 32
+    seed: int = 0
+    clean_quantile: float = 0.9995   # logit threshold = this quantile of clean validation windows
+    log: bool = True
+
+
+def fit_l3_model(F_train: np.ndarray, y_train: np.ndarray, F_val: np.ndarray, y_val: np.ndarray,
+                 cfg: L3FitConfig) -> "torch.nn.Module":
+    from vbw.detector.nets import WindowClassifier
+
+    torch.manual_seed(cfg.seed)
+    rng = np.random.default_rng(cfg.seed)
+    model = WindowClassifier(F_train.shape[-1], cfg.hidden)
+    opt = torch.optim.Adam(model.parameters(), lr=cfg.lr, weight_decay=1e-4)
+    pos = max(float(y_train.mean()), 1e-3)
+    loss_fn = nn.BCEWithLogitsLoss(pos_weight=torch.tensor((1 - pos) / pos))  # balance clean vs forged
+    xt, yt = torch.from_numpy(F_train), torch.from_numpy(y_train.astype(np.float32))
+    xv, yv = torch.from_numpy(F_val), torch.from_numpy(y_val.astype(np.float32))
+    best, best_state = float("inf"), None
+    for epoch in range(cfg.epochs):
+        model.train()
+        total = 0.0
+        for idx in _batches(len(xt), cfg.batch, rng):
+            opt.zero_grad()
+            loss = loss_fn(model(xt[idx]), yt[idx])
+            loss.backward()
+            opt.step()
+            total += float(loss.detach()) * len(idx)
+        model.eval()
+        with torch.no_grad():
+            val_loss = float(loss_fn(model(xv), yv)) if len(xv) else total / len(xt)
+        if val_loss < best:
+            best, best_state = val_loss, {k: v.clone() for k, v in model.state_dict().items()}
+        if cfg.log:
+            print(f"  epoch {epoch + 1}/{cfg.epochs} train {total / len(xt):.4f} val {val_loss:.4f}")
+    if best_state is not None:
+        model.load_state_dict(best_state)
+    model.eval()
+    return model
+
+
+def logits_of(model: "torch.nn.Module", F: np.ndarray) -> np.ndarray:
+    with torch.no_grad():
+        return np.concatenate([model(torch.from_numpy(F[i:i + 8192])).numpy() for i in range(0, len(F), 8192)]) \
+            if len(F) else np.zeros(0)

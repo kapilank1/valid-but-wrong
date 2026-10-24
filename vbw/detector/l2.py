@@ -115,23 +115,31 @@ class L2Model:
         pred = self.predict(l2_inputs(span[None, :-1], self.norm))[0]
         return self.residuals_to_z(l2_target(span[-2], span[-1], self.norm) - pred)
 
-    def zscore_series(self, X: np.ndarray, last: int | None = None) -> np.ndarray:
-        """Signed z per channel for every frame of [..., T, C] (0 where history is too short).
+    def residual_series(self, X: np.ndarray, last: int | None = None) -> tuple[np.ndarray, np.ndarray]:
+        """Raw normalized residuals and targets for every frame of [..., T, C] (0 where history is too short).
 
         `last` limits the work to the final `last` frames (the rest are returned as 0).
         """
         lead, (T, C) = X.shape[:-2], X.shape[-2:]
         Xb = X.reshape((-1, T, C))
-        z = np.zeros(Xb.shape, dtype=np.float64)
+        res, tgt = np.zeros(Xb.shape), np.zeros(Xb.shape)
         first = self.needs - 1 if last is None else max(self.needs - 1, T - last)
         if first < T:
             span = sliding_window_view(Xb, self.needs, axis=1).transpose(0, 1, 3, 2)[:, first - self.needs + 1:]
             n, k = span.shape[:2]                                   # [B, K, W+2, C]
             flat = span.reshape((n * k, self.needs, C))
-            pred = self.predict(l2_inputs(flat[:, :-1], self.norm))
-            res = l2_target(flat[:, -2], flat[:, -1], self.norm) - pred
-            z[:, first:] = self.residuals_to_z(res).reshape((n, k, C))
-        return z.reshape(lead + (T, C))
+            target = l2_target(flat[:, -2], flat[:, -1], self.norm)
+            res[:, first:] = (target - self.predict(l2_inputs(flat[:, :-1], self.norm))).reshape((n, k, C))
+            tgt[:, first:] = target.reshape((n, k, C))
+        return res.reshape(lead + (T, C)), tgt.reshape(lead + (T, C))
+
+    def zscore_series(self, X: np.ndarray, last: int | None = None) -> np.ndarray:
+        """Signed z per channel for every frame of [..., T, C] (0 where history is too short)."""
+        res, _ = self.residual_series(X, last)
+        z = self.residuals_to_z(res)
+        first = self.needs - 1 if last is None else max(self.needs - 1, X.shape[-2] - last)
+        z[..., :first, :] = 0.0
+        return z
 
 
 def ewma_update(state: np.ndarray, z: np.ndarray, alpha: float) -> np.ndarray:

@@ -54,3 +54,17 @@ def test_make_spoof_env_uses_real_launches():
     obs, _ = env.reset(seed=1)
     assert obs.shape == env.observation_space.shape
     assert len(env.trajectories) > 0
+
+
+def test_ppo_attack_without_model_is_identity(tmp_path):
+    from vbw.attacker.registry import make_attack
+    from vbw.schema import Frame
+
+    atk = make_attack("ppo", FALCON9, start_t=0.0, model_path=str(tmp_path / "missing.zip"))
+    assert atk.loaded is False
+    atk.reset(0)
+    t, x = _synthetic_trajectory(20)[0]
+    for i in range(20):
+        f = Frame("f9", FALCON9.schema_id, i, float(t[i]), {c: float(x[i, j]) for j, c in enumerate(FALCON9.channels)})
+        g = atk.apply(f)
+        assert g.channels == f.channels and (g.seq, g.t) == (f.seq, f.t)

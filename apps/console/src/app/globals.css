@@ -21,6 +21,7 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
 }
 
+@layer base {
 html,
 body {
   background: var(--color-bg);
@@ -34,6 +35,10 @@ body {
   overflow: hidden;
 }
 
+}
+
+/* Custom classes live in the components layer so Tailwind utilities can override them. */
+@layer components {
 .num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -52,6 +57,7 @@ body {
 
 .console {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto minmax(0, 1fr);
   height: 100dvh;
   background: var(--color-line);
@@ -279,4 +285,5 @@ input[type="range"].ctl-range::-moz-range-thumb {
 .scroll-thin {
   scrollbar-width: thin;
   scrollbar-color: var(--color-line-strong) transparent;
+}
 }
