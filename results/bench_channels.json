@@ -1,0 +1,3796 @@
+[
+ {
+  "row": 0,
+  "chan_id": "P-1",
+  "spacecraft": "SMAP",
+  "num_values": 8505,
+  "labeled_sequences": [
+   [
+    2149,
+    2349
+   ],
+   [
+    4536,
+    4844
+   ],
+   [
+    3539,
+    3779
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    3190,
+    3329
+   ],
+   [
+    4520,
+    4659
+   ]
+  ],
+  "scores": [
+   0.2084,
+   0.2166
+  ],
+  "hit": [
+   false,
+   true,
+   false
+  ],
+  "false_alarm": [
+   true,
+   false
+  ],
+  "tp": 1,
+  "fp": 1,
+  "fn": 2,
+  "pa": {
+   "tp": 309,
+   "fp": 156,
+   "fn": 442
+  },
+  "normalized_error": 0.08353688488215096,
+  "epochs_run": 35,
+  "best_val_loss": 0.0619220295171628,
+  "n_train_windows": 2612,
+  "train_s": 20.41,
+  "device": "mps"
+ },
+ {
+  "row": 1,
+  "chan_id": "S-1",
+  "spacecraft": "SMAP",
+  "num_values": 7331,
+  "labeled_sequences": [
+   [
+    5300,
+    5747
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5290,
+    5639
+   ]
+  ],
+  "scores": [
+   1.4203
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 448,
+   "fp": 10,
+   "fn": 0
+  },
+  "normalized_error": 0.1730296704919175,
+  "epochs_run": 32,
+  "best_val_loss": 0.16561928391456604,
+  "n_train_windows": 2558,
+  "train_s": 31.96,
+  "device": "mps"
+ },
+ {
+  "row": 2,
+  "chan_id": "E-1",
+  "spacecraft": "SMAP",
+  "num_values": 8516,
+  "labeled_sequences": [
+   [
+    5000,
+    5030
+   ],
+   [
+    5610,
+    6086
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1747,
+    2014
+   ],
+   [
+    2630,
+    2769
+   ],
+   [
+    5010,
+    5149
+   ],
+   [
+    5570,
+    5958
+   ]
+  ],
+  "scores": [
+   0.5411,
+   0.4778,
+   1.025,
+   2.0633
+  ],
+  "hit": [
+   true,
+   true
+  ],
+  "false_alarm": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "tp": 2,
+  "fp": 2,
+  "fn": 0,
+  "pa": {
+   "tp": 508,
+   "fp": 567,
+   "fn": 0
+  },
+  "normalized_error": 0.06776853188448019,
+  "epochs_run": 35,
+  "best_val_loss": 0.21334093399630247,
+  "n_train_windows": 2620,
+  "train_s": 93.71,
+  "device": "cpu"
+ },
+ {
+  "row": 3,
+  "chan_id": "E-2",
+  "spacecraft": "SMAP",
+  "num_values": 8532,
+  "labeled_sequences": [
+   [
+    5598,
+    6995
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1215,
+    1444
+   ],
+   [
+    3330,
+    3607
+   ],
+   [
+    4170,
+    4239
+   ],
+   [
+    5640,
+    5919
+   ],
+   [
+    6130,
+    6646
+   ],
+   [
+    7250,
+    7319
+   ]
+  ],
+  "scores": [
+   1.0375,
+   1.1544,
+   0.6346,
+   1.0123,
+   0.9804,
+   0.4537
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   true,
+   true,
+   true,
+   false,
+   false,
+   true
+  ],
+  "tp": 1,
+  "fp": 4,
+  "fn": 0,
+  "pa": {
+   "tp": 1398,
+   "fp": 648,
+   "fn": 0
+  },
+  "normalized_error": 0.24293995884155253,
+  "epochs_run": 35,
+  "best_val_loss": 0.06310446935755606,
+  "n_train_windows": 2620,
+  "train_s": 62.85,
+  "device": "mps"
+ },
+ {
+  "row": 4,
+  "chan_id": "E-3",
+  "spacecraft": "SMAP",
+  "num_values": 8307,
+  "labeled_sequences": [
+   [
+    5094,
+    8306
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5570,
+    5709
+   ]
+  ],
+  "scores": [
+   1.4546
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 3213,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.016806133283078586,
+  "epochs_run": 35,
+  "best_val_loss": 0.002158591765483827,
+  "n_train_windows": 2620,
+  "train_s": 89.34,
+  "device": "mps"
+ },
+ {
+  "row": 5,
+  "chan_id": "E-4",
+  "spacecraft": "SMAP",
+  "num_values": 8354,
+  "labeled_sequences": [
+   [
+    5450,
+    8261
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5570,
+    6059
+   ],
+   [
+    6130,
+    6339
+   ]
+  ],
+  "scores": [
+   0.9598,
+   0.6133
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 2812,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.05279822222067378,
+  "epochs_run": 35,
+  "best_val_loss": 0.027910973279530765,
+  "n_train_windows": 2620,
+  "train_s": 80.2,
+  "device": "mps"
+ },
+ {
+  "row": 6,
+  "chan_id": "E-5",
+  "spacecraft": "SMAP",
+  "num_values": 8294,
+  "labeled_sequences": [
+   [
+    5600,
+    5920
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5570,
+    5639
+   ]
+  ],
+  "scores": [
+   0.7772
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 321,
+   "fp": 30,
+   "fn": 0
+  },
+  "normalized_error": 0.09614447986844807,
+  "epochs_run": 35,
+  "best_val_loss": 0.23078870409317598,
+  "n_train_windows": 2620,
+  "train_s": 75.26,
+  "device": "mps"
+ },
+ {
+  "row": 7,
+  "chan_id": "E-6",
+  "spacecraft": "SMAP",
+  "num_values": 8300,
+  "labeled_sequences": [
+   [
+    5610,
+    5675
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5570,
+    5779
+   ]
+  ],
+  "scores": [
+   5.1289
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 66,
+   "fp": 144,
+   "fn": 0
+  },
+  "normalized_error": 0.010866860915624088,
+  "epochs_run": 15,
+  "best_val_loss": 0.0002594515112520174,
+  "n_train_windows": 2620,
+  "train_s": 19.4,
+  "device": "mps"
+ },
+ {
+  "row": 8,
+  "chan_id": "E-7",
+  "spacecraft": "SMAP",
+  "num_values": 8310,
+  "labeled_sequences": [
+   [
+    5394,
+    5674
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5430,
+    5763
+   ]
+  ],
+  "scores": [
+   3.3157
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 281,
+   "fp": 89,
+   "fn": 0
+  },
+  "normalized_error": 0.018344247378177525,
+  "epochs_run": 20,
+  "best_val_loss": 0.001388902920650771,
+  "n_train_windows": 2509,
+  "train_s": 20.2,
+  "device": "mps"
+ },
+ {
+  "row": 9,
+  "chan_id": "E-8",
+  "spacecraft": "SMAP",
+  "num_values": 8532,
+  "labeled_sequences": [
+   [
+    5400,
+    6022
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5640,
+    5919
+   ]
+  ],
+  "scores": [
+   0.8894
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 623,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.06477832958837197,
+  "epochs_run": 35,
+  "best_val_loss": 0.019097486525091505,
+  "n_train_windows": 2620,
+  "train_s": 200.73,
+  "device": "mps"
+ },
+ {
+  "row": 10,
+  "chan_id": "E-9",
+  "spacecraft": "SMAP",
+  "num_values": 8302,
+  "labeled_sequences": [
+   [
+    5550,
+    5900
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 351
+  },
+  "normalized_error": 0.05562454948607217,
+  "epochs_run": 35,
+  "best_val_loss": 0.008877280104251309,
+  "n_train_windows": 2620,
+  "train_s": 52.16,
+  "device": "mps"
+ },
+ {
+  "row": 11,
+  "chan_id": "E-10",
+  "spacecraft": "SMAP",
+  "num_values": 8505,
+  "labeled_sequences": [
+   [
+    5000,
+    5050
+   ],
+   [
+    5601,
+    5871
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1748,
+    2006
+   ],
+   [
+    5010,
+    5149
+   ],
+   [
+    5570,
+    5961
+   ]
+  ],
+  "scores": [
+   0.7549,
+   2.2488,
+   2.8031
+  ],
+  "hit": [
+   true,
+   true
+  ],
+  "false_alarm": [
+   true,
+   false,
+   false
+  ],
+  "tp": 2,
+  "fp": 1,
+  "fn": 0,
+  "pa": {
+   "tp": 322,
+   "fp": 479,
+   "fn": 0
+  },
+  "normalized_error": 0.06872365772837108,
+  "epochs_run": 35,
+  "best_val_loss": 0.2315480035679941,
+  "n_train_windows": 2620,
+  "train_s": 166.51,
+  "device": "mps"
+ },
+ {
+  "row": 12,
+  "chan_id": "E-11",
+  "spacecraft": "SMAP",
+  "num_values": 8514,
+  "labeled_sequences": [
+   [
+    5000,
+    5050
+   ],
+   [
+    5614,
+    5857
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1749,
+    2017
+   ],
+   [
+    5010,
+    5079
+   ],
+   [
+    5570,
+    5958
+   ]
+  ],
+  "scores": [
+   1.3761,
+   1.4789,
+   3.1617
+  ],
+  "hit": [
+   true,
+   true
+  ],
+  "false_alarm": [
+   true,
+   false,
+   false
+  ],
+  "tp": 2,
+  "fp": 1,
+  "fn": 0,
+  "pa": {
+   "tp": 295,
+   "fp": 443,
+   "fn": 0
+  },
+  "normalized_error": 0.05610340905645675,
+  "epochs_run": 35,
+  "best_val_loss": 0.21696801222007694,
+  "n_train_windows": 2620,
+  "train_s": 279.16,
+  "device": "cpu"
+ },
+ {
+  "row": 13,
+  "chan_id": "E-12",
+  "spacecraft": "SMAP",
+  "num_values": 8512,
+  "labeled_sequences": [
+   [
+    5610,
+    6141
+   ],
+   [
+    5000,
+    5050
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1748,
+    2024
+   ],
+   [
+    5010,
+    5149
+   ],
+   [
+    5360,
+    5499
+   ],
+   [
+    5570,
+    5762
+   ],
+   [
+    6410,
+    6549
+   ]
+  ],
+  "scores": [
+   0.8249,
+   1.3929,
+   0.7226,
+   2.0094,
+   0.9226
+  ],
+  "hit": [
+   true,
+   true
+  ],
+  "false_alarm": [
+   true,
+   false,
+   true,
+   false,
+   true
+  ],
+  "tp": 2,
+  "fp": 3,
+  "fn": 0,
+  "pa": {
+   "tp": 583,
+   "fp": 696,
+   "fn": 0
+  },
+  "normalized_error": 0.04445597046459842,
+  "epochs_run": 35,
+  "best_val_loss": 0.22277383585922592,
+  "n_train_windows": 2620,
+  "train_s": 331.09,
+  "device": "mps"
+ },
+ {
+  "row": 14,
+  "chan_id": "E-13",
+  "spacecraft": "SMAP",
+  "num_values": 8640,
+  "labeled_sequences": [
+   [
+    5309,
+    5410
+   ],
+   [
+    5600,
+    5640
+   ],
+   [
+    6449,
+    6569
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    6480,
+    6549
+   ]
+  ],
+  "scores": [
+   0.6314
+  ],
+  "hit": [
+   false,
+   false,
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 2,
+  "pa": {
+   "tp": 121,
+   "fp": 0,
+   "fn": 143
+  },
+  "normalized_error": 0.044291805936832664,
+  "epochs_run": 35,
+  "best_val_loss": 0.08636394529852248,
+  "n_train_windows": 2620,
+  "train_s": 42.87,
+  "device": "mps"
+ },
+ {
+  "row": 15,
+  "chan_id": "A-1",
+  "spacecraft": "SMAP",
+  "num_values": 8640,
+  "labeled_sequences": [
+   [
+    4690,
+    4774
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4730,
+    4869
+   ]
+  ],
+  "scores": [
+   1.0865
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 85,
+   "fp": 95,
+   "fn": 0
+  },
+  "normalized_error": 0.008314720002449783,
+  "epochs_run": 13,
+  "best_val_loss": 0.00015511481759657386,
+  "n_train_windows": 2620,
+  "train_s": 24.59,
+  "device": "mps"
+ },
+ {
+  "row": 16,
+  "chan_id": "D-1",
+  "spacecraft": "SMAP",
+  "num_values": 8509,
+  "labeled_sequences": [
+   [
+    5250,
+    8508
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1723,
+    1982
+   ],
+   [
+    5220,
+    5359
+   ],
+   [
+    5570,
+    5989
+   ]
+  ],
+  "scores": [
+   0.362,
+   0.2712,
+   3.062
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   true,
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 1,
+  "fn": 0,
+  "pa": {
+   "tp": 3259,
+   "fp": 290,
+   "fn": 0
+  },
+  "normalized_error": 0.21991631412689636,
+  "epochs_run": 22,
+  "best_val_loss": 0.002663674041571304,
+  "n_train_windows": 2589,
+  "train_s": 129.3,
+  "device": "cpu"
+ },
+ {
+  "row": 17,
+  "chan_id": "P-2",
+  "spacecraft": "SMAP",
+  "num_values": 8209,
+  "labeled_sequences": [
+   [
+    5350,
+    6575
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5290,
+    5779
+   ]
+  ],
+  "scores": [
+   5.3074
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 1226,
+   "fp": 60,
+   "fn": 0
+  },
+  "normalized_error": 0.0599864268605032,
+  "epochs_run": 13,
+  "best_val_loss": 0.0008303826907649636,
+  "n_train_windows": 2561,
+  "train_s": 13.06,
+  "device": "mps"
+ },
+ {
+  "row": 18,
+  "chan_id": "P-3",
+  "spacecraft": "SMAP",
+  "num_values": 8493,
+  "labeled_sequences": [
+   [
+    5401,
+    6736
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5360,
+    5674
+   ],
+   [
+    5780,
+    6059
+   ]
+  ],
+  "scores": [
+   3.8466,
+   1.5907
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 1336,
+   "fp": 41,
+   "fn": 0
+  },
+  "normalized_error": 0.024626116018000705,
+  "epochs_run": 28,
+  "best_val_loss": 0.0100037063936737,
+  "n_train_windows": 2595,
+  "train_s": 41.18,
+  "device": "mps"
+ },
+ {
+  "row": 19,
+  "chan_id": "D-2",
+  "spacecraft": "SMAP",
+  "num_values": 8595,
+  "labeled_sequences": [
+   [
+    4319,
+    8536
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4660,
+    5009
+   ],
+   [
+    8440,
+    8584
+   ]
+  ],
+  "scores": [
+   6.7251,
+   0.4588
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 4218,
+   "fp": 48,
+   "fn": 0
+  },
+  "normalized_error": 0.4247679037860431,
+  "epochs_run": 13,
+  "best_val_loss": 0.00024961756954666313,
+  "n_train_windows": 2620,
+  "train_s": 38.44,
+  "device": "mps"
+ },
+ {
+  "row": 20,
+  "chan_id": "D-3",
+  "spacecraft": "SMAP",
+  "num_values": 8640,
+  "labeled_sequences": [
+   [
+    5225,
+    8500
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5360,
+    5989
+   ]
+  ],
+  "scores": [
+   2.8328
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 3276,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.19771043917054806,
+  "epochs_run": 13,
+  "best_val_loss": 0.0002722108011482326,
+  "n_train_windows": 2620,
+  "train_s": 26.14,
+  "device": "mps"
+ },
+ {
+  "row": 21,
+  "chan_id": "D-4",
+  "spacecraft": "SMAP",
+  "num_values": 8473,
+  "labeled_sequences": [
+   [
+    5225,
+    8472
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5220,
+    5919
+   ]
+  ],
+  "scores": [
+   2.835
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 3248,
+   "fp": 5,
+   "fn": 0
+  },
+  "normalized_error": 0.2037905714522692,
+  "epochs_run": 13,
+  "best_val_loss": 0.0003377700604281379,
+  "n_train_windows": 2573,
+  "train_s": 80.67,
+  "device": "mps"
+ },
+ {
+  "row": 22,
+  "chan_id": "A-2",
+  "spacecraft": "SMAP",
+  "num_values": 7914,
+  "labeled_sequences": [
+   [
+    4450,
+    4560
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    4520,
+    4659
+   ]
+  ],
+  "scores": [
+   0.6098
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 111,
+   "fp": 99,
+   "fn": 0
+  },
+  "normalized_error": 0.06858991188485578,
+  "epochs_run": 35,
+  "best_val_loss": 0.025940077075399616,
+  "n_train_windows": 2388,
+  "train_s": 45.72,
+  "device": "mps"
+ },
+ {
+  "row": 23,
+  "chan_id": "A-3",
+  "spacecraft": "SMAP",
+  "num_values": 8205,
+  "labeled_sequences": [
+   [
+    4575,
+    4760
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    4590,
+    4799
+   ]
+  ],
+  "scores": [
+   0.6186
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 186,
+   "fp": 39,
+   "fn": 0
+  },
+  "normalized_error": 0.04806286337327674,
+  "epochs_run": 35,
+  "best_val_loss": 0.017519060770670572,
+  "n_train_windows": 2476,
+  "train_s": 58.07,
+  "device": "mps"
+ },
+ {
+  "row": 24,
+  "chan_id": "A-4",
+  "spacecraft": "SMAP",
+  "num_values": 8080,
+  "labeled_sequences": [
+   [
+    4550,
+    4660
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    4520,
+    4729
+   ]
+  ],
+  "scores": [
+   0.5535
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 111,
+   "fp": 99,
+   "fn": 0
+  },
+  "normalized_error": 0.055784703083653686,
+  "epochs_run": 35,
+  "best_val_loss": 0.021338874911084587,
+  "n_train_windows": 2430,
+  "train_s": 36.43,
+  "device": "mps"
+ },
+ {
+  "row": 25,
+  "chan_id": "G-1",
+  "spacecraft": "SMAP",
+  "num_values": 8469,
+  "labeled_sequences": [
+   [
+    4770,
+    4890
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    2350,
+    2559
+   ]
+  ],
+  "scores": [
+   0.3031
+  ],
+  "hit": [
+   false
+  ],
+  "false_alarm": [
+   true
+  ],
+  "tp": 0,
+  "fp": 1,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 210,
+   "fn": 121
+  },
+  "normalized_error": 0.09574266253937931,
+  "epochs_run": 35,
+  "best_val_loss": 0.021404433995485306,
+  "n_train_windows": 2560,
+  "train_s": 111.33,
+  "device": "mps"
+ },
+ {
+  "row": 26,
+  "chan_id": "G-2",
+  "spacecraft": "SMAP",
+  "num_values": 7361,
+  "labeled_sequences": [
+   [
+    4030,
+    4070
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 41
+  },
+  "normalized_error": 0.003326160641492815,
+  "epochs_run": 14,
+  "best_val_loss": 0.00028386722142631943,
+  "n_train_windows": 2218,
+  "train_s": 19.34,
+  "device": "mps"
+ },
+ {
+  "row": 27,
+  "chan_id": "D-5",
+  "spacecraft": "SMAP",
+  "num_values": 7628,
+  "labeled_sequences": [
+   [
+    4800,
+    4850
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 51
+  },
+  "normalized_error": 0.9281331886144013,
+  "epochs_run": 15,
+  "best_val_loss": 0.00016563677269479504,
+  "n_train_windows": 2301,
+  "train_s": 13.52,
+  "device": "mps"
+ },
+ {
+  "row": 28,
+  "chan_id": "D-6",
+  "spacecraft": "SMAP",
+  "num_values": 7884,
+  "labeled_sequences": [
+   [
+    4870,
+    4950
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4870,
+    5079
+   ]
+  ],
+  "scores": [
+   2.4104
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 81,
+   "fp": 129,
+   "fn": 0
+  },
+  "normalized_error": 0.017579557072148432,
+  "epochs_run": 35,
+  "best_val_loss": 0.0128617664476023,
+  "n_train_windows": 2334,
+  "train_s": 29.78,
+  "device": "mps"
+ },
+ {
+  "row": 29,
+  "chan_id": "D-7",
+  "spacecraft": "SMAP",
+  "num_values": 7642,
+  "labeled_sequences": [
+   [
+    4940,
+    7641
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5010,
+    5359
+   ],
+   [
+    5430,
+    5919
+   ]
+  ],
+  "scores": [
+   4.1976,
+   0.6258
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 2702,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.18031003954965422,
+  "epochs_run": 13,
+  "best_val_loss": 0.00018775817207110826,
+  "n_train_windows": 2323,
+  "train_s": 179.48,
+  "device": "mps"
+ },
+ {
+  "row": 30,
+  "chan_id": "F-1",
+  "spacecraft": "SMAP",
+  "num_values": 8584,
+  "labeled_sequences": [
+   [
+    5392,
+    5492
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    7530,
+    7599
+   ]
+  ],
+  "scores": [
+   0.2145
+  ],
+  "hit": [
+   false
+  ],
+  "false_alarm": [
+   true
+  ],
+  "tp": 0,
+  "fp": 1,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 70,
+   "fn": 101
+  },
+  "normalized_error": 0.06789313005248511,
+  "epochs_run": 35,
+  "best_val_loss": 0.031538367728163916,
+  "n_train_windows": 2609,
+  "train_s": 47.48,
+  "device": "mps"
+ },
+ {
+  "row": 31,
+  "chan_id": "P-4",
+  "spacecraft": "SMAP",
+  "num_values": 7783,
+  "labeled_sequences": [
+   [
+    950,
+    1080
+   ],
+   [
+    2150,
+    2350
+   ],
+   [
+    4770,
+    4880
+   ]
+  ],
+  "classes": [
+   "point",
+   "point",
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    930,
+    1181
+   ],
+   [
+    2170,
+    2419
+   ],
+   [
+    4800,
+    4939
+   ]
+  ],
+  "scores": [
+   1.9962,
+   1.3991,
+   1.5443
+  ],
+  "hit": [
+   true,
+   true,
+   true
+  ],
+  "false_alarm": [
+   false,
+   false,
+   false
+  ],
+  "tp": 3,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 443,
+   "fp": 249,
+   "fn": 0
+  },
+  "normalized_error": 0.01258263290205741,
+  "epochs_run": 13,
+  "best_val_loss": 0.000258469708422397,
+  "n_train_windows": 2349,
+  "train_s": 67.61,
+  "device": "cpu"
+ },
+ {
+  "row": 32,
+  "chan_id": "G-3",
+  "spacecraft": "SMAP",
+  "num_values": 7907,
+  "labeled_sequences": [
+   [
+    4200,
+    4250
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5640,
+    5779
+   ]
+  ],
+  "scores": [
+   3.427
+  ],
+  "hit": [
+   false
+  ],
+  "false_alarm": [
+   true
+  ],
+  "tp": 0,
+  "fp": 1,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 140,
+   "fn": 51
+  },
+  "normalized_error": 0.006674866593825641,
+  "epochs_run": 35,
+  "best_val_loss": 0.008830844725917308,
+  "n_train_windows": 2364,
+  "train_s": 186.54,
+  "device": "cpu"
+ },
+ {
+  "row": 33,
+  "chan_id": "T-1",
+  "spacecraft": "SMAP",
+  "num_values": 8612,
+  "labeled_sequences": [
+   [
+    2399,
+    3898
+   ],
+   [
+    6550,
+    6585
+   ]
+  ],
+  "classes": [
+   "point",
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false,
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 2,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 1536
+  },
+  "normalized_error": 0.036546971344958164,
+  "epochs_run": 35,
+  "best_val_loss": 0.0033977489854364047,
+  "n_train_windows": 2615,
+  "train_s": 115.76,
+  "device": "mps"
+ },
+ {
+  "row": 34,
+  "chan_id": "T-2",
+  "spacecraft": "SMAP",
+  "num_values": 8625,
+  "labeled_sequences": [
+   [
+    6840,
+    8624
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 1785
+  },
+  "normalized_error": 0.03355384668424665,
+  "epochs_run": 35,
+  "best_val_loss": 0.00601538941120596,
+  "n_train_windows": 2595,
+  "train_s": 67.02,
+  "device": "mps"
+ },
+ {
+  "row": 35,
+  "chan_id": "D-8",
+  "spacecraft": "SMAP",
+  "num_values": 7874,
+  "labeled_sequences": [
+   [
+    4370,
+    4420
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4380,
+    4519
+   ]
+  ],
+  "scores": [
+   1.3554
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 51,
+   "fp": 99,
+   "fn": 0
+  },
+  "normalized_error": 0.007363170749376476,
+  "epochs_run": 13,
+  "best_val_loss": 0.00038161472632334783,
+  "n_train_windows": 2342,
+  "train_s": 14.4,
+  "device": "mps"
+ },
+ {
+  "row": 36,
+  "chan_id": "D-9",
+  "spacecraft": "SMAP",
+  "num_values": 7406,
+  "labeled_sequences": [
+   [
+    6250,
+    7405
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    6410,
+    6829
+   ]
+  ],
+  "scores": [
+   11.0028
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 1156,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.1251925446182748,
+  "epochs_run": 14,
+  "best_val_loss": 9.360046636673712e-05,
+  "n_train_windows": 2323,
+  "train_s": 18.89,
+  "device": "mps"
+ },
+ {
+  "row": 37,
+  "chan_id": "F-2",
+  "spacecraft": "SMAP",
+  "num_values": 8626,
+  "labeled_sequences": [
+   [
+    5669,
+    8625
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    6760,
+    6969
+   ]
+  ],
+  "scores": [
+   0.5374
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 2957,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.05766956544815992,
+  "epochs_run": 17,
+  "best_val_loss": 0.02966456046471229,
+  "n_train_windows": 2601,
+  "train_s": 24.22,
+  "device": "mps"
+ },
+ {
+  "row": 38,
+  "chan_id": "G-4",
+  "spacecraft": "SMAP",
+  "num_values": 7632,
+  "labeled_sequences": [
+   [
+    4690,
+    4720
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4660,
+    4870
+   ]
+  ],
+  "scores": [
+   2.045
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 31,
+   "fp": 180,
+   "fn": 0
+  },
+  "normalized_error": 0.005874882055506134,
+  "epochs_run": 14,
+  "best_val_loss": 0.00014727998638777753,
+  "n_train_windows": 2291,
+  "train_s": 13.88,
+  "device": "mps"
+ },
+ {
+  "row": 39,
+  "chan_id": "T-3",
+  "spacecraft": "SMAP",
+  "num_values": 8579,
+  "labeled_sequences": [
+   [
+    2098,
+    2180
+   ],
+   [
+    5200,
+    5300
+   ]
+  ],
+  "classes": [
+   "point",
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    2057,
+    2301
+   ],
+   [
+    5220,
+    5359
+   ]
+  ],
+  "scores": [
+   1.3121,
+   1.0373
+  ],
+  "hit": [
+   true,
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 2,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 184,
+   "fp": 221,
+   "fn": 0
+  },
+  "normalized_error": 0.007727846411905519,
+  "epochs_run": 13,
+  "best_val_loss": 0.0003103737507449965,
+  "n_train_windows": 2616,
+  "train_s": 108.87,
+  "device": "cpu"
+ },
+ {
+  "row": 40,
+  "chan_id": "D-11",
+  "spacecraft": "SMAP",
+  "num_values": 7431,
+  "labeled_sequences": [
+   [
+    4270,
+    4330
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4240,
+    4449
+   ]
+  ],
+  "scores": [
+   2.3897
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 61,
+   "fp": 149,
+   "fn": 0
+  },
+  "normalized_error": 0.023493647815058097,
+  "epochs_run": 20,
+  "best_val_loss": 0.0007221525653879693,
+  "n_train_windows": 2351,
+  "train_s": 68.25,
+  "device": "mps"
+ },
+ {
+  "row": 41,
+  "chan_id": "D-12",
+  "spacecraft": "SMAP",
+  "num_values": 7918,
+  "labeled_sequences": [
+   [
+    5178,
+    7917
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5360,
+    5709
+   ],
+   [
+    5920,
+    6199
+   ],
+   [
+    6270,
+    6549
+   ]
+  ],
+  "scores": [
+   1.1294,
+   0.6351,
+   0.5969
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false,
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 2740,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.16008161870960116,
+  "epochs_run": 35,
+  "best_val_loss": 0.00275372713804245,
+  "n_train_windows": 52,
+  "train_s": 3.55,
+  "device": "mps"
+ },
+ {
+  "row": 42,
+  "chan_id": "B-1",
+  "spacecraft": "SMAP",
+  "num_values": 8044,
+  "labeled_sequences": [
+   [
+    5060,
+    5130
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5010,
+    5429
+   ]
+  ],
+  "scores": [
+   9.5199
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 71,
+   "fp": 349,
+   "fn": 0
+  },
+  "normalized_error": 0.34721868194233846,
+  "epochs_run": 21,
+  "best_val_loss": 1.1796898197853701e-05,
+  "n_train_windows": 2175,
+  "train_s": 45.59,
+  "device": "mps"
+ },
+ {
+  "row": 43,
+  "chan_id": "G-6",
+  "spacecraft": "SMAP",
+  "num_values": 8640,
+  "labeled_sequences": [
+   [
+    5600,
+    5700
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5640,
+    5849
+   ]
+  ],
+  "scores": [
+   2.0657
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 101,
+   "fp": 149,
+   "fn": 0
+  },
+  "normalized_error": 0.0214628778731446,
+  "epochs_run": 15,
+  "best_val_loss": 0.00020184282583134776,
+  "n_train_windows": 2621,
+  "train_s": 35.26,
+  "device": "mps"
+ },
+ {
+  "row": 44,
+  "chan_id": "G-7",
+  "spacecraft": "SMAP",
+  "num_values": 8029,
+  "labeled_sequences": [
+   [
+    3650,
+    3750
+   ],
+   [
+    5050,
+    5100
+   ],
+   [
+    7560,
+    7675
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "point",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1127,
+    1446
+   ],
+   [
+    3610,
+    3877
+   ],
+   [
+    5010,
+    5213
+   ],
+   [
+    7530,
+    7809
+   ]
+  ],
+  "scores": [
+   1.1216,
+   3.1379,
+   1.6724,
+   3.4859
+  ],
+  "hit": [
+   true,
+   true,
+   true
+  ],
+  "false_alarm": [
+   true,
+   false,
+   false,
+   false
+  ],
+  "tp": 3,
+  "fp": 1,
+  "fn": 0,
+  "pa": {
+   "tp": 268,
+   "fp": 804,
+   "fn": 0
+  },
+  "normalized_error": 0.01931491844218921,
+  "epochs_run": 16,
+  "best_val_loss": 0.03500906990103645,
+  "n_train_windows": 2186,
+  "train_s": 84.07,
+  "device": "cpu"
+ },
+ {
+  "row": 45,
+  "chan_id": "P-7",
+  "spacecraft": "SMAP",
+  "num_values": 8071,
+  "labeled_sequences": [
+   [
+    4950,
+    6600
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    5010,
+    5289
+   ],
+   [
+    5360,
+    5429
+   ]
+  ],
+  "scores": [
+   0.8682,
+   0.3469
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 1651,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.03247980252983411,
+  "epochs_run": 18,
+  "best_val_loss": 0.007641831804102785,
+  "n_train_windows": 2593,
+  "train_s": 102.05,
+  "device": "cpu"
+ },
+ {
+  "row": 46,
+  "chan_id": "R-1",
+  "spacecraft": "SMAP",
+  "num_values": 7244,
+  "labeled_sequences": [
+   [
+    4510,
+    4590
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 81
+  },
+  "normalized_error": 0.0024283499353461796,
+  "epochs_run": 15,
+  "best_val_loss": 6.10634128974455e-05,
+  "n_train_windows": 2614,
+  "train_s": 395.33,
+  "device": "mps"
+ },
+ {
+  "row": 47,
+  "chan_id": "A-5",
+  "spacecraft": "SMAP",
+  "num_values": 4693,
+  "labeled_sequences": [
+   [
+    2750,
+    2800
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    2700,
+    3049
+   ]
+  ],
+  "scores": [
+   13.1247
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 51,
+   "fp": 299,
+   "fn": 0
+  },
+  "normalized_error": 0.30574846264212724,
+  "epochs_run": 19,
+  "best_val_loss": 0.0004425484142946393,
+  "n_train_windows": 445,
+  "train_s": 5.61,
+  "device": "mps"
+ },
+ {
+  "row": 48,
+  "chan_id": "A-6",
+  "spacecraft": "SMAP",
+  "num_values": 4453,
+  "labeled_sequences": [
+   [
+    1890,
+    1930
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1804,
+    2085
+   ]
+  ],
+  "scores": [
+   0.3242
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 41,
+   "fp": 241,
+   "fn": 0
+  },
+  "normalized_error": 0.14807785506034393,
+  "epochs_run": 35,
+  "best_val_loss": 0.03634184315091088,
+  "n_train_windows": 422,
+  "train_s": 6.93,
+  "device": "mps"
+ },
+ {
+  "row": 49,
+  "chan_id": "A-7",
+  "spacecraft": "SMAP",
+  "num_values": 8631,
+  "labeled_sequences": [
+   [
+    6200,
+    8600
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    6200,
+    6689
+   ]
+  ],
+  "scores": [
+   0.8924
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 2401,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.057170923960433905,
+  "epochs_run": 35,
+  "best_val_loss": 0.03431736603947996,
+  "n_train_windows": 2619,
+  "train_s": 112.86,
+  "device": "mps"
+ },
+ {
+  "row": 50,
+  "chan_id": "D-13",
+  "spacecraft": "SMAP",
+  "num_values": 7663,
+  "labeled_sequences": [
+   [
+    5070,
+    5230
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5080,
+    5499
+   ]
+  ],
+  "scores": [
+   4.5964
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 161,
+   "fp": 269,
+   "fn": 0
+  },
+  "normalized_error": 0.3127387804259131,
+  "epochs_run": 17,
+  "best_val_loss": 0.0002504380010977024,
+  "n_train_windows": 1230,
+  "train_s": 8.09,
+  "device": "mps"
+ },
+ {
+  "row": 51,
+  "chan_id": "P-2",
+  "spacecraft": "SMAP",
+  "num_values": 8209,
+  "labeled_sequences": [
+   [
+    5300,
+    6420
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    5290,
+    5779
+   ]
+  ],
+  "scores": [
+   5.3074
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 1121,
+   "fp": 10,
+   "fn": 0
+  },
+  "normalized_error": 0.0599864268605032,
+  "epochs_run": 13,
+  "best_val_loss": 0.0008303826907649636,
+  "n_train_windows": 2561,
+  "train_s": 13.06,
+  "device": "mps"
+ },
+ {
+  "row": 52,
+  "chan_id": "A-8",
+  "spacecraft": "SMAP",
+  "num_values": 8375,
+  "labeled_sequences": [
+   [
+    4569,
+    8374
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    7530,
+    8364
+   ]
+  ],
+  "scores": [
+   1.2196
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 3806,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.1747831255117538,
+  "epochs_run": 35,
+  "best_val_loss": 0.038996756076812744,
+  "n_train_windows": 502,
+  "train_s": 12.5,
+  "device": "mps"
+ },
+ {
+  "row": 53,
+  "chan_id": "A-9",
+  "spacecraft": "SMAP",
+  "num_values": 8434,
+  "labeled_sequences": [
+   [
+    4569,
+    8433
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 3865
+  },
+  "normalized_error": 0.5728838730031178,
+  "epochs_run": 35,
+  "best_val_loss": 0.022956657409667968,
+  "n_train_windows": 502,
+  "train_s": 10.29,
+  "device": "mps"
+ },
+ {
+  "row": 54,
+  "chan_id": "F-3",
+  "spacecraft": "SMAP",
+  "num_values": 8376,
+  "labeled_sequences": [
+   [
+    5600,
+    5640
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 41
+  },
+  "normalized_error": 0.004543233822087124,
+  "epochs_run": 15,
+  "best_val_loss": 0.00018844890002985947,
+  "n_train_windows": 2620,
+  "train_s": 64.73,
+  "device": "mps"
+ },
+ {
+  "row": 55,
+  "chan_id": "M-6",
+  "spacecraft": "MSL",
+  "num_values": 2049,
+  "labeled_sequences": [
+   [
+    1850,
+    2030
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1815,
+    2038
+   ]
+  ],
+  "scores": [
+   2.0482
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 181,
+   "fp": 43,
+   "fn": 0
+  },
+  "normalized_error": 0.05340642243706082,
+  "epochs_run": 16,
+  "best_val_loss": 0.00027950482007644184,
+  "n_train_windows": 1305,
+  "train_s": 25.92,
+  "device": "cpu"
+ },
+ {
+  "row": 56,
+  "chan_id": "M-1",
+  "spacecraft": "MSL",
+  "num_values": 2277,
+  "labeled_sequences": [
+   [
+    1110,
+    2250
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 1141
+  },
+  "normalized_error": 0.046588425927759164,
+  "epochs_run": 35,
+  "best_val_loss": 0.0836932353484325,
+  "n_train_windows": 1949,
+  "train_s": 30.47,
+  "device": "mps"
+ },
+ {
+  "row": 57,
+  "chan_id": "M-2",
+  "spacecraft": "MSL",
+  "num_values": 2277,
+  "labeled_sequences": [
+   [
+    1110,
+    2250
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 1141
+  },
+  "normalized_error": 0.08356724876691593,
+  "epochs_run": 35,
+  "best_val_loss": 0.016986717321933843,
+  "n_train_windows": 1948,
+  "train_s": 33.73,
+  "device": "mps"
+ },
+ {
+  "row": 58,
+  "chan_id": "S-2",
+  "spacecraft": "MSL",
+  "num_values": 1827,
+  "labeled_sequences": [
+   [
+    900,
+    910
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    806,
+    1061
+   ]
+  ],
+  "scores": [
+   3.3775
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 11,
+   "fp": 245,
+   "fn": 0
+  },
+  "normalized_error": 0.0030576437236247886,
+  "epochs_run": 18,
+  "best_val_loss": 9.507606072085244e-05,
+  "n_train_windows": 666,
+  "train_s": 5.76,
+  "device": "mps"
+ },
+ {
+  "row": 59,
+  "chan_id": "P-10",
+  "spacecraft": "MSL",
+  "num_values": 6100,
+  "labeled_sequences": [
+   [
+    4590,
+    4720
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4590,
+    5009
+   ]
+  ],
+  "scores": [
+   5.1052
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 131,
+   "fp": 289,
+   "fn": 0
+  },
+  "normalized_error": 0.18514325746705065,
+  "epochs_run": 18,
+  "best_val_loss": 1.572991410891215e-05,
+  "n_train_windows": 4048,
+  "train_s": 123.44,
+  "device": "mps"
+ },
+ {
+  "row": 60,
+  "chan_id": "T-4",
+  "spacecraft": "MSL",
+  "num_values": 2217,
+  "labeled_sequences": [
+   [
+    1172,
+    1240
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 69
+  },
+  "normalized_error": 0.08795826511688846,
+  "epochs_run": 35,
+  "best_val_loss": 0.12935167758619015,
+  "n_train_windows": 2012,
+  "train_s": 28.59,
+  "device": "mps"
+ },
+ {
+  "row": 61,
+  "chan_id": "T-5",
+  "spacecraft": "MSL",
+  "num_values": 2218,
+  "labeled_sequences": [
+   [
+    1200,
+    1225
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1113,
+    1376
+   ]
+  ],
+  "scores": [
+   3.8273
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 26,
+   "fp": 238,
+   "fn": 0
+  },
+  "normalized_error": 0.004554556989024438,
+  "epochs_run": 18,
+  "best_val_loss": 2.6549940085529688e-05,
+  "n_train_windows": 2012,
+  "train_s": 19.15,
+  "device": "mps"
+ },
+ {
+  "row": 62,
+  "chan_id": "F-7",
+  "spacecraft": "MSL",
+  "num_values": 5054,
+  "labeled_sequences": [
+   [
+    1250,
+    1450
+   ],
+   [
+    2670,
+    2790
+   ],
+   [
+    3325,
+    3425
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1291,
+    1577
+   ],
+   [
+    1970,
+    2180
+   ],
+   [
+    2700,
+    2890
+   ]
+  ],
+  "scores": [
+   0.7933,
+   0.9015,
+   0.5562
+  ],
+  "hit": [
+   true,
+   true,
+   false
+  ],
+  "false_alarm": [
+   false,
+   true,
+   false
+  ],
+  "tp": 2,
+  "fp": 1,
+  "fn": 1,
+  "pa": {
+   "tp": 322,
+   "fp": 438,
+   "fn": 101
+  },
+  "normalized_error": 0.15950648873052872,
+  "epochs_run": 35,
+  "best_val_loss": 0.2983594767252604,
+  "n_train_windows": 2251,
+  "train_s": 34.78,
+  "device": "mps"
+ },
+ {
+  "row": 63,
+  "chan_id": "M-3",
+  "spacecraft": "MSL",
+  "num_values": 2127,
+  "labeled_sequences": [
+   [
+    1250,
+    1500
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 251
+  },
+  "normalized_error": 0.06215164278640587,
+  "epochs_run": 35,
+  "best_val_loss": 0.0854796933456206,
+  "n_train_windows": 1777,
+  "train_s": 87.86,
+  "device": "cpu"
+ },
+ {
+  "row": 64,
+  "chan_id": "M-4",
+  "spacecraft": "MSL",
+  "num_values": 2038,
+  "labeled_sequences": [
+   [
+    1250,
+    1500
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1350,
+    1615
+   ]
+  ],
+  "scores": [
+   0.9294
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 251,
+   "fp": 115,
+   "fn": 0
+  },
+  "normalized_error": 0.08915043966204446,
+  "epochs_run": 35,
+  "best_val_loss": 0.0835078636148416,
+  "n_train_windows": 1816,
+  "train_s": 66.63,
+  "device": "mps"
+ },
+ {
+  "row": 65,
+  "chan_id": "M-5",
+  "spacecraft": "MSL",
+  "num_values": 2303,
+  "labeled_sequences": [
+   [
+    1250,
+    1550
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1466,
+    1791
+   ]
+  ],
+  "scores": [
+   0.5118
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 301,
+   "fp": 241,
+   "fn": 0
+  },
+  "normalized_error": 0.07426091921589847,
+  "epochs_run": 35,
+  "best_val_loss": 0.1370286672128796,
+  "n_train_windows": 1772,
+  "train_s": 87.98,
+  "device": "cpu"
+ },
+ {
+  "row": 66,
+  "chan_id": "P-15",
+  "spacecraft": "MSL",
+  "num_values": 2856,
+  "labeled_sequences": [
+   [
+    1390,
+    1410
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 21
+  },
+  "normalized_error": 0.48374919183494863,
+  "epochs_run": 14,
+  "best_val_loss": 0.0011108195224003485,
+  "n_train_windows": 3422,
+  "train_s": 143.86,
+  "device": "cpu"
+ },
+ {
+  "row": 67,
+  "chan_id": "C-1",
+  "spacecraft": "MSL",
+  "num_values": 2264,
+  "labeled_sequences": [
+   [
+    550,
+    750
+   ],
+   [
+    2100,
+    2210
+   ]
+  ],
+  "classes": [
+   "point",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    500,
+    756
+   ]
+  ],
+  "scores": [
+   1.0156
+  ],
+  "hit": [
+   true,
+   false
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 201,
+   "fp": 56,
+   "fn": 111
+  },
+  "normalized_error": 0.03532931203277737,
+  "epochs_run": 35,
+  "best_val_loss": 0.019134467526486044,
+  "n_train_windows": 1898,
+  "train_s": 29.78,
+  "device": "mps"
+ },
+ {
+  "row": 68,
+  "chan_id": "C-2",
+  "spacecraft": "MSL",
+  "num_values": 2051,
+  "labeled_sequences": [
+   [
+    290,
+    390
+   ],
+   [
+    1540,
+    1575
+   ]
+  ],
+  "classes": [
+   "point",
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false,
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 2,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 137
+  },
+  "normalized_error": 0.2558108321194583,
+  "epochs_run": 22,
+  "best_val_loss": 6.076169781165548e-05,
+  "n_train_windows": 504,
+  "train_s": 16.76,
+  "device": "cpu"
+ },
+ {
+  "row": 69,
+  "chan_id": "T-12",
+  "spacecraft": "MSL",
+  "num_values": 2430,
+  "labeled_sequences": [
+   [
+    630,
+    750
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 121
+  },
+  "normalized_error": 0.02037124590330472,
+  "epochs_run": 35,
+  "best_val_loss": 0.02207423872866873,
+  "n_train_windows": 885,
+  "train_s": 13.64,
+  "device": "mps"
+ },
+ {
+  "row": 70,
+  "chan_id": "T-13",
+  "spacecraft": "MSL",
+  "num_values": 2430,
+  "labeled_sequences": [
+   [
+    690,
+    790
+   ],
+   [
+    1900,
+    2050
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false,
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 2,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 252
+  },
+  "normalized_error": 0.017536544908790284,
+  "epochs_run": 19,
+  "best_val_loss": 0.001278061146116526,
+  "n_train_windows": 885,
+  "train_s": 9.68,
+  "device": "mps"
+ },
+ {
+  "row": 71,
+  "chan_id": "F-4",
+  "spacecraft": "MSL",
+  "num_values": 3422,
+  "labeled_sequences": [
+   [
+    2700,
+    2770
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    2980,
+    3119
+   ]
+  ],
+  "scores": [
+   0.7685
+  ],
+  "hit": [
+   false
+  ],
+  "false_alarm": [
+   true
+  ],
+  "tp": 0,
+  "fp": 1,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 140,
+   "fn": 71
+  },
+  "normalized_error": 0.030663020493075253,
+  "epochs_run": 35,
+  "best_val_loss": 0.036433966994585856,
+  "n_train_windows": 1984,
+  "train_s": 30.91,
+  "device": "mps"
+ },
+ {
+  "row": 72,
+  "chan_id": "F-5",
+  "spacecraft": "MSL",
+  "num_values": 3922,
+  "labeled_sequences": [
+   [
+    3550,
+    3700
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    3540,
+    3804
+   ]
+  ],
+  "scores": [
+   6.7279
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 151,
+   "fp": 114,
+   "fn": 0
+  },
+  "normalized_error": 0.016408046123424332,
+  "epochs_run": 35,
+  "best_val_loss": 0.06998502291165866,
+  "n_train_windows": 2338,
+  "train_s": 31.33,
+  "device": "mps"
+ },
+ {
+  "row": 73,
+  "chan_id": "D-14",
+  "spacecraft": "MSL",
+  "num_values": 2625,
+  "labeled_sequences": [
+   [
+    1630,
+    1650
+   ],
+   [
+    1800,
+    2000
+   ]
+  ],
+  "classes": [
+   "point",
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1770,
+    2109
+   ]
+  ],
+  "scores": [
+   2.0329
+  ],
+  "hit": [
+   false,
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 201,
+   "fp": 139,
+   "fn": 21
+  },
+  "normalized_error": 0.07202512199732516,
+  "epochs_run": 14,
+  "best_val_loss": 3.903383446385536e-05,
+  "n_train_windows": 3415,
+  "train_s": 70.85,
+  "device": "mps"
+ },
+ {
+  "row": 74,
+  "chan_id": "T-9",
+  "spacecraft": "MSL",
+  "num_values": 1096,
+  "labeled_sequences": [
+   [
+    780,
+    810
+   ],
+   [
+    890,
+    970
+   ]
+  ],
+  "classes": [
+   "point",
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false,
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 2,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 112
+  },
+  "normalized_error": 0.1928132093872465,
+  "epochs_run": 21,
+  "best_val_loss": 0.007679278651873271,
+  "n_train_windows": 179,
+  "train_s": 4.08,
+  "device": "mps"
+ },
+ {
+  "row": 75,
+  "chan_id": "P-14",
+  "spacecraft": "MSL",
+  "num_values": 6100,
+  "labeled_sequences": [
+   [
+    4575,
+    4755
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    4590,
+    5009
+   ]
+  ],
+  "scores": [
+   4.6015
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 181,
+   "fp": 254,
+   "fn": 0
+  },
+  "normalized_error": 0.19226097017909363,
+  "epochs_run": 13,
+  "best_val_loss": 0.00010411231600828753,
+  "n_train_windows": 2620,
+  "train_s": 34.44,
+  "device": "mps"
+ },
+ {
+  "row": 76,
+  "chan_id": "T-8",
+  "spacecraft": "MSL",
+  "num_values": 1519,
+  "labeled_sequences": [
+   [
+    870,
+    930
+   ],
+   [
+    1330,
+    1370
+   ]
+  ],
+  "classes": [
+   "contextual",
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    786,
+    1035
+   ],
+   [
+    1273,
+    1486
+   ]
+  ],
+  "scores": [
+   0.8809,
+   0.9251
+  ],
+  "hit": [
+   true,
+   true
+  ],
+  "false_alarm": [
+   false,
+   false
+  ],
+  "tp": 2,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 102,
+   "fp": 362,
+   "fn": 0
+  },
+  "normalized_error": 0.03058024129971736,
+  "epochs_run": 18,
+  "best_val_loss": 0.03317417173969502,
+  "n_train_windows": 488,
+  "train_s": 6.15,
+  "device": "mps"
+ },
+ {
+  "row": 77,
+  "chan_id": "P-11",
+  "spacecraft": "MSL",
+  "num_values": 3535,
+  "labeled_sequences": [
+   [
+    1778,
+    1898
+   ],
+   [
+    1238,
+    1344
+   ]
+  ],
+  "classes": [
+   "point",
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    1184,
+    1465
+   ]
+  ],
+  "scores": [
+   1.0501
+  ],
+  "hit": [
+   false,
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 107,
+   "fp": 175,
+   "fn": 121
+  },
+  "normalized_error": 0.025391031728332278,
+  "epochs_run": 34,
+  "best_val_loss": 0.0058911174455421635,
+  "n_train_windows": 3709,
+  "train_s": 247.71,
+  "device": "mps"
+ },
+ {
+  "row": 78,
+  "chan_id": "D-15",
+  "spacecraft": "MSL",
+  "num_values": 2158,
+  "labeled_sequences": [
+   [
+    1500,
+    2140
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [],
+  "scores": [],
+  "hit": [
+   false
+  ],
+  "false_alarm": [],
+  "tp": 0,
+  "fp": 0,
+  "fn": 1,
+  "pa": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 641
+  },
+  "normalized_error": 0.10222141354543184,
+  "epochs_run": 35,
+  "best_val_loss": 0.34603795663712766,
+  "n_train_windows": 1814,
+  "train_s": 30.04,
+  "device": "mps"
+ },
+ {
+  "row": 79,
+  "chan_id": "D-16",
+  "spacecraft": "MSL",
+  "num_values": 2191,
+  "labeled_sequences": [
+   [
+    600,
+    1250
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    716,
+    953
+   ]
+  ],
+  "scores": [
+   0.9804
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 651,
+   "fp": 0,
+   "fn": 0
+  },
+  "normalized_error": 0.1565993569724036,
+  "epochs_run": 35,
+  "best_val_loss": 0.19293552687188156,
+  "n_train_windows": 1191,
+  "train_s": 14.78,
+  "device": "mps"
+ },
+ {
+  "row": 80,
+  "chan_id": "M-7",
+  "spacecraft": "MSL",
+  "num_values": 2156,
+  "labeled_sequences": [
+   [
+    940,
+    1040
+   ]
+  ],
+  "classes": [
+   "point"
+  ],
+  "predicted_sequences": [
+   [
+    870,
+    1148
+   ]
+  ],
+  "scores": [
+   2.7104
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 101,
+   "fp": 178,
+   "fn": 0
+  },
+  "normalized_error": 0.03275961994354609,
+  "epochs_run": 16,
+  "best_val_loss": 0.009221759832130288,
+  "n_train_windows": 1327,
+  "train_s": 34.98,
+  "device": "mps"
+ },
+ {
+  "row": 81,
+  "chan_id": "F-8",
+  "spacecraft": "MSL",
+  "num_values": 2487,
+  "labeled_sequences": [
+   [
+    1950,
+    2486
+   ]
+  ],
+  "classes": [
+   "contextual"
+  ],
+  "predicted_sequences": [
+   [
+    1916,
+    2222
+   ]
+  ],
+  "scores": [
+   0.9978
+  ],
+  "hit": [
+   true
+  ],
+  "false_alarm": [
+   false
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 0,
+  "pa": {
+   "tp": 537,
+   "fp": 34,
+   "fn": 0
+  },
+  "normalized_error": 0.07320299673682971,
+  "epochs_run": 35,
+  "best_val_loss": 0.14709548207072468,
+  "n_train_windows": 3082,
+  "train_s": 319.01,
+  "device": "cpu"
+ }
+]

@@ -1,0 +1,21 @@
+# Mission-control console (Next.js). Build from the repo root:
+#   docker build -f infra/Dockerfile.console --build-arg NEXT_PUBLIC_VBW_API=http://<host>:8000 -t vbw-console .
+# NEXT_PUBLIC_VBW_API is baked in at build time: it is the pipeline URL as seen from the *browser*.
+FROM node:22-bookworm-slim
+
+ARG NEXT_PUBLIC_VBW_API=http://localhost:8000
+ENV NEXT_PUBLIC_VBW_API=$NEXT_PUBLIC_VBW_API \
+    NEXT_TELEMETRY_DISABLED=1
+
+RUN corepack enable
+WORKDIR /app
+
+COPY apps/console/package.json apps/console/pnpm-lock.yaml apps/console/pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY apps/console ./
+RUN pnpm build
+
+ENV NODE_ENV=production
+EXPOSE 3000
+CMD ["pnpm", "start"]

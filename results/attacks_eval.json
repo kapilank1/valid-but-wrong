@@ -1,0 +1,438 @@
+{
+  "detector": "stub",
+  "schema": "falcon9",
+  "attacks": {
+    "none": {
+      "attack": "none",
+      "runs": 6,
+      "detection_rate": 0.0,
+      "mean_latency_s": null,
+      "mean_max_lie_before_alert": 0.0,
+      "mean_lie_before_alert": 0.0,
+      "mean_max_lie": 0.0,
+      "mean_alert_rate": 0.0,
+      "per_run": [
+        {
+          "attack": "none",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 0.0,
+          "max_lie": 0.0,
+          "mean_lie_before_alert": 0.0,
+          "alert_rate": 0.0,
+          "frames": 5450
+        },
+        {
+          "attack": "none",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 0.0,
+          "max_lie": 0.0,
+          "mean_lie_before_alert": 0.0,
+          "alert_rate": 0.0,
+          "frames": 4890
+        },
+        {
+          "attack": "none",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 0.0,
+          "max_lie": 0.0,
+          "mean_lie_before_alert": 0.0,
+          "alert_rate": 0.0,
+          "frames": 5570
+        },
+        {
+          "attack": "none",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 0.0,
+          "max_lie": 0.0,
+          "mean_lie_before_alert": 0.0,
+          "alert_rate": 0.0,
+          "frames": 4980
+        },
+        {
+          "attack": "none",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 0.0,
+          "max_lie": 0.0,
+          "mean_lie_before_alert": 0.0,
+          "alert_rate": 0.0,
+          "frames": 4700
+        },
+        {
+          "attack": "none",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 0.0,
+          "max_lie": 0.0,
+          "mean_lie_before_alert": 0.0,
+          "alert_rate": 0.0,
+          "frames": 5380
+        }
+      ]
+    },
+    "bias": {
+      "attack": "bias",
+      "runs": 6,
+      "detection_rate": 0.0,
+      "mean_latency_s": null,
+      "mean_max_lie_before_alert": 3000.000000000013,
+      "mean_lie_before_alert": 3000.0,
+      "mean_max_lie": 3000.000000000013,
+      "mean_alert_rate": 0.0,
+      "per_run": [
+        {
+          "attack": "bias",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 3000.0000000000146,
+          "max_lie": 3000.0000000000146,
+          "mean_lie_before_alert": 3000.0,
+          "alert_rate": 0.0,
+          "frames": 5450
+        },
+        {
+          "attack": "bias",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 3000.0000000000146,
+          "max_lie": 3000.0000000000146,
+          "mean_lie_before_alert": 3000.0,
+          "alert_rate": 0.0,
+          "frames": 4890
+        },
+        {
+          "attack": "bias",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 3000.0000000000146,
+          "max_lie": 3000.0000000000146,
+          "mean_lie_before_alert": 3000.0,
+          "alert_rate": 0.0,
+          "frames": 5570
+        },
+        {
+          "attack": "bias",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 3000.0000000000146,
+          "max_lie": 3000.0000000000146,
+          "mean_lie_before_alert": 3000.0,
+          "alert_rate": 0.0,
+          "frames": 4980
+        },
+        {
+          "attack": "bias",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 3000.0000000000073,
+          "max_lie": 3000.0000000000073,
+          "mean_lie_before_alert": 3000.0,
+          "alert_rate": 0.0,
+          "frames": 4700
+        },
+        {
+          "attack": "bias",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 3000.0000000000146,
+          "max_lie": 3000.0000000000146,
+          "mean_lie_before_alert": 3000.0,
+          "alert_rate": 0.0,
+          "frames": 5380
+        }
+      ]
+    },
+    "drift": {
+      "attack": "drift",
+      "runs": 6,
+      "detection_rate": 0.0,
+      "mean_latency_s": null,
+      "mean_max_lie_before_alert": 10063.5,
+      "mean_lie_before_alert": 5031.75,
+      "mean_max_lie": 10063.5,
+      "mean_alert_rate": 0.0,
+      "per_run": [
+        {
+          "attack": "drift",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 10626.0,
+          "max_lie": 10626.0,
+          "mean_lie_before_alert": 5313.0,
+          "alert_rate": 0.0,
+          "frames": 5450
+        },
+        {
+          "attack": "drift",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 9534.0,
+          "max_lie": 9534.0,
+          "mean_lie_before_alert": 4767.0,
+          "alert_rate": 0.0,
+          "frames": 4890
+        },
+        {
+          "attack": "drift",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 10860.0,
+          "max_lie": 10860.0,
+          "mean_lie_before_alert": 5430.0,
+          "alert_rate": 0.0,
+          "frames": 5570
+        },
+        {
+          "attack": "drift",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 9707.999999999998,
+          "max_lie": 9707.999999999998,
+          "mean_lie_before_alert": 4854.0,
+          "alert_rate": 0.0,
+          "frames": 4980
+        },
+        {
+          "attack": "drift",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 9162.0,
+          "max_lie": 9162.0,
+          "mean_lie_before_alert": 4581.0,
+          "alert_rate": 0.0,
+          "frames": 4700
+        },
+        {
+          "attack": "drift",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 10491.0,
+          "max_lie": 10491.0,
+          "mean_lie_before_alert": 5245.5,
+          "alert_rate": 0.0,
+          "frames": 5380
+        }
+      ]
+    },
+    "replay": {
+      "attack": "replay",
+      "runs": 6,
+      "detection_rate": 0.0,
+      "mean_latency_s": null,
+      "mean_max_lie_before_alert": 96733.01893333334,
+      "mean_lie_before_alert": 57018.19453874219,
+      "mean_max_lie": 96733.01893333334,
+      "mean_alert_rate": 0.0,
+      "per_run": [
+        {
+          "attack": "replay",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 81399.0513,
+          "max_lie": 81399.0513,
+          "mean_lie_before_alert": 62577.57410482641,
+          "alert_rate": 0.0,
+          "frames": 5450
+        },
+        {
+          "attack": "replay",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 98600.8781,
+          "max_lie": 98600.8781,
+          "mean_lie_before_alert": 73625.28441019187,
+          "alert_rate": 0.0,
+          "frames": 4890
+        },
+        {
+          "attack": "replay",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 128424.5575,
+          "max_lie": 128424.5575,
+          "mean_lie_before_alert": 55279.34929859154,
+          "alert_rate": 0.0,
+          "frames": 5570
+        },
+        {
+          "attack": "replay",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 97719.8135,
+          "max_lie": 97719.8135,
+          "mean_lie_before_alert": 43411.62549891876,
+          "alert_rate": 0.0,
+          "frames": 4980
+        },
+        {
+          "attack": "replay",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 83373.32890000001,
+          "max_lie": 83373.32890000001,
+          "mean_lie_before_alert": 38392.72264288052,
+          "alert_rate": 0.0,
+          "frames": 4700
+        },
+        {
+          "attack": "replay",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 90880.4843,
+          "max_lie": 90880.4843,
+          "mean_lie_before_alert": 68822.61127704402,
+          "alert_rate": 0.0,
+          "frames": 5380
+        }
+      ]
+    },
+    "freeze": {
+      "attack": "freeze",
+      "runs": 6,
+      "detection_rate": 1.0,
+      "mean_latency_s": 0.7000000000000028,
+      "mean_max_lie_before_alert": 695.5749499999996,
+      "mean_lie_before_alert": 392.0793020833319,
+      "mean_max_lie": 94387.87313333333,
+      "mean_alert_rate": 0.6487168173965489,
+      "per_run": [
+        {
+          "attack": "freeze",
+          "detected": true,
+          "latency_s": 0.700000000000017,
+          "max_lie_before_alert": 617.1061000000045,
+          "max_lie": 76771.5295,
+          "mean_lie_before_alert": 351.5412875000038,
+          "alert_rate": 0.6488073394495413,
+          "frames": 5450
+        },
+        {
+          "attack": "freeze",
+          "detected": true,
+          "latency_s": 0.700000000000017,
+          "max_lie_before_alert": 691.7685999999958,
+          "max_lie": 93270.0,
+          "mean_lie_before_alert": 390.7523874999988,
+          "alert_rate": 0.6486707566462168,
+          "frames": 4890
+        },
+        {
+          "attack": "freeze",
+          "detected": true,
+          "latency_s": 0.6999999999999886,
+          "max_lie_before_alert": 651.3746000000101,
+          "max_lie": 128424.5575,
+          "mean_lie_before_alert": 365.0205875000047,
+          "alert_rate": 0.6488330341113105,
+          "frames": 5570
+        },
+        {
+          "attack": "freeze",
+          "detected": true,
+          "latency_s": 0.6999999999999886,
+          "max_lie_before_alert": 778.2758999999933,
+          "max_lie": 97933.2068,
+          "mean_lie_before_alert": 439.1832499999946,
+          "alert_rate": 0.6485943775100401,
+          "frames": 4980
+        },
+        {
+          "attack": "freeze",
+          "detected": true,
+          "latency_s": 0.6999999999999886,
+          "max_lie_before_alert": 774.0105999999942,
+          "max_lie": 83809.41690000001,
+          "mean_lie_before_alert": 434.88058749999254,
+          "alert_rate": 0.6485106382978724,
+          "frames": 4700
+        },
+        {
+          "attack": "freeze",
+          "detected": true,
+          "latency_s": 0.700000000000017,
+          "max_lie_before_alert": 660.9138999999996,
+          "max_lie": 86118.5281,
+          "mean_lie_before_alert": 371.0977124999972,
+          "alert_rate": 0.6488847583643123,
+          "frames": 5380
+        }
+      ]
+    },
+    "coordinated": {
+      "attack": "coordinated",
+      "runs": 6,
+      "detection_rate": 0.0,
+      "mean_latency_s": null,
+      "mean_max_lie_before_alert": 8386.25,
+      "mean_lie_before_alert": 4193.125,
+      "mean_max_lie": 8386.25,
+      "mean_alert_rate": 0.0,
+      "per_run": [
+        {
+          "attack": "coordinated",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 8855.0,
+          "max_lie": 8855.0,
+          "mean_lie_before_alert": 4427.5,
+          "alert_rate": 0.0,
+          "frames": 5450
+        },
+        {
+          "attack": "coordinated",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 7945.0,
+          "max_lie": 7945.0,
+          "mean_lie_before_alert": 3972.5,
+          "alert_rate": 0.0,
+          "frames": 4890
+        },
+        {
+          "attack": "coordinated",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 9050.0,
+          "max_lie": 9050.0,
+          "mean_lie_before_alert": 4525.0,
+          "alert_rate": 0.0,
+          "frames": 5570
+        },
+        {
+          "attack": "coordinated",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 8089.999999999999,
+          "max_lie": 8089.999999999999,
+          "mean_lie_before_alert": 4045.0,
+          "alert_rate": 0.0,
+          "frames": 4980
+        },
+        {
+          "attack": "coordinated",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 7634.999999999999,
+          "max_lie": 7634.999999999999,
+          "mean_lie_before_alert": 3817.5,
+          "alert_rate": 0.0,
+          "frames": 4700
+        },
+        {
+          "attack": "coordinated",
+          "detected": false,
+          "latency_s": null,
+          "max_lie_before_alert": 8742.5,
+          "max_lie": 8742.5,
+          "mean_lie_before_alert": 4371.25,
+          "alert_rate": 0.0,
+          "frames": 5380
+        }
+      ]
+    }
+  }
+}

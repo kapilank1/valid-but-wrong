@@ -1,0 +1,19 @@
+---
+description: Valid-But-Wrong project context. Always applies.
+globs:
+alwaysApply: true
+---
+
+# Valid-But-Wrong
+
+Detects telemetry frames that pass every link integrity check (CRC, sequence, time) but describe
+physically wrong motion. Real data: Falcon 9 webcast telemetry and NASA SMAP/MSL spacecraft telemetry.
+
+- Read `docs/CONTRACT.md` and `vbw/schema.py` before changing any interface. The console mirrors them in
+  `apps/console/src/lib/types.ts`.
+- Data flow: `vbw/sources` → `vbw/link/codec.py` (encode) → MITM `vbw/attacker` (decode, rewrite, re-encode with a
+  valid CRC) → `LinkMonitor` (L0) → `vbw/detector` (L1 physics, L2 GRU, L3 discriminator) → `vbw/pipeline`
+  (FastAPI + WebSocket) → `apps/console` (Next.js) and `vbw/store` (Tiger Data / TimescaleDB).
+- Python: `uv run pytest`. Console: `cd apps/console && pnpm dev`.
+- Every logic change gets a test. Never invent metrics: numbers come from `results/*.json`.
+- `HANDOFF.md` is the running build log. Append to it when you finish a chunk of work.

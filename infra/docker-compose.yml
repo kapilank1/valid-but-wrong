@@ -1,0 +1,88 @@
+# Valid-But-Wrong demo stack: TimescaleDB + pipeline server + mission-control console.
+#
+#   cp infra/.env.example infra/.env        # then edit
+#   docker compose -f infra/docker-compose.yml up -d --build
+#   docker compose -f infra/docker-compose.yml --profile edge up -d --build     # + Caddy HTTPS on :443
+#
+# Using Tiger Cloud instead of the local db: set DATABASE_URL in infra/.env and start only
+#   docker compose -f infra/docker-compose.yml up -d --build --no-deps server console
+
+name: vbw
+
+services:
+  db:
+    image: timescale/timescaledb:2.17.2-pg16
+    environment:
+      POSTGRES_USER: vbw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vbw}
+      POSTGRES_DB: vbw
+    ports:
+      - "127.0.0.1:5432:5432"          # local only; never expose Postgres publicly
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Runs once on an empty data dir, after the image's own timescaledb setup scripts.
+      - ./sql/001_init.sql:/docker-entrypoint-initdb.d/100_vbw_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vbw -d vbw"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  server:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.server
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://vbw:vbw@db:5432/vbw}
+      VBW_DB_AUTO_INIT: ${VBW_DB_AUTO_INIT:-1}
+      VBW_CORS_ORIGINS: ${VBW_CORS_ORIGINS:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mounted so retrained models / new bench results / fetched SMAP data show up without a rebuild.
+      - ../models:/app/models:ro
+      - ../results:/app/results:ro
+      - ../data:/app/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  console:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.console
+      args:
+        NEXT_PUBLIC_VBW_API: ${NEXT_PUBLIC_VBW_API:-http://localhost:8000}
+    environment:
+      CARTESIA_API_KEY: ${CARTESIA_API_KEY:-}
+      CARTESIA_VOICE_ID: ${CARTESIA_VOICE_ID:-}
+      CARTESIA_MODEL_ID: ${CARTESIA_MODEL_ID:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  # Optional single-origin HTTPS front door (profile "edge"): console on /, pipeline on /api/* and /ws.
+  # Set VBW_DOMAIN (DNS A record -> this host) and NEXT_PUBLIC_VBW_API=https://$VBW_DOMAIN.
+  caddy:
+    image: caddy:2.8.4-alpine
+    profiles: ["edge"]
+    environment:
+      VBW_DOMAIN: ${VBW_DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      - server
+      - console
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  caddy_data:

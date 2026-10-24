@@ -1,0 +1,11 @@
+# Single origin for the demo (compose profile "edge"). Caddy gets a TLS certificate for $VBW_DOMAIN.
+# Order matters inside `route`: the console's own /api/tts (Cartesia proxy) must win over the pipeline's /api/*.
+{$VBW_DOMAIN} {
+	encode gzip
+	route {
+		reverse_proxy /api/tts* console:3000
+		reverse_proxy /api/* server:8000
+		reverse_proxy /ws server:8000
+		reverse_proxy console:3000
+	}
+}
