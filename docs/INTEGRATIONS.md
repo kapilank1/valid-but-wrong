@@ -65,6 +65,20 @@ container. Details are in [DEPLOY_VULTR.md](DEPLOY_VULTR.md).
 - HTTPS on a domain: point its A record at the IP, then `scripts\deploy_vultr.ps1 -Update -Domain yourname.tech`
 - Stop billing: `scripts\deploy_vultr_destroy.ps1 -Yes`
 
+## Verified with real credentials (2026-10-24)
+
+- **Tiger Data:** `db_init.py --check` passed against a Tiger Cloud service (TimescaleDB 2.31.0): schema, both
+  hypertables, `verdicts_1s` + refresh/compression jobs, synthetic round trip. A live ▶ Demo run then wrote 8,961 rows
+  in 64 batches with 0 errors; `/api/runs`, `/api/runs/<id>/timeline` (300 one-second buckets) and `/api/analytics`
+  all answered from Tiger Cloud.
+- **Cartesia:** the console's `/api/tts` returned MP3 (140 KB, ~2 s first call, then cached); a live ▶ Demo spoke all
+  4 alerts through Cartesia (4 × `POST /api/tts` 200).
+- **TLS-inspecting antivirus (Norton on the dev laptop):** Node's bundled CA list doesn't include the antivirus root,
+  so server-side `fetch` to Cartesia failed with `UNABLE_TO_VERIFY_LEAF_SIGNATURE`. The console now also trusts the OS
+  certificate store at server start (`apps/console/src/instrumentation.ts`, `src/lib/systemCa.ts`). git uses
+  schannel (OS store) and psycopg uses `sslmode=require`, so neither was affected.
+- **Vultr:** skipped for now (no credits).
+
 ## Not verified yet
 
 These scripts were written and checked without credentials:
@@ -73,10 +87,9 @@ These scripts were written and checked without credentials:
 - A Vultr `-DryRun` against the live public catalog (plan, price, OS id).
 - A local build of the upload bundle.
 
-Still untested:
+Still untested (Vultr only):
 - Real instance creation.
 - The cloud-init run.
 - Building the Docker images on the host.
-- The schema and `--check` against a real Tiger Cloud service. There is no Docker or Postgres on the dev laptop.
 
 The first real run of each will show any problem.

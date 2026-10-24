@@ -86,7 +86,13 @@ export async function POST(request: Request) {
     remember(transcript, audio);
     return audioResponse(audio, false);
   } catch (err) {
+    // fetch() wraps network failures in TypeError("fetch failed"); the useful part (ECONNRESET, a TLS code...) is
+    // in err.cause. Neither contains the API key.
     const reason = err instanceof Error ? err.name : "unknown";
-    return NextResponse.json({ error: "tts_unreachable", reason }, { status: 502 });
+    const message = err instanceof Error ? err.message : String(err);
+    const cause = err instanceof Error && err.cause instanceof Error
+      ? ((err.cause as Error & { code?: string }).code ?? err.cause.message) : undefined;
+    console.error("[tts] Cartesia request failed:", reason, message, cause ?? "");
+    return NextResponse.json({ error: "tts_unreachable", reason, message, cause }, { status: 502 });
   }
 }

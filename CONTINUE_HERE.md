@@ -1,6 +1,17 @@
-# CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 ~12:45 PDT)
+# CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 ~14:20 PDT)
 
-> **Latest (Sat 12:45):** the build is feature-complete and verified; what's left is credentials, deploy, and ship assets.
+> **Latest (Sat 14:20):** Tiger Data and Cartesia are live and verified with the user's credentials; the repo is on
+> GitHub (https://github.com/kapilank1/valid-but-wrong, branch `main`). Vultr is **skipped** (the user has no credits).
+> What's left: ship assets (Devpost image, backup video, Cursor/Grok screenshots) and anything the user asks for.
+> - **Tiger Data verified**: `db_init.py --check` passed on Tiger Cloud (TimescaleDB 2.31.0); a live ▶ Demo wrote
+>   8,961 rows / 64 batches / 0 errors; `/api/runs`, timeline (300 buckets from `verdicts_1s`) and `/api/analytics`
+>   answer from Tiger Cloud. Stop only pauses a run; the run row is closed on Reset / new scenario / end of flight.
+> - **Cartesia verified**: all 4 alerts of a live ▶ Demo spoken via `/api/tts` (200). Norton's TLS inspection broke
+>   server-side fetch (`UNABLE_TO_VERIFY_LEAF_SIGNATURE`); fixed by trusting the OS cert store at server start
+>   (`apps/console/src/instrumentation.ts` → `instrumentation-node.ts`, `src/lib/systemCa.ts`). Restart the console
+>   after changing `.env.local`.
+> - Credentials live in gitignored `.env` (`DATABASE_URL`) and `apps/console/.env.local` (`CARTESIA_API_KEY`). Never
+>   print or commit them.
 > - **Hardened r2 ships** (`models/l3_falcon9.onnx` = r2; r1 kept as `models/l3_falcon9_r1.*`). On 6 held-out
 >   launches it catches PPO r1 in 41 s / 0.72 km (base: 190 s / 12.3 km) and PPO r2 in 36 s / 0.38 km, 0/18 clean
 >   false alerts (`results/detector_eval_r2.json`).
@@ -13,10 +24,10 @@
 >   preloading at server startup (`vbw/attacker/env.py` `load_policy` / `preload_policies`), PPO goes active at
 >   T+190.0 s, the lie reaches 3.70 km with base silent, and hardened r2 alerts 0.1 s after the hot-swap (T+288.6).
 >   PPO round 2 rung verified live too: 2.44 km lie at T+349 with base at 0.03; hardened r2 caught it 43 s after swap.
-> - **Deploy prep done** (`docs/INTEGRATIONS.md`, `scripts/deploy_vultr.ps1`), **blocked on the user's keys**:
->   `VULTR_API_KEY` and `DATABASE_URL` in repo-root `.env`, `CARTESIA_API_KEY` in `apps/console/.env.local`.
-> - **git**: commits `a455875`, `f52e085`, `7264e60` and later. No remote: create a GitHub repo and push before submitting.
-> - Tests: 221 passed + 1 skipped (the GPU test without TensorRT); console 73.
+> - **Vultr deploy prep done** (`docs/INTEGRATIONS.md`, `scripts/deploy_vultr.ps1`) but not run: needs
+>   `VULTR_API_KEY` in `.env` and the user's OK on the price.
+> - **git**: pushed to `origin` = https://github.com/kapilank1/valid-but-wrong (`main`). Commit, then `git push`.
+> - Tests: 221 passed + 1 skipped (the GPU test without TensorRT); console 75.
 
 Read this first. It says what the project is, what is built and measured, and exactly what to do next.
 `HANDOFF.md` is the chronological log (with the reasoning behind every change). `PLAN.md` is the original hackathon
@@ -149,13 +160,10 @@ P 78.9 / R 67.6 / F1 72.8%. Telemanom (paper): combined F1 83.6%. We are below i
 
 ## 6. What's left (in priority order)
 1. ~~PPO preload fix~~ and ~~TensorRT rerun on AC power~~: done and verified (see Latest).
-2. **Credentials (user):** `VULTR_API_KEY` + `DATABASE_URL` in repo-root `.env`, `CARTESIA_API_KEY` in
-   `apps/console/.env.local` (see `docs/INTEGRATIONS.md`). Then, in this order:
-   - **Vultr:** `scripts/deploy_vultr.ps1 -DryRun`, show the user the plan + price (default `vc2-2c-4gb`, ~$0.027/h),
-     and create only after they confirm (`-Yes`). Destroy with `scripts/deploy_vultr_destroy.ps1 -Yes` after judging.
-   - **Tiger Data:** `uv run python scripts/db_init.py --check`, then run a demo so runs land in the hypertables.
-   - **Cartesia:** restart the console, confirm voice callouts use Cartesia.
-3. **Ship:** push to GitHub, Devpost image (console screenshot mid-attack), recorded backup demo video, screenshots
+2. ~~Tiger Data~~ and ~~Cartesia~~: done and verified (see Latest). **Vultr (skipped, only if the user gets credits):**
+   `VULTR_API_KEY` in `.env`, then `scripts/deploy_vultr.ps1 -DryRun`, show the user the plan + price (default
+   `vc2-2c-4gb`, ~$0.027/h), create only after they confirm (`-Yes`); destroy with `scripts/deploy_vultr_destroy.ps1 -Yes`.
+3. **Ship:** ~~push to GitHub~~ (done), Devpost image (console screenshot mid-attack), recorded backup demo video, screenshots
    of Cursor + Grok usage for SpaceXSI. Update the resume bullet to match what was built (TensorRT FP16/INT8 was
    benchmarked, the live path is ONNX Runtime; no Kubernetes; no C++ monitor).
 4. **Optional (only if the user asks):** C++ MAVLink/UDP edge monitor; quad PPO; delete the stub model.

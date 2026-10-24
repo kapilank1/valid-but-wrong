@@ -147,3 +147,16 @@ Living log of the build. If a session is cut off, the next one starts here.
   - Laptop back on AC: TensorRT rerun with L3 r2 → `results/trt_bench.json`. 16,384 streams: L2 FP16 6.66 ms vs CPU
     232 ms (35×), L3 FP16 9.25 ms vs 80.0 ms (8.7×), sum ~15.9 ms; FP16 0 decision flips; INT8 L3 3.0% flips.
     docs/TENSORRT.md, README, DEVPOST, CONTINUE_HERE updated.
+- 2026-10-24 ~13:45–14:20 (user supplied Tiger Data + Cartesia credentials; Vultr skipped, no credits)
+  - `.env` had `DATABASE_URL=DATABASE_URL=...` (whole line pasted); stripped the duplicate prefix without reading it.
+  - **Tiger Data**: `db_init.py --check` passed on Tiger Cloud (TimescaleDB 2.31.0). Live ▶ Demo: 8,961 rows in 64
+    batches, 0 errors; run row finalized on Reset (2,987 frames, 4 alerts); timeline 300 buckets; analytics shows
+    bias/base 0.4 s, PPO/base missed, PPO/hardened caught.
+  - **Cartesia**: `/api/tts` failed with `fetch failed` / `UNABLE_TO_VERIFY_LEAF_SIGNATURE`. Cause: Norton Antivirus
+    re-signs HTTPS; my tool shells had `NODE_EXTRA_CA_CERTS`/`NODE_USE_SYSTEM_CA=1` but they are NOT in the user's
+    Windows env, so the user's own `pnpm dev` would fail too. Fix: Next `instrumentation.ts` → `instrumentation-node.ts`
+    calls `trustSystemCertificates` (`src/lib/systemCa.ts`, `tls.setDefaultCACertificates(default + system)`, 2 vitest
+    tests). The Edge build must not import `node:tls`, hence the split file. Route errors now report `message`/`cause`.
+    Live ▶ Demo: 4 alerts → 4 Cartesia callouts (200).
+  - GitHub: remote `origin` = https://github.com/kapilank1/valid-but-wrong (public, was empty), pushed `main`.
+    Secret scan of the index and all history: clean.
