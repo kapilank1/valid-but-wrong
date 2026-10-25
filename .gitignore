@@ -16,3 +16,7 @@ node_modules/
 *.log
 .DS_Store
 memory/
+
+# C++ edge monitor: downloaded SDKs and build output
+edge/third_party/
+edge/build/

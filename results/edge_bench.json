@@ -1,0 +1,19 @@
+{
+ "created": "2026-10-24T15:30:00-07:00",
+ "what": "C++ edge monitor (edge/, vbw_edge) vs the Python BaseDetector: golden-file parity and per-frame cost",
+ "hardware": "AMD Ryzen AI 7 350, one thread; MSVC 14.51 /O2; ONNX Runtime 1.31.0 CPU",
+ "parity": {
+  "test": "edge/build/test_detector.exe (edge/tests/test_detector.cpp), frames fed as raw packet bytes (packet_hex)",
+  "golden_sets": {
+   "golden_ses9_clean.csv": {"frames": 5450, "alert_frames_cpp": 0, "alert_frames_python": 0},
+   "golden_ses9_bias.csv": {"frames": 5450, "alert_frames_cpp": 618, "alert_frames_python": 618},
+   "golden_ses9_ppo.csv": {"frames": 5450, "alert_frames_cpp": 398, "alert_frames_python": 398},
+   "golden_link_faults.csv": {"frames": 416, "alert_frames_cpp": 0, "alert_frames_python": 0}
+  },
+  "max_abs_error": {"l2_z": 0, "l1_score": 0, "l2_score": 0, "score": 0, "l1_ratio_rel": 0},
+  "mismatches": {"accepted": 0, "l0": 0, "decode_failures": 0, "alert_frames": 0}
+ },
+ "bench": {"type":"bench_detector","frames":5450,"passes":5,"total_us":{"n":27250,"p50":30.00,"p99":52.40,"max":288.70,"mean":30.68},"l1_us":{"n":27250,"p50":3.10,"p99":4.20,"max":85.70,"mean":3.15},"l2_us":{"n":27145,"p50":26.40,"p99":44.90,"max":411.70,"mean":27.17},"frames_per_s":32550.5,"alert_frames_per_pass":0,"l2":true},
+ "python_reference_ms_per_frame": {"base": 1.19, "source": "results/detector_eval.json (detectors.base.clean.ms_per_frame)"},
+ "not_yet_measured": "live UDP end to end (scripts/edge_eval.py with vbw_edge.exe + scripts/udp_replay.py); test_l1.cpp per-rule parity"
+}

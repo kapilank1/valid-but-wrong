@@ -1,3 +1,6 @@
 # Shell scripts run on Linux hosts (Vultr, Docker): keep LF even when checked out on Windows.
 *.sh text eol=lf
 infra/cloud-init.yaml text eol=lf
+# C++ edge monitor fixtures are parsed byte for byte: never convert line endings.
+edge/testdata/*.csv -text
+edge/config/*.cfg text eol=lf

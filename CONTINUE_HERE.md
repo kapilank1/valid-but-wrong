@@ -1,8 +1,19 @@
-# CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 ~14:20 PDT)
+# CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 ~15:45 PDT)
 
+> **NEXT TASK (in Cursor, with Grok): the project website for judges.** Everything the site needs (story, every
+> number with its source file, sections, visual direction, rules) is in **`docs/WEBSITE_BRIEF.md`**. Build it in
+> `apps/site/`; don't touch the detector/console/edge code.
+>
+> **C++ edge monitor (`edge/`): PAUSED by the user, partly done.** Builds with `edge\build.ps1 -Test`; 3/3 CTest suites
+> pass; bit-exact parity with the Python detector on 16,766 frames; 30 µs/frame, 32,550 frames/s
+> (`results/edge_bench.json`). Remaining work and how to resume: status block at the top of `edge/SPEC.md`.
+> Toolchain installed for it: VS Build Tools 2026 C++ + Windows 11 SDK 10.0.26100; ONNX Runtime 1.31.0 C++ and MAVLink
+> headers in gitignored `edge/third_party/` (re-download URLs in `edge/SPEC.md`).
+>
 > **Latest (Sat 14:20):** Tiger Data and Cartesia are live and verified with the user's credentials; the repo is on
 > GitHub (https://github.com/kapilank1/valid-but-wrong, branch `main`). Vultr is **skipped** (the user has no credits).
-> What's left: ship assets (Devpost image, backup video, Cursor/Grok screenshots) and anything the user asks for.
+> What's left: the website, ship assets (Devpost image, backup video, Cursor/Grok screenshots), and resuming the C++
+> monitor if the user wants.
 > - **Tiger Data verified**: `db_init.py --check` passed on Tiger Cloud (TimescaleDB 2.31.0); a live ▶ Demo wrote
 >   8,961 rows / 64 batches / 0 errors; `/api/runs`, timeline (300 buckets from `verdicts_1s`) and `/api/analytics`
 >   answer from Tiger Cloud. Stop only pauses a run; the run row is closed on Reset / new scenario / end of flight.

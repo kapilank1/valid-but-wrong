@@ -160,3 +160,18 @@ Living log of the build. If a session is cut off, the next one starts here.
     Live ▶ Demo: 4 alerts → 4 Cartesia callouts (200).
   - GitHub: remote `origin` = https://github.com/kapilank1/valid-but-wrong (public, was empty), pushed `main`.
     Secret scan of the index and all history: clean.
+- 2026-10-24 ~14:55–15:45: C++ edge monitor (`edge/`), then paused by the user to build a website in Cursor.
+  - Toolchain: VS Build Tools 2026 already had MSVC 14.51 + CMake + Ninja; installed the Windows 11 SDK 10.0.26100
+    (VS Installer, user approved UAC). vcvars64.bat needs `C:\Program Files (x86)\Microsoft Visual Studio\Installer`
+    on PATH (it calls vswhere). Executables don't start from `cmd /c` in this sandbox; run them from PowerShell `&`.
+    ONNX Runtime 1.31.0 C++ zip + MAVLink c_library_v2 in gitignored `edge/third_party/`.
+  - Orchestrated 4 agents against `edge/SPEC.md` (contract: wire format, flat `.cfg` config, golden CSV, C++
+    interfaces, ownership): A Python tools (config export, golden CSVs with `packet_hex`, `udp_replay.py`,
+    `edge_eval.py`), B platform (CMake, build.ps1, frame/CRC/LinkMonitor, UDP, config parser, `vbw_edge` CLI),
+    C L1 physics port (all 11 Falcon 9 rules), D L2 (ORT C++), alerting, BaseDetector, parity test, bench.
+    All four hit the API session limit (~15:20); work saved.
+  - Result: builds; CTest 3/3 (test_frame, test_config, test_detector). Parity on golden_ses9_{clean,bias,ppo} +
+    golden_link_faults (16,766 frames): every error 0, alert frames 0/618/398/0 identical. bench_detector 30 µs/frame
+    p50 (L1 3.1, L2 26.4), 32,550 frames/s → `results/edge_bench.json` (Python 1.19 ms/frame).
+  - Not done: test_l1.cpp, tests/test_edge_*.py, edge/README.md, live UDP end-to-end eval, phase 2.
+  - Website handoff: `docs/WEBSITE_BRIEF.md` (all facts + sources + rules); `.cursor/rules/project.mdc` points at it.
