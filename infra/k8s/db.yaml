@@ -1,0 +1,83 @@
+# TimescaleDB. A database keeps data on disk and has a stable identity, so it is a StatefulSet (not a
+# Deployment): its pod is always db-0, and its PersistentVolumeClaim outlives pod restarts and rescheduling.
+
+# Dev-only credentials. A real cluster would create this Secret out of band (or use an external secret store)
+# and never commit it.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+type: Opaque
+stringData:
+  POSTGRES_USER: vbw
+  POSTGRES_PASSWORD: vbw
+  POSTGRES_DB: vbw
+  DATABASE_URL: postgresql://vbw:vbw@db:5432/vbw
+---
+# Headless Service (clusterIP: None): gives the pod the DNS name "db" inside the namespace without load
+# balancing, which is what a single stateful pod wants. Nothing outside the cluster can reach it.
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: db
+  ports:
+    - name: postgres
+      port: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  serviceName: db
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: db
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: db
+    spec:
+      containers:
+        - name: timescaledb
+          image: timescale/timescaledb:2.17.2-pg16
+          ports:
+            - name: postgres
+              containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: db-credentials
+          env:
+            # A subdirectory, because Postgres refuses a mount root that isn't empty (e.g. lost+found).
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          # readiness gates traffic (the Service only routes to ready pods); liveness restarts a hung container.
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "vbw", "-d", "vbw"]
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "vbw", "-d", "vbw"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests: {cpu: 250m, memory: 256Mi}
+            limits: {memory: 1Gi}
+  # One PVC per replica, created from this template and kept when the pod is deleted.
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi

@@ -1,0 +1,244 @@
+[
+  {
+    "label": "replicas-2",
+    "window_s": 30.2,
+    "keeping_up": false,
+    "vehicles": 1200,
+    "frames_per_s": 3973,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 626,
+        "target_fps": 6260.0,
+        "fps": 1994.462255148614,
+        "lag_s": 89.2563
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 574,
+        "target_fps": 5740.0,
+        "fps": 1978.5452883931966,
+        "lag_s": 86.0515
+      }
+    ],
+    "p50_ms": 0.3453551786558439,
+    "p99_ms": 0.9871036147523452,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-4",
+    "window_s": 30.2,
+    "keeping_up": false,
+    "vehicles": 1200,
+    "frames_per_s": 7485,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 334,
+        "target_fps": 3340.0,
+        "fps": 1733.0517903953503,
+        "lag_s": 132.186,
+        "lag_trend": 0.47878728266912984
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 294,
+        "target_fps": 2940.0,
+        "fps": 1724.746060355268,
+        "lag_s": 125.882,
+        "lag_trend": 0.41267234792775703
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 285,
+        "target_fps": 2850.0,
+        "fps": 2004.3612748520643,
+        "lag_s": 9.74601,
+        "lag_trend": 0.2975086689722314
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 287,
+        "target_fps": 2870.0,
+        "fps": 2022.9912589658745,
+        "lag_s": 9.66489,
+        "lag_trend": 0.2951441831554422
+      }
+    ],
+    "p50_ms": 0.564406897457084,
+    "p99_ms": 0.9923665413098374,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-8",
+    "window_s": 30.5,
+    "keeping_up": false,
+    "vehicles": 1200,
+    "frames_per_s": 12308,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 161,
+        "target_fps": 1610.0,
+        "fps": 1573.20300190706,
+        "lag_s": 137.843,
+        "lag_trend": 0.021348881431198903
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 156,
+        "target_fps": 1560.0,
+        "fps": 1552.050582574921,
+        "lag_s": 129.859,
+        "lag_trend": 0.0038310109316728835
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 138,
+        "target_fps": 1380.0,
+        "fps": 1537.872567759416,
+        "lag_s": 7.15603,
+        "lag_trend": -0.11544997020218221
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 136,
+        "target_fps": 1360.0,
+        "fps": 1556.634698219657,
+        "lag_s": 5.72851,
+        "lag_trend": -0.14496905545962827
+      },
+      {
+        "pod": "worker-4",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1459.7788833830195,
+        "lag_s": 0.00182981,
+        "lag_trend": -0.00015454985715712658
+      },
+      {
+        "pod": "worker-5",
+        "vehicles": 166,
+        "target_fps": 1660.0,
+        "fps": 1658.958708146801,
+        "lag_s": 0.0262781,
+        "lag_trend": 0.0004262932856455939
+      },
+      {
+        "pod": "worker-6",
+        "vehicles": 151,
+        "target_fps": 1510.0,
+        "fps": 1509.5165381284057,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-7",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1460.139063897963,
+        "lag_s": 0.0,
+        "lag_trend": -0.00017367544250062895
+      }
+    ],
+    "p50_ms": 0.7436815352491926,
+    "p99_ms": 1.4648202531645564,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-8-steady",
+    "window_s": 60.5,
+    "keeping_up": true,
+    "vehicles": 1200,
+    "frames_per_s": 12008,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 161,
+        "target_fps": 1610.0,
+        "fps": 1602.0021340132514,
+        "lag_s": 0.317991,
+        "lag_trend": 0.004635060709647359
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 156,
+        "target_fps": 1560.0,
+        "fps": 1560.8386837243838,
+        "lag_s": 0.00469937,
+        "lag_trend": -0.00035821508989271626
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 138,
+        "target_fps": 1380.0,
+        "fps": 1380.8932393893144,
+        "lag_s": 0.00798977,
+        "lag_trend": -0.0007280133101926216
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 136,
+        "target_fps": 1360.0,
+        "fps": 1360.0304786404988,
+        "lag_s": 0.0,
+        "lag_trend": -0.00014463464316498417
+      },
+      {
+        "pod": "worker-4",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1460.4428469355114,
+        "lag_s": 0.00730949,
+        "lag_trend": -0.0004588387308361994
+      },
+      {
+        "pod": "worker-5",
+        "vehicles": 166,
+        "target_fps": 1660.0,
+        "fps": 1672.4759446885294,
+        "lag_s": 1.71868,
+        "lag_trend": -0.007423142202092443
+      },
+      {
+        "pod": "worker-6",
+        "vehicles": 151,
+        "target_fps": 1510.0,
+        "fps": 1510.401058490916,
+        "lag_s": 0.0238448,
+        "lag_trend": -0.0003954220548170718
+      },
+      {
+        "pod": "worker-7",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1461.1867647118163,
+        "lag_s": 0.00679349,
+        "lag_trend": -0.0006364449670524436
+      }
+    ],
+    "p50_ms": 0.7471898543196702,
+    "p99_ms": 0.9990695098839851,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  }
+]

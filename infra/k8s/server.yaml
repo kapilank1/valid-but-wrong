@@ -1,0 +1,82 @@
+# Pipeline server (FastAPI + WebSocket). It holds ONE simulation in memory (vbw/pipeline/runner.py), and the
+# console's REST calls and WebSocket must all reach that same process. So this is pinned to a single replica:
+# a second replica would run its own, different simulation and requests would land on either at random.
+# Scaling the detector out is the fleet worker's job, not this pod's.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 1
+  # Recreate, not RollingUpdate: a rolling update briefly runs old and new pods side by side, which for a
+  # singleton means two simulations at once. Recreate stops the old pod first (a few seconds of downtime).
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: server
+    spec:
+      # Kubernetes has no compose-style depends_on: every pod starts as soon as it is scheduled. Init containers
+      # run to completion before the app container starts, so this one holds the server until Postgres accepts
+      # connections. (The store would recover anyway, retrying with backoff, but it would start with an error.)
+      initContainers:
+        - name: wait-for-db
+          image: timescale/timescaledb:2.17.2-pg16   # already on the node for the db; has pg_isready
+          command: ["sh", "-c", "until pg_isready -h db -p 5432 -U vbw; do echo waiting for db; sleep 2; done"]
+          resources:
+            requests: {cpu: 10m, memory: 16Mi}
+            limits: {memory: 64Mi}
+      containers:
+        - name: server
+          image: vbw-server:dev
+          # Built locally, never pushed: use the image already on the node instead of pulling from a registry.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DATABASE_URL
+            # The server applies infra/sql/*.sql on startup (idempotent), so the db needs no init scripts.
+            - name: VBW_DB_AUTO_INIT
+              value: "1"
+          # The PPO policies take a few seconds to preload; startupProbe gives the app that long before
+          # liveness can restart it.
+          startupProbe:
+            httpGet: {path: /api/health, port: http}
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: {path: /api/health, port: http}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /api/health, port: http}
+            periodSeconds: 10
+            failureThreshold: 3
+          # requests = what the scheduler reserves on a node; limits = the ceiling (over the memory limit the
+          # container is OOM-killed). torch + SB3 + ONNX Runtime sit around 1 GB resident.
+          resources:
+            requests: {cpu: 500m, memory: 1Gi}
+            limits: {memory: 2Gi}
+---
+# LoadBalancer: on a cloud this provisions an external load balancer; Docker Desktop binds it to localhost:8000.
+# The browser talks to this port directly (NEXT_PUBLIC_VBW_API is baked into the console as localhost:8000).
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: server
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

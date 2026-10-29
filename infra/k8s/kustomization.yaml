@@ -1,0 +1,26 @@
+# Argus on Kubernetes (local cluster: Docker Desktop's built-in Kubernetes).
+#
+#   docker build -f infra/Dockerfile.server -t vbw-server:dev .
+#   docker build -f infra/Dockerfile.console -t vbw-console:dev .
+#   kubectl apply -k infra/k8s
+#   kubectl -n argus get pods -w
+#
+# Console on http://localhost:3000, pipeline API on http://localhost:8000 (Docker Desktop binds LoadBalancer
+# Services to localhost). Stop the compose stack first: it holds the same ports.
+# Tear down with `kubectl delete -k infra/k8s` (the database volume goes with the namespace).
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argus
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: argus
+
+resources:
+  - namespace.yaml
+  - db.yaml
+  - server.yaml
+  - console.yaml
+  - worker.yaml

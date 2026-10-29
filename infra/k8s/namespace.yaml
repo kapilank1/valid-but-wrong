@@ -1,0 +1,6 @@
+# A Namespace is a folder for cluster objects: everything Argus creates lives in "argus", so one
+# `kubectl delete namespace argus` removes all of it.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argus

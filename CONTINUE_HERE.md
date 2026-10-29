@@ -1,5 +1,16 @@
 # CONTINUE HERE: Valid-But-Wrong build state (updated 2026-10-24 ~15:45 PDT)
 
+> **Docker + Kubernetes (2026-10-28, on the Mac, not committed yet).** Compose stack (`infra/docker-compose.yml`) builds
+> and runs on arm64. Kubernetes manifests in `infra/k8s/` (Docker Desktop cluster, `kubectl apply -k infra/k8s`):
+> TimescaleDB StatefulSet + PVC, server (1 replica, Recreate, waits for the db), console x2, and the **fleet detector
+> workers** (`vbw/fleet/`, StatefulSet): 1,200 Falcon 9 vehicles sharded by rendezvous hashing over the live worker
+> pods, each pod scoring its vehicles' frames (CRC link + L1/L2) in real time; `scripts/fleet_report.py` measures
+> them. `results/fleet_scale.json` (AC power): 2 pods 4,172 frames/s and 4 pods 7,844 (both behind); 8 pods
+> 12,002 of 12,000 needed, real time, p99 1.0 ms/frame; over full flights 115/115 attacked flights detected (median
+> 0.8 s after onset, scripted attacks at intensity 1.0) and 0 false alerts in 1,085 clean flights. Battery-throttled
+> runs are kept apart in `results/fleet_scale_battery.json`: don't quote them. Workers are scaled to 0 to free the CPU;
+> `kubectl apply -k infra/k8s` brings back 8. 33 fleet tests pass.
+
 > **NEXT TASK (in Cursor, with Grok): the project website for judges.** Everything the site needs (story, every
 > number with its source file, sections, visual direction, rules) is in **`docs/WEBSITE_BRIEF.md`**. Build it in
 > `apps/site/`; don't touch the detector/console/edge code.

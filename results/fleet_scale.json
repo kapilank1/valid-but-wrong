@@ -1,0 +1,327 @@
+[
+  {
+    "label": "replicas-2",
+    "window_s": 45.2,
+    "keeping_up": false,
+    "vehicles": 1200,
+    "frames_per_s": 4172,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 626,
+        "target_fps": 6260.0,
+        "fps": 2097.837097217696,
+        "lag_s": 41.0754,
+        "lag_trend": 0.6625288921332526
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 574,
+        "target_fps": 5740.0,
+        "fps": 2074.190835058397,
+        "lag_s": 39.4108,
+        "lag_trend": 0.6369980073958696
+      }
+    ],
+    "p50_ms": 0.2694383492760083,
+    "p99_ms": 0.9419316039514366,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-4",
+    "window_s": 45.3,
+    "keeping_up": false,
+    "vehicles": 1200,
+    "frames_per_s": 7844,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 334,
+        "target_fps": 3340.0,
+        "fps": 1995.2952455371365,
+        "lag_s": 66.8143,
+        "lag_trend": 0.40341331225134347
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 294,
+        "target_fps": 2940.0,
+        "fps": 1912.3853034817453,
+        "lag_s": 61.4305,
+        "lag_trend": 0.34858626876797827
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 285,
+        "target_fps": 2850.0,
+        "fps": 1962.2019619775904,
+        "lag_s": 15.8455,
+        "lag_trend": 0.31194131151159105
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 287,
+        "target_fps": 2870.0,
+        "fps": 1973.9105335974566,
+        "lag_s": 15.9204,
+        "lag_trend": 0.31188122223837217
+      }
+    ],
+    "p50_ms": 0.33009397335872015,
+    "p99_ms": 0.992114472618083,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-8-scaleup",
+    "window_s": 45.5,
+    "keeping_up": true,
+    "vehicles": 1200,
+    "frames_per_s": 12864,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 161,
+        "target_fps": 1610.0,
+        "fps": 1701.3096495111022,
+        "lag_s": 64.4062,
+        "lag_trend": -0.05731055883916359
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 156,
+        "target_fps": 1560.0,
+        "fps": 1710.3461874083232,
+        "lag_s": 56.6923,
+        "lag_trend": -0.09658761796226703
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 138,
+        "target_fps": 1380.0,
+        "fps": 1697.747802456723,
+        "lag_s": 0.0,
+        "lag_trend": -0.2306383914551301
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 136,
+        "target_fps": 1360.0,
+        "fps": 1667.6260094659865,
+        "lag_s": 0.0,
+        "lag_trend": -0.22615090390081669
+      },
+      {
+        "pod": "worker-4",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1459.8955713809648,
+        "lag_s": 0.00644715,
+        "lag_trend": 0.00014175161874469173
+      },
+      {
+        "pod": "worker-5",
+        "vehicles": 166,
+        "target_fps": 1660.0,
+        "fps": 1657.6000696092158,
+        "lag_s": 0.0579898,
+        "lag_trend": 0.0012750049278643935
+      },
+      {
+        "pod": "worker-6",
+        "vehicles": 151,
+        "target_fps": 1510.0,
+        "fps": 1510.0692440852429,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-7",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1459.6537175686303,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      }
+    ],
+    "p50_ms": 0.6895817453044305,
+    "p99_ms": 0.9965121318270967,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-8-steady",
+    "window_s": 60.5,
+    "keeping_up": true,
+    "vehicles": 1200,
+    "frames_per_s": 11993,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 161,
+        "target_fps": 1610.0,
+        "fps": 1608.4378865678336,
+        "lag_s": 0.00327017,
+        "lag_trend": -2.614484519263291e-05
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 156,
+        "target_fps": 1560.0,
+        "fps": 1558.7704515721532,
+        "lag_s": 0.00191317,
+        "lag_trend": 3.1631906328457294e-05
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 138,
+        "target_fps": 1380.0,
+        "fps": 1379.2302795954247,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 136,
+        "target_fps": 1360.0,
+        "fps": 1359.5220297569258,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-4",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1458.8568997482864,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-5",
+        "vehicles": 166,
+        "target_fps": 1660.0,
+        "fps": 1659.1965501619543,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-6",
+        "vehicles": 151,
+        "target_fps": 1510.0,
+        "fps": 1509.0368815099007,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-7",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1459.5017166473647,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      }
+    ],
+    "p50_ms": 0.6463246697159459,
+    "p99_ms": 0.9951744469091696,
+    "flights_attacked": 0,
+    "flights_detected": 0,
+    "flights_clean": 0,
+    "false_alerts": 0,
+    "detection_p50_s": null
+  },
+  {
+    "label": "replicas-8-flights",
+    "window_s": 60.4,
+    "keeping_up": true,
+    "vehicles": 1200,
+    "frames_per_s": 12002,
+    "needed_frames_per_s": 12000,
+    "pods": [
+      {
+        "pod": "worker-0",
+        "vehicles": 161,
+        "target_fps": 1610.0,
+        "fps": 1610.9506572520827,
+        "lag_s": 0.0,
+        "lag_trend": -0.0002643634254696888
+      },
+      {
+        "pod": "worker-1",
+        "vehicles": 156,
+        "target_fps": 1560.0,
+        "fps": 1560.2980780166597,
+        "lag_s": 0.00468924,
+        "lag_trend": 7.762160152088735e-05
+      },
+      {
+        "pod": "worker-2",
+        "vehicles": 138,
+        "target_fps": 1380.0,
+        "fps": 1380.348996687155,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-3",
+        "vehicles": 136,
+        "target_fps": 1360.0,
+        "fps": 1360.1707306453313,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-4",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1459.78746980833,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-5",
+        "vehicles": 166,
+        "target_fps": 1660.0,
+        "fps": 1660.775579964051,
+        "lag_s": 0.00837645,
+        "lag_trend": -0.0005589636267107454
+      },
+      {
+        "pod": "worker-6",
+        "vehicles": 151,
+        "target_fps": 1510.0,
+        "fps": 1509.8110300859275,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      },
+      {
+        "pod": "worker-7",
+        "vehicles": 146,
+        "target_fps": 1460.0,
+        "fps": 1459.78746980833,
+        "lag_s": 0.0,
+        "lag_trend": 0.0
+      }
+    ],
+    "p50_ms": 0.7507119660082047,
+    "p99_ms": 0.9964096926962454,
+    "flights_attacked": 115,
+    "flights_detected": 115,
+    "flights_clean": 1085,
+    "false_alerts": 0,
+    "detection_p50_s": 0.8214285714285714
+  }
+]
